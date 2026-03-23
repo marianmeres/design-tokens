@@ -27,57 +27,62 @@ export function generateRebootBridge(
 ): GeneratedTokens {
 	const bridge: GeneratedTokens = {};
 	const get = (key: string) => tokens[`${prefix}color-${key}`];
+	const ref = (key: string) => `var(--${prefix}color-${key})`;
 
-	// Helper: set a --bs-* var and optionally its -rgb triplet companion
-	const set = (bsKey: string, value: string | undefined) => {
-		if (value === undefined) return;
-		bridge[`bs-${bsKey}`] = value;
+	// Helper: set a --bs-* var to a var() reference
+	const set = (bsKey: string, tokenKey: string) => {
+		if (get(tokenKey) === undefined) return;
+		bridge[`bs-${bsKey}`] = ref(tokenKey);
 	};
 
-	const setWithRgb = (bsKey: string, value: string | undefined) => {
+	// Helper: set a --bs-* var to a var() reference and its -rgb companion
+	// to a raw triplet (CSS cannot derive r,g,b from a var() reference)
+	const setWithRgb = (bsKey: string, tokenKey: string) => {
+		const value = get(tokenKey);
 		if (value === undefined) return;
-		bridge[`bs-${bsKey}`] = value;
+		bridge[`bs-${bsKey}`] = ref(tokenKey);
 		const triplet = hexToRgbTriplet(value);
 		if (triplet) bridge[`bs-${bsKey}-rgb`] = triplet;
 	};
 
 	// Body
-	setWithRgb("body-bg", get("background"));
-	setWithRgb("body-color", get("background-foreground"));
+	setWithRgb("body-bg", "background");
+	setWithRgb("body-color", "background-foreground");
 
 	// Links
-	setWithRgb("link-color", get("primary"));
-	set("link-decoration", undefined); // leave as reboot default
+	setWithRgb("link-color", "primary");
 
-	// Link hover — use primary-hover token value
-	const primaryHover = tokens[`${prefix}color-primary-hover`];
-	if (primaryHover) {
-		setWithRgb("link-hover-color", primaryHover);
+	// Link hover — use primary-hover token
+	if (tokens[`${prefix}color-primary-hover`]) {
+		bridge[`bs-link-hover-color`] = ref("primary-hover");
+		const triplet = hexToRgbTriplet(
+			tokens[`${prefix}color-primary-hover`],
+		);
+		if (triplet) bridge[`bs-link-hover-color-rgb`] = triplet;
 	}
 
 	// Border
-	set("border-color", get("border"));
+	set("border-color", "border");
 
 	// Heading
-	set("heading-color", get("background-foreground"));
+	set("heading-color", "background-foreground");
 
 	// Code
-	const accent = get("accent");
-	if (accent) set("code-color", accent);
+	if (get("accent")) set("code-color", "accent");
 
 	// Semantic colors
-	set("primary", get("primary"));
-	set("danger", get("destructive"));
-	set("warning", get("warning"));
-	set("success", get("success"));
+	set("primary", "primary");
+	set("danger", "destructive");
+	set("warning", "warning");
+	set("success", "success");
 
 	// Secondary (muted)
-	set("secondary-color", get("muted-foreground"));
-	set("secondary-bg", get("muted"));
+	set("secondary-color", "muted-foreground");
+	set("secondary-bg", "muted");
 
 	// Highlight
-	set("highlight-color", get("background-foreground"));
-	set("highlight-bg", get("warning"));
+	set("highlight-color", "background-foreground");
+	set("highlight-bg", "warning");
 
 	return bridge;
 }
