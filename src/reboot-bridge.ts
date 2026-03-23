@@ -102,6 +102,10 @@ export function generateThemedCss(
 	const lightBridge = generateRebootBridge(lightTokens, prefix);
 	let css = toCssString({ ...lightTokens, ...lightBridge });
 
+	// Override reboot's RGB triplet approach for links so that color-mix() values work
+	css += "\na { color: var(--bs-link-color); }";
+	css += "\na:hover { color: var(--bs-link-hover-color); }";
+
 	// Dark mode
 	if (schema.dark) {
 		const darkTokens = generateCssTokens(
@@ -115,6 +119,8 @@ export function generateThemedCss(
 				{ ...darkTokens, ...darkBridge },
 				":root.dark",
 			);
+		css += "\n:root.dark a { color: var(--bs-link-color); }";
+		css += "\n:root.dark a:hover { color: var(--bs-link-hover-color); }";
 	}
 
 	return css;

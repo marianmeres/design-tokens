@@ -160,6 +160,39 @@ button.nav-btn { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
 .chip-input { background: var(--dt-color-input); border: 1px solid var(--dt-color-border); }
 .chip-ring { background: var(--dt-color-ring); }
 
+/* Link demo */
+.link-demo {
+	margin-top: 0.75rem;
+	font-size: 0.8rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+.link-demo a {
+	color: var(--dt-color-primary);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: color 0.15s;
+}
+.link-demo a:hover {
+	color: var(--dt-color-primary-hover);
+}
+.link-demo a:active {
+	color: var(--dt-color-primary-active);
+}
+.link-demo .state-chip {
+	display: inline-block;
+	padding: 0.2rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.65rem;
+	font-family: ui-monospace, "SF Mono", Monaco, monospace;
+}
+.link-demo .state-default { background: var(--dt-color-primary); color: var(--dt-color-primary-foreground); }
+.link-demo .state-hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground); }
+.link-demo .state-active { background: var(--dt-color-primary-active); color: var(--dt-color-primary-foreground); }
+
 /* Bordered element demo */
 .bordered-demo {
 	margin-top: 0.75rem;
@@ -343,6 +376,12 @@ fieldset legend {
 				<div class="intent-swatch swatch-warning">warning</div>
 				<div class="intent-swatch swatch-success">success</div>
 			</div>
+			<div class="link-demo">
+				<a href="javascript:void(0)">Hover &amp; click me</a>
+				<span class="state-chip state-default">default</span>
+				<span class="state-chip state-hover">hover</span>
+				<span class="state-chip state-active">active</span>
+			</div>
 			<div class="bordered-demo">
 				<span>input + border</span>
 				<span class="ring-demo">ring</span>
@@ -380,6 +419,12 @@ fieldset legend {
 				<div class="intent-swatch swatch-destructive">destructive</div>
 				<div class="intent-swatch swatch-warning">warning</div>
 				<div class="intent-swatch swatch-success">success</div>
+			</div>
+			<div class="link-demo">
+				<a href="javascript:void(0)">Hover &amp; click me</a>
+				<span class="state-chip state-default">default</span>
+				<span class="state-chip state-hover">hover</span>
+				<span class="state-chip state-active">active</span>
 			</div>
 			<div class="bordered-demo">
 				<span>input + border</span>
