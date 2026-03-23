@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Red primary / cyan accent theme. */
 export default theme;

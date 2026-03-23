@@ -8,6 +8,7 @@
  * @module
  */
 
+/** A complete theme definition with required light mode and optional dark mode. */
 export type { ThemeSchema } from "../types.ts";
 
 /** Blue primary / orange accent theme. */

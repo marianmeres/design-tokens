@@ -66,4 +66,5 @@ const theme: ThemeSchema = {
 	},
 };
 
+/** Neutral zinc monochrome theme. */
 export default theme;

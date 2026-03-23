@@ -125,4 +125,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Multi-color rainbow theme. */
 export default theme;

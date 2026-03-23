@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Stone primary / orange accent earth theme. */
 export default theme;

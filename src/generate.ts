@@ -7,15 +7,6 @@ import type {
 	TokenSchema,
 } from "./types.ts";
 
-// Re-export types for convenience
-export type {
-	ColorPair,
-	ColorValue,
-	GeneratedTokens,
-	SingleColor,
-	ThemeSchema,
-	TokenSchema,
-};
 
 /** Check if a single color is an object with states or a plain string */
 function isSingleColorObject(value: SingleColor): value is ColorValue {

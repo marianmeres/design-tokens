@@ -66,4 +66,5 @@ const theme: ThemeSchema = {
 	},
 };
 
+/** Neutral gray monochrome theme. */
 export default theme;

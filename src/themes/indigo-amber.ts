@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Indigo primary / amber accent theme. */
 export default theme;

@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Violet primary / rose accent dusk theme. */
 export default theme;

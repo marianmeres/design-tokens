@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Lime primary / fuchsia accent neon theme. */
 export default theme;

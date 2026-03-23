@@ -119,4 +119,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Orange primary / pink accent sunset theme. */
 export default theme;

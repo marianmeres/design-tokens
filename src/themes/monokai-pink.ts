@@ -122,4 +122,5 @@ const dark = {
 
 const theme: ThemeSchema = { light, dark };
 
+/** Monokai-inspired theme with pink accent. */
 export default theme;

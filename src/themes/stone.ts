@@ -72,4 +72,5 @@ const theme: ThemeSchema = {
 	},
 };
 
+/** Neutral stone monochrome theme. */
 export default theme;
