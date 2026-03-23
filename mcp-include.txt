@@ -1,0 +1,3 @@
+CSS custom property generator for design token systems. Produces CSS variables from 
+a structured color schema with automatic hover/active state derivation via color-mix(), 
+optional Bootstrap Reboot bridge, and 31 pre-built themes.
