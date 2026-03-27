@@ -13,12 +13,10 @@ function toKebab(s: string): string {
 
 await ensureDir(OUT_DIR);
 
-const entries = Object.entries(themes).filter(
-	([k]) => k !== "ThemeSchema",
-);
+const entries = Object.entries(themes).filter(([k]) => k !== "ThemeSchema");
 
 for (const [name, theme] of entries) {
-	const css = generateThemeCss(theme, PREFIX);
+	const css = "/* prettier-ignore */\n" + generateThemeCss(theme, PREFIX);
 	const fileName = `${toKebab(name)}.css`;
 	await Deno.writeTextFile(join(OUT_DIR, fileName), css);
 }
