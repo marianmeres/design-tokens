@@ -3,7 +3,7 @@
  * {@link generateThemeCss} or {@link generateThemedCss}.
  *
  * Each theme exports a complete light + dark mode token schema built
- * from the bundled Tailwind v3 color palette.
+ * from the bundled Tailwind color palette.
  *
  * @module
  */
@@ -29,12 +29,28 @@ export { default as gray } from "./gray.ts";
 export { default as indigoAmber } from "./indigo-amber.ts";
 /** Lime primary / fuchsia accent neon theme. */
 export { default as limeFuchsiaNeon } from "./lime-fuchsia-neon.ts";
+/** Cool purple-grey mauve monochrome theme. */
+export { default as mauve } from "./mauve.ts";
+/** Lime primary / fuchsia accent on mauve base — electric contrast on muted purple. */
+export { default as mauveLimeElectric } from "./mauve-lime-electric.ts";
+/** Mauve primary / teal accent theme — soft purple greys with oceanic highlights. */
+export { default as mauveTeal } from "./mauve-teal.ts";
+/** Cool blue-grey mist monochrome theme. */
+export { default as mist } from "./mist.ts";
+/** Indigo primary / sky accent on mist base — cool Nordic fjord tones. */
+export { default as mistIndigoFjord } from "./mist-indigo-fjord.ts";
+/** Violet primary / cyan accent on mist base — aurora borealis inspired. */
+export { default as mistVioletAurora } from "./mist-violet-aurora.ts";
 /** Monokai-inspired theme with cyan accent. */
 export { default as monokaiCyan } from "./monokai-cyan.ts";
 /** Monokai-inspired theme with green accent. */
 export { default as monokaiGreen } from "./monokai-green.ts";
 /** Monokai-inspired theme with pink accent. */
 export { default as monokaiPink } from "./monokai-pink.ts";
+/** Warm yellow-grey olive monochrome theme. */
+export { default as olive } from "./olive.ts";
+/** Olive primary / amber accent safari theme — earthy warmth with golden highlights. */
+export { default as oliveAmberSafari } from "./olive-amber-safari.ts";
 /** Orange primary / pink accent sunset theme. */
 export { default as orangePinkSunset } from "./orange-pink-sunset.ts";
 /** Pink primary / emerald accent theme. */
@@ -63,6 +79,12 @@ export { default as slateCyan } from "./slate-cyan.ts";
 export { default as slateTealOcean } from "./slate-teal-ocean.ts";
 /** Neutral stone monochrome theme. */
 export { default as stone } from "./stone.ts";
+/** Warm neutral taupe monochrome theme. */
+export { default as taupe } from "./taupe.ts";
+/** Taupe primary / olive accent clay theme — all-earthy, warm and grounded. */
+export { default as taupeOliveClay } from "./taupe-olive-clay.ts";
+/** Rose primary / pink accent on taupe base — warm blush tones. */
+export { default as taupeRoseBlush } from "./taupe-rose-blush.ts";
 /** Stone primary / orange accent earth theme. */
 export { default as stoneOrangeEarth } from "./stone-orange-earth.ts";
 /** Teal primary / rose accent theme. */

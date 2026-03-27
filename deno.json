@@ -4,7 +4,8 @@
   "exports": {
     ".": "./src/mod.ts",
     "./reboot": "./src/reboot-bridge.ts",
-    "./themes": "./src/themes/mod.ts"
+    "./themes": "./src/themes/mod.ts",
+    "./css/*": "./css/*"
   },
   "tasks": {
     "test": "deno test --allow-read",
@@ -15,6 +16,7 @@
     "publish": "deno publish && deno task npm:publish",
     "rp": "deno task release -y && deno task publish",
     "rpm": "deno task release minor -y && deno task publish",
+    "css:build": "deno run -A scripts/build-css.ts",
     "preview:build": "deno run -A jsr:@marianmeres/deno-build --root theme-preview-builder/src --outdir theme-preview-builder/dist ",
     "preview:dev": "deno run -A jsr:@marianmeres/deno-build --root theme-preview-builder/src --outdir theme-preview-builder/dist --watch"
   },

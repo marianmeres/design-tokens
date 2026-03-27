@@ -1,4 +1,5 @@
 import { npmBuild } from "@marianmeres/npmbuild";
+import { copy } from "@std/fs";
 
 const denoJson = JSON.parse(Deno.readTextFileSync("deno.json"));
 
@@ -17,6 +18,11 @@ await npmBuild({
 				types: "./dist/themes/mod.d.ts",
 				import: "./dist/themes/mod.js",
 			},
+			"./css/*": "./dist/css/*",
 		},
 	},
 });
+
+// Copy pre-built CSS files into npm dist
+await copy("css", ".npm-dist/dist/css", { overwrite: true });
+console.log("Copied css/ into .npm-dist/dist/css/");
