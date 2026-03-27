@@ -53,9 +53,22 @@ const css = generateThemeCss(theme, "my-");
 // → :root { --my-color-primary: #2563eb; ... }
 ```
 
+## Pre-built CSS
+
+All bundled themes are available as pre-built CSS files with the `stuic-` prefix (npm only):
+
+```html
+<link rel="stylesheet" href="node_modules/@marianmeres/design-tokens/css/mauve-teal.css">
+```
+
+Or via bundler import:
+```ts
+import "@marianmeres/design-tokens/css/mauve-teal.css";
+```
+
 ## Creating a custom theme
 
-Use the bundled `colors` map (complete Tailwind v3 palette) to avoid looking up hex values:
+Use the bundled `colors` map (Tailwind palette including v4.2 additions) to avoid looking up hex values:
 
 ```ts
 import { colors, generateThemeCss } from "@marianmeres/design-tokens";

@@ -251,13 +251,20 @@ type RoleSingleKey = "foreground" | "border" | "input" | "ring";
 
 ### `colors`
 
-Complete Tailwind CSS v3 color palette as hex values. Contains `black`, `white`, and 22 color scales (slate, gray, zinc, neutral, stone, red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose) each with shades 50–950.
+Tailwind CSS color palette as hex values. Contains `black`, `white`, and 26 color scales each with shades 50–950:
+
+- **Neutrals**: slate, gray, zinc, neutral, stone
+- **Earthy/muted (v4.2)**: taupe, mauve, mist, olive
+- **Warm**: red, orange, amber, yellow
+- **Cool**: lime, green, emerald, teal, cyan, sky, blue, indigo
+- **Vibrant**: violet, purple, fuchsia, pink, rose
 
 ```typescript
 import { colors } from "@marianmeres/design-tokens";
 
 colors.blue[600]   // → "#2563eb"
-colors.white        // → "#ffffff"
+colors.mauve[500]  // → "#79697b"
+colors.white       // → "#ffffff"
 ```
 
 ---
@@ -266,6 +273,20 @@ colors.white        // → "#ffffff"
 
 *Import from `@marianmeres/design-tokens/themes`*
 
-31 pre-built `ThemeSchema` definitions, each with light + dark mode:
+42 pre-built `ThemeSchema` definitions, each with light + dark mode:
 
-`blueOrange`, `cyanRed`, `cyanSlate`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `indigoAmber`, `limeFuchsiaNeon`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `orangePinkSunset`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `stoneOrangeEarth`, `tealRose`, `violetLime`, `violetRoseDusk`, `zinc`
+`blueOrange`, `cyanRed`, `cyanSlate`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `indigoAmber`, `limeFuchsiaNeon`, `mauve`, `mauveLimeElectric`, `mauveTeal`, `mist`, `mistIndigoFjord`, `mistVioletAurora`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `olive`, `oliveAmberSafari`, `orangePinkSunset`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `taupe`, `taupeOliveClay`, `taupeRoseBlush`, `stoneOrangeEarth`, `tealRose`, `violetLime`, `violetRoseDusk`, `zinc`
+
+---
+
+## Pre-built CSS
+
+*npm only — not available on JSR*
+
+All bundled themes are also distributed as pre-built CSS files using the `stuic-` prefix. Import via `@marianmeres/design-tokens/css/{theme-name}.css`.
+
+```typescript
+import "@marianmeres/design-tokens/css/mauve-teal.css";
+```
+
+Available files: `blue-orange.css`, `cyan-red.css`, `mauve-teal.css`, `mist-indigo-fjord.css`, `taupe-rose-blush.css`, etc. (one per bundled theme)
