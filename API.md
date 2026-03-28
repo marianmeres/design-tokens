@@ -273,9 +273,9 @@ colors.white       // → "#ffffff"
 
 *Import from `@marianmeres/design-tokens/themes`*
 
-42 pre-built `ThemeSchema` definitions, each with light + dark mode:
+43 pre-built `ThemeSchema` definitions, each with light + dark mode:
 
-`blueOrange`, `cyanRed`, `cyanSlate`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `indigoAmber`, `limeFuchsiaNeon`, `mauve`, `mauveLimeElectric`, `mauveTeal`, `mist`, `mistIndigoFjord`, `mistVioletAurora`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `olive`, `oliveAmberSafari`, `orangePinkSunset`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `taupe`, `taupeOliveClay`, `taupeRoseBlush`, `stoneOrangeEarth`, `tealRose`, `violetLime`, `violetRoseDusk`, `zinc`
+`amberOliveSafari`, `blueOrange`, `cyanRed`, `cyanSlate`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `indigoAmber`, `limeFuchsiaNeon`, `mauve`, `mauveLimeElectric`, `mauveTeal`, `mist`, `mistIndigoFjord`, `mistVioletAurora`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `olive`, `oliveAmberSafari`, `orangePinkSunset`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `stoneOrangeEarth`, `taupe`, `taupeOliveClay`, `taupeRoseBlush`, `tealRose`, `violetLime`, `violetRoseDusk`, `zinc`
 
 ---
 
@@ -289,4 +289,18 @@ All bundled themes are also distributed as pre-built CSS files using the `stuic-
 import "@marianmeres/design-tokens/css/mauve-teal.css";
 ```
 
-Available files: `blue-orange.css`, `cyan-red.css`, `mauve-teal.css`, `mist-indigo-fjord.css`, `taupe-rose-blush.css`, etc. (one per bundled theme)
+Available files: `amber-olive-safari.css`, `blue-orange.css`, `cyan-red.css`, `mauve-teal.css`, `mist-indigo-fjord.css`, `taupe-rose-blush.css`, etc. (one per bundled theme)
+
+---
+
+### `themeNames`
+
+*Import from `@marianmeres/design-tokens/themes`*
+
+Kebab-case theme name strings matching the generated CSS filenames (without extension). Typed as `readonly` tuple.
+
+```typescript
+import { themeNames } from "@marianmeres/design-tokens/themes";
+
+themeNames; // → ["amber-olive-safari", "blue-orange", ..., "zinc"]
+```
