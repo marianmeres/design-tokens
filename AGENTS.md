@@ -86,7 +86,7 @@ Entry points:
 ## Adding a New Theme
 
 1. Create `src/themes/{name}.ts` with `export default` of `ThemeSchema`
-2. Add re-export in `src/themes/mod.ts` (alphabetical order)
+2. Run `deno task themes:build` to regenerate `src/themes/mod.ts`
 3. Run `deno task css:build` to regenerate CSS files
 4. Run `deno task preview:build` to rebuild the preview tool
 5. If the theme uses new color families, update `COLOR_FAMILIES` in `theme-preview-builder/index.html`

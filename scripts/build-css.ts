@@ -13,7 +13,10 @@ function toKebab(s: string): string {
 
 await ensureDir(OUT_DIR);
 
-const entries = Object.entries(themes).filter(([k]) => k !== "ThemeSchema");
+const entries = Object.entries(themes).filter(
+	(e): e is [string, themes.ThemeSchema] =>
+		e[0] !== "ThemeSchema" && e[0] !== "themeNames"
+);
 
 for (const [name, theme] of entries) {
 	const css = "/* prettier-ignore */\n" + generateThemeCss(theme, PREFIX);

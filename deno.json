@@ -15,6 +15,7 @@
     "publish": "deno publish && deno task npm:publish",
     "rp": "deno task release -y && deno task publish",
     "rpm": "deno task release minor -y && deno task publish",
+    "themes:build": "deno run -A scripts/build-themes-mod.ts",
     "css:build": "deno run -A scripts/build-css.ts",
     "preview:build": "deno run -A jsr:@marianmeres/deno-build --root theme-preview-builder/src --outdir theme-preview-builder/dist ",
     "preview:dev": "deno run -A jsr:@marianmeres/deno-build --root theme-preview-builder/src --outdir theme-preview-builder/dist --watch"
