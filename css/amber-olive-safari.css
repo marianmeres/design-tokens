@@ -1,6 +1,6 @@
 /* prettier-ignore */
 :root {
-	--stuic-color-primary:                        #2563eb;
+	--stuic-color-primary:                        #d97706;
 
 	--stuic-color-primary-hover:                  color-mix(in oklch, var(--stuic-color-primary), black 10%);
 	--stuic-color-primary-active:                 color-mix(in oklch, var(--stuic-color-primary), black 20%);
@@ -8,7 +8,7 @@
 	--stuic-color-primary-foreground-hover:       #ffffff;
 	--stuic-color-primary-foreground-active:      #ffffff;
 
-	--stuic-color-accent:                         #f97316;
+	--stuic-color-accent:                         #474739;
 
 	--stuic-color-accent-hover:                   color-mix(in oklch, var(--stuic-color-accent), black 10%);
 	--stuic-color-accent-active:                  color-mix(in oklch, var(--stuic-color-accent), black 20%);
@@ -16,7 +16,7 @@
 	--stuic-color-accent-foreground-hover:        #ffffff;
 	--stuic-color-accent-foreground-active:       #ffffff;
 
-	--stuic-color-destructive:                    #e11d48;
+	--stuic-color-destructive:                    #dc2626;
 
 	--stuic-color-destructive-hover:              color-mix(in oklch, var(--stuic-color-destructive), black 10%);
 	--stuic-color-destructive-active:             color-mix(in oklch, var(--stuic-color-destructive), black 20%);
@@ -24,7 +24,7 @@
 	--stuic-color-destructive-foreground-hover:   #ffffff;
 	--stuic-color-destructive-foreground-active:  #ffffff;
 
-	--stuic-color-warning:                        #f97316;
+	--stuic-color-warning:                        #f59e0b;
 
 	--stuic-color-warning-hover:                  color-mix(in oklch, var(--stuic-color-warning), black 10%);
 	--stuic-color-warning-active:                 color-mix(in oklch, var(--stuic-color-warning), black 20%);
@@ -32,7 +32,7 @@
 	--stuic-color-warning-foreground-hover:       #ffffff;
 	--stuic-color-warning-foreground-active:      #ffffff;
 
-	--stuic-color-success:                        #0d9488;
+	--stuic-color-success:                        #059669;
 
 	--stuic-color-success-hover:                  color-mix(in oklch, var(--stuic-color-success), black 10%);
 	--stuic-color-success-active:                 color-mix(in oklch, var(--stuic-color-success), black 20%);
@@ -57,74 +57,74 @@
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
 	--stuic-color-surface-hover:                  color-mix(in oklch, var(--stuic-color-surface), black 10%);
 	--stuic-color-surface-active:                 color-mix(in oklch, var(--stuic-color-surface), black 20%);
-	--stuic-color-surface-foreground:             #1c1917;
-	--stuic-color-surface-foreground-hover:       #1c1917;
-	--stuic-color-surface-foreground-active:      #1c1917;
+	--stuic-color-surface-foreground:             #1d1d16;
+	--stuic-color-surface-foreground-hover:       #1d1d16;
+	--stuic-color-surface-foreground-active:      #1d1d16;
 
-	--stuic-color-background:                     #ffffff;
+	--stuic-color-background:                     #fbfbf9;
 
-	--stuic-color-background-hover:               #ffffff;
-	--stuic-color-background-active:              #ffffff;
-	--stuic-color-background-foreground:          #1c1917;
-	--stuic-color-background-foreground-hover:    #1c1917;
-	--stuic-color-background-foreground-active:   #1c1917;
+	--stuic-color-background-hover:               #fbfbf9;
+	--stuic-color-background-active:              #fbfbf9;
+	--stuic-color-background-foreground:          #1d1d16;
+	--stuic-color-background-foreground-hover:    #1d1d16;
+	--stuic-color-background-foreground-active:   #1d1d16;
 
-	--stuic-color-muted:                          #f5f5f4;
+	--stuic-color-muted:                          #f4f4f0;
 
 	--stuic-color-muted-hover:                    color-mix(in oklch, var(--stuic-color-muted), black 10%);
 	--stuic-color-muted-active:                   color-mix(in oklch, var(--stuic-color-muted), black 20%);
-	--stuic-color-muted-foreground:               #78716c;
-	--stuic-color-muted-foreground-hover:         #78716c;
-	--stuic-color-muted-foreground-active:        #78716c;
+	--stuic-color-muted-foreground:               #7c7c67;
+	--stuic-color-muted-foreground-hover:         #7c7c67;
+	--stuic-color-muted-foreground-active:        #7c7c67;
 
-	--stuic-color-surface:                        #e7e5e4;
+	--stuic-color-surface:                        #e8e8e3;
 
-	--stuic-color-surface-1:                      #d6d3d1;
+	--stuic-color-surface-1:                      #d8d8d0;
 	--stuic-color-surface-1-hover:                color-mix(in oklch, var(--stuic-color-surface-1), black 10%);
 	--stuic-color-surface-1-active:               color-mix(in oklch, var(--stuic-color-surface-1), black 20%);
-	--stuic-color-surface-1-foreground:           #1c1917;
-	--stuic-color-surface-1-foreground-hover:     #1c1917;
-	--stuic-color-surface-1-foreground-active:    #1c1917;
+	--stuic-color-surface-1-foreground:           #1d1d16;
+	--stuic-color-surface-1-foreground-hover:     #1d1d16;
+	--stuic-color-surface-1-foreground-active:    #1d1d16;
 
-	--stuic-color-foreground:                     #1c1917;
+	--stuic-color-foreground:                     #1d1d16;
 
-	--stuic-color-foreground-hover:               #1c1917;
-	--stuic-color-foreground-active:              #1c1917;
+	--stuic-color-foreground-hover:               #1d1d16;
+	--stuic-color-foreground-active:              #1d1d16;
 
-	--stuic-color-border:                         #d6d3d1;
+	--stuic-color-border:                         #d8d8d0;
 
 	--stuic-color-border-hover:                   color-mix(in oklch, var(--stuic-color-border), black 10%);
 	--stuic-color-border-active:                  color-mix(in oklch, var(--stuic-color-border), black 20%);
 
-	--stuic-color-input:                          #ffffff;
+	--stuic-color-input:                          #fbfbf9;
 
-	--stuic-color-input-hover:                    #fafaf9;
+	--stuic-color-input-hover:                    #f4f4f0;
 	--stuic-color-input-active:                   color-mix(in oklch, var(--stuic-color-input), black 20%);
 
-	--stuic-color-ring:                           color-mix(in srgb, #2563eb 20%, transparent);
+	--stuic-color-ring:                           color-mix(in srgb, #d97706 20%, transparent);
 
-	--stuic-color-ring-hover:                     color-mix(in srgb, #2563eb 20%, transparent);
-	--stuic-color-ring-active:                    color-mix(in srgb, #2563eb 20%, transparent);
+	--stuic-color-ring-hover:                     color-mix(in srgb, #d97706 20%, transparent);
+	--stuic-color-ring-active:                    color-mix(in srgb, #d97706 20%, transparent);
 }
 
 :root.dark {
-	--stuic-color-primary:                        #3b82f6;
+	--stuic-color-primary:                        #f59e0b;
 
 	--stuic-color-primary-hover:                  color-mix(in oklch, var(--stuic-color-primary), white 10%);
 	--stuic-color-primary-active:                 color-mix(in oklch, var(--stuic-color-primary), white 20%);
-	--stuic-color-primary-foreground:             #ffffff;
-	--stuic-color-primary-foreground-hover:       #ffffff;
-	--stuic-color-primary-foreground-active:      #ffffff;
+	--stuic-color-primary-foreground:             #000000;
+	--stuic-color-primary-foreground-hover:       #000000;
+	--stuic-color-primary-foreground-active:      #000000;
 
-	--stuic-color-accent:                         #fb923c;
+	--stuic-color-accent:                         #abab9c;
 
 	--stuic-color-accent-hover:                   color-mix(in oklch, var(--stuic-color-accent), white 10%);
 	--stuic-color-accent-active:                  color-mix(in oklch, var(--stuic-color-accent), white 20%);
-	--stuic-color-accent-foreground:              #ffffff;
-	--stuic-color-accent-foreground-hover:        #ffffff;
-	--stuic-color-accent-foreground-active:       #ffffff;
+	--stuic-color-accent-foreground:              #000000;
+	--stuic-color-accent-foreground-hover:        #000000;
+	--stuic-color-accent-foreground-active:       #000000;
 
-	--stuic-color-destructive:                    #f43f5e;
+	--stuic-color-destructive:                    #ef4444;
 
 	--stuic-color-destructive-hover:              color-mix(in oklch, var(--stuic-color-destructive), white 10%);
 	--stuic-color-destructive-active:             color-mix(in oklch, var(--stuic-color-destructive), white 20%);
@@ -132,15 +132,15 @@
 	--stuic-color-destructive-foreground-hover:   #ffffff;
 	--stuic-color-destructive-foreground-active:  #ffffff;
 
-	--stuic-color-warning:                        #fb923c;
+	--stuic-color-warning:                        #fbbf24;
 
 	--stuic-color-warning-hover:                  color-mix(in oklch, var(--stuic-color-warning), white 10%);
 	--stuic-color-warning-active:                 color-mix(in oklch, var(--stuic-color-warning), white 20%);
-	--stuic-color-warning-foreground:             #ffffff;
-	--stuic-color-warning-foreground-hover:       #ffffff;
-	--stuic-color-warning-foreground-active:      #ffffff;
+	--stuic-color-warning-foreground:             #000000;
+	--stuic-color-warning-foreground-hover:       #000000;
+	--stuic-color-warning-foreground-active:      #000000;
 
-	--stuic-color-success:                        #14b8a6;
+	--stuic-color-success:                        #10b981;
 
 	--stuic-color-success-hover:                  color-mix(in oklch, var(--stuic-color-success), white 10%);
 	--stuic-color-success-active:                 color-mix(in oklch, var(--stuic-color-success), white 20%);
@@ -165,52 +165,52 @@
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
 	--stuic-color-surface-hover:                  color-mix(in oklch, var(--stuic-color-surface), white 10%);
 	--stuic-color-surface-active:                 color-mix(in oklch, var(--stuic-color-surface), white 20%);
-	--stuic-color-surface-foreground:             #d6d3d1;
-	--stuic-color-surface-foreground-hover:       #d6d3d1;
-	--stuic-color-surface-foreground-active:      #d6d3d1;
+	--stuic-color-surface-foreground:             #d8d8d0;
+	--stuic-color-surface-foreground-hover:       #d8d8d0;
+	--stuic-color-surface-foreground-active:      #d8d8d0;
 
-	--stuic-color-background:                     #1c1917;
+	--stuic-color-background:                     #1d1d16;
 
-	--stuic-color-background-hover:               #1c1917;
-	--stuic-color-background-active:              #1c1917;
-	--stuic-color-background-foreground:          #fafaf9;
-	--stuic-color-background-foreground-hover:    #fafaf9;
-	--stuic-color-background-foreground-active:   #fafaf9;
+	--stuic-color-background-hover:               #1d1d16;
+	--stuic-color-background-active:              #1d1d16;
+	--stuic-color-background-foreground:          #fbfbf9;
+	--stuic-color-background-foreground-hover:    #fbfbf9;
+	--stuic-color-background-foreground-active:   #fbfbf9;
 
-	--stuic-color-muted:                          #292524;
+	--stuic-color-muted:                          #2b2b22;
 
 	--stuic-color-muted-hover:                    color-mix(in oklch, var(--stuic-color-muted), white 10%);
 	--stuic-color-muted-active:                   color-mix(in oklch, var(--stuic-color-muted), white 20%);
-	--stuic-color-muted-foreground:               #a8a29e;
-	--stuic-color-muted-foreground-hover:         #a8a29e;
-	--stuic-color-muted-foreground-active:        #a8a29e;
+	--stuic-color-muted-foreground:               #abab9c;
+	--stuic-color-muted-foreground-hover:         #abab9c;
+	--stuic-color-muted-foreground-active:        #abab9c;
 
-	--stuic-color-surface:                        #44403c;
+	--stuic-color-surface:                        #474739;
 
-	--stuic-color-surface-1:                      #57534e;
+	--stuic-color-surface-1:                      #5b5b4b;
 	--stuic-color-surface-1-hover:                color-mix(in oklch, var(--stuic-color-surface-1), white 10%);
 	--stuic-color-surface-1-active:               color-mix(in oklch, var(--stuic-color-surface-1), white 20%);
-	--stuic-color-surface-1-foreground:           #e7e5e4;
-	--stuic-color-surface-1-foreground-hover:     #e7e5e4;
-	--stuic-color-surface-1-foreground-active:    #e7e5e4;
+	--stuic-color-surface-1-foreground:           #e8e8e3;
+	--stuic-color-surface-1-foreground-hover:     #e8e8e3;
+	--stuic-color-surface-1-foreground-active:    #e8e8e3;
 
-	--stuic-color-foreground:                     #fafaf9;
+	--stuic-color-foreground:                     #fbfbf9;
 
-	--stuic-color-foreground-hover:               #fafaf9;
-	--stuic-color-foreground-active:              #fafaf9;
+	--stuic-color-foreground-hover:               #fbfbf9;
+	--stuic-color-foreground-active:              #fbfbf9;
 
-	--stuic-color-border:                         #44403c;
+	--stuic-color-border:                         #5b5b4b;
 
 	--stuic-color-border-hover:                   color-mix(in oklch, var(--stuic-color-border), white 10%);
 	--stuic-color-border-active:                  color-mix(in oklch, var(--stuic-color-border), white 20%);
 
-	--stuic-color-input:                          #1c1917;
+	--stuic-color-input:                          #1d1d16;
 
-	--stuic-color-input-hover:                    #292524;
+	--stuic-color-input-hover:                    #2b2b22;
 	--stuic-color-input-active:                   color-mix(in oklch, var(--stuic-color-input), white 20%);
 
-	--stuic-color-ring:                           color-mix(in srgb, #60a5fa 25%, transparent);
+	--stuic-color-ring:                           color-mix(in srgb, #f59e0b 25%, transparent);
 
-	--stuic-color-ring-hover:                     color-mix(in srgb, #60a5fa 25%, transparent);
-	--stuic-color-ring-active:                    color-mix(in srgb, #60a5fa 25%, transparent);
+	--stuic-color-ring-hover:                     color-mix(in srgb, #f59e0b 25%, transparent);
+	--stuic-color-ring-active:                    color-mix(in srgb, #f59e0b 25%, transparent);
 }

@@ -344,6 +344,124 @@ const light = {
     colors: {
         intent: {
             primary: {
+                DEFAULT: colors.amber[600],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.olive[700],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.olive[50],
+                    foreground: colors.olive[900]
+                },
+                muted: {
+                    DEFAULT: colors.olive[100],
+                    foreground: colors.olive[500]
+                },
+                surface: {
+                    DEFAULT: colors.olive[200],
+                    foreground: colors.olive[900]
+                },
+                "surface-1": {
+                    DEFAULT: colors.olive[300],
+                    foreground: colors.olive[900]
+                }
+            },
+            single: {
+                foreground: colors.olive[900],
+                border: {
+                    DEFAULT: colors.olive[300]
+                },
+                input: {
+                    DEFAULT: colors.olive[50],
+                    hover: colors.olive[100]
+                },
+                ring: `color-mix(in srgb, ${colors.amber[600]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.black
+            },
+            accent: {
+                DEFAULT: colors.olive[400],
+                foreground: colors.black
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.olive[900],
+                    foreground: colors.olive[50]
+                },
+                muted: {
+                    DEFAULT: colors.olive[800],
+                    foreground: colors.olive[400]
+                },
+                surface: {
+                    DEFAULT: colors.olive[700],
+                    foreground: colors.olive[300]
+                },
+                "surface-1": {
+                    DEFAULT: colors.olive[600],
+                    foreground: colors.olive[200]
+                }
+            },
+            single: {
+                foreground: colors.olive[50],
+                border: {
+                    DEFAULT: colors.olive[600]
+                },
+                input: {
+                    DEFAULT: colors.olive[900],
+                    hover: colors.olive[800]
+                },
+                ring: `color-mix(in srgb, ${colors.amber[500]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme = {
+    light,
+    dark
+};
+const light1 = {
+    colors: {
+        intent: {
+            primary: {
                 DEFAULT: colors.blue[600],
                 foreground: colors.white
             },
@@ -397,7 +515,7 @@ const light = {
         }
     }
 };
-const dark = {
+const dark1 = {
     colors: {
         intent: {
             primary: {
@@ -454,11 +572,11 @@ const dark = {
         }
     }
 };
-const theme = {
-    light,
-    dark
+const theme1 = {
+    light: light1,
+    dark: dark1
 };
-const light1 = {
+const light2 = {
     colors: {
         intent: {
             primary: {
@@ -515,7 +633,7 @@ const light1 = {
         }
     }
 };
-const dark1 = {
+const dark2 = {
     colors: {
         intent: {
             primary: {
@@ -572,11 +690,11 @@ const dark1 = {
         }
     }
 };
-const theme1 = {
-    light: light1,
-    dark: dark1
+const theme2 = {
+    light: light2,
+    dark: dark2
 };
-const light2 = {
+const light3 = {
     colors: {
         intent: {
             primary: {
@@ -633,7 +751,7 @@ const light2 = {
         }
     }
 };
-const dark2 = {
+const dark3 = {
     colors: {
         intent: {
             primary: {
@@ -690,11 +808,11 @@ const dark2 = {
         }
     }
 };
-const theme2 = {
-    light: light2,
-    dark: dark2
+const theme3 = {
+    light: light3,
+    dark: dark3
 };
-const light3 = {
+const light4 = {
     colors: {
         intent: {
             primary: {
@@ -751,7 +869,7 @@ const light3 = {
         }
     }
 };
-const dark3 = {
+const dark4 = {
     colors: {
         intent: {
             primary: {
@@ -808,11 +926,11 @@ const dark3 = {
         }
     }
 };
-const theme3 = {
-    light: light3,
-    dark: dark3
+const theme4 = {
+    light: light4,
+    dark: dark4
 };
-const light4 = {
+const light5 = {
     colors: {
         intent: {
             primary: {
@@ -869,7 +987,7 @@ const light4 = {
         }
     }
 };
-const dark4 = {
+const dark5 = {
     colors: {
         intent: {
             primary: {
@@ -926,11 +1044,11 @@ const dark4 = {
         }
     }
 };
-const theme4 = {
-    light: light4,
-    dark: dark4
+const theme5 = {
+    light: light5,
+    dark: dark5
 };
-const light5 = {
+const light6 = {
     colors: {
         intent: {
             primary: {
@@ -987,7 +1105,7 @@ const light5 = {
         }
     }
 };
-const dark5 = {
+const dark6 = {
     colors: {
         intent: {
             primary: {
@@ -1044,11 +1162,11 @@ const dark5 = {
         }
     }
 };
-const theme5 = {
-    light: light5,
-    dark: dark5
-};
 const theme6 = {
+    light: light6,
+    dark: dark6
+};
+const theme7 = {
     light: {
         colors: {
             intent: {
@@ -1164,7 +1282,7 @@ const theme6 = {
         }
     }
 };
-const light6 = {
+const light7 = {
     colors: {
         intent: {
             primary: {
@@ -1221,7 +1339,7 @@ const light6 = {
         }
     }
 };
-const dark6 = {
+const dark7 = {
     colors: {
         intent: {
             primary: {
@@ -1278,11 +1396,11 @@ const dark6 = {
         }
     }
 };
-const theme7 = {
-    light: light6,
-    dark: dark6
+const theme8 = {
+    light: light7,
+    dark: dark7
 };
-const light7 = {
+const light8 = {
     colors: {
         intent: {
             primary: {
@@ -1339,7 +1457,7 @@ const light7 = {
         }
     }
 };
-const dark7 = {
+const dark8 = {
     colors: {
         intent: {
             primary: {
@@ -1396,11 +1514,11 @@ const dark7 = {
         }
     }
 };
-const theme8 = {
-    light: light7,
-    dark: dark7
-};
 const theme9 = {
+    light: light8,
+    dark: dark8
+};
+const theme10 = {
     light: {
         colors: {
             intent: {
@@ -1516,7 +1634,7 @@ const theme9 = {
         }
     }
 };
-const light8 = {
+const light9 = {
     colors: {
         intent: {
             primary: {
@@ -1573,7 +1691,7 @@ const light8 = {
         }
     }
 };
-const dark8 = {
+const dark9 = {
     colors: {
         intent: {
             primary: {
@@ -1630,11 +1748,11 @@ const dark8 = {
         }
     }
 };
-const theme10 = {
-    light: light8,
-    dark: dark8
+const theme11 = {
+    light: light9,
+    dark: dark9
 };
-const light9 = {
+const light10 = {
     colors: {
         intent: {
             primary: {
@@ -1691,7 +1809,7 @@ const light9 = {
         }
     }
 };
-const dark9 = {
+const dark10 = {
     colors: {
         intent: {
             primary: {
@@ -1748,11 +1866,11 @@ const dark9 = {
         }
     }
 };
-const theme11 = {
-    light: light9,
-    dark: dark9
-};
 const theme12 = {
+    light: light10,
+    dark: dark10
+};
+const theme13 = {
     light: {
         colors: {
             intent: {
@@ -1868,7 +1986,7 @@ const theme12 = {
         }
     }
 };
-const light10 = {
+const light11 = {
     colors: {
         intent: {
             primary: {
@@ -1925,7 +2043,7 @@ const light10 = {
         }
     }
 };
-const dark10 = {
+const dark11 = {
     colors: {
         intent: {
             primary: {
@@ -1982,11 +2100,11 @@ const dark10 = {
         }
     }
 };
-const theme13 = {
-    light: light10,
-    dark: dark10
+const theme14 = {
+    light: light11,
+    dark: dark11
 };
-const light11 = {
+const light12 = {
     colors: {
         intent: {
             primary: {
@@ -2043,7 +2161,7 @@ const light11 = {
         }
     }
 };
-const dark11 = {
+const dark12 = {
     colors: {
         intent: {
             primary: {
@@ -2100,11 +2218,11 @@ const dark11 = {
         }
     }
 };
-const theme14 = {
-    light: light11,
-    dark: dark11
+const theme15 = {
+    light: light12,
+    dark: dark12
 };
-const light12 = {
+const light13 = {
     colors: {
         intent: {
             primary: {
@@ -2161,7 +2279,7 @@ const light12 = {
         }
     }
 };
-const dark12 = {
+const dark13 = {
     colors: {
         intent: {
             primary: {
@@ -2218,11 +2336,11 @@ const dark12 = {
         }
     }
 };
-const theme15 = {
-    light: light12,
-    dark: dark12
+const theme16 = {
+    light: light13,
+    dark: dark13
 };
-const light13 = {
+const light14 = {
     colors: {
         intent: {
             primary: {
@@ -2279,7 +2397,7 @@ const light13 = {
         }
     }
 };
-const dark13 = {
+const dark14 = {
     colors: {
         intent: {
             primary: {
@@ -2336,11 +2454,11 @@ const dark13 = {
         }
     }
 };
-const theme16 = {
-    light: light13,
-    dark: dark13
+const theme17 = {
+    light: light14,
+    dark: dark14
 };
-const light14 = {
+const light15 = {
     colors: {
         intent: {
             primary: {
@@ -2397,7 +2515,7 @@ const light14 = {
         }
     }
 };
-const dark14 = {
+const dark15 = {
     colors: {
         intent: {
             primary: {
@@ -2454,11 +2572,11 @@ const dark14 = {
         }
     }
 };
-const theme17 = {
-    light: light14,
-    dark: dark14
-};
 const theme18 = {
+    light: light15,
+    dark: dark15
+};
+const theme19 = {
     light: {
         colors: {
             intent: {
@@ -2574,7 +2692,7 @@ const theme18 = {
         }
     }
 };
-const light15 = {
+const light16 = {
     colors: {
         intent: {
             primary: {
@@ -2631,7 +2749,7 @@ const light15 = {
         }
     }
 };
-const dark15 = {
+const dark16 = {
     colors: {
         intent: {
             primary: {
@@ -2688,11 +2806,11 @@ const dark15 = {
         }
     }
 };
-const theme19 = {
-    light: light15,
-    dark: dark15
+const theme20 = {
+    light: light16,
+    dark: dark16
 };
-const light16 = {
+const light17 = {
     colors: {
         intent: {
             primary: {
@@ -2749,7 +2867,7 @@ const light16 = {
         }
     }
 };
-const dark16 = {
+const dark17 = {
     colors: {
         intent: {
             primary: {
@@ -2806,11 +2924,11 @@ const dark16 = {
         }
     }
 };
-const theme20 = {
-    light: light16,
-    dark: dark16
+const theme21 = {
+    light: light17,
+    dark: dark17
 };
-const light17 = {
+const light18 = {
     colors: {
         intent: {
             primary: {
@@ -2867,7 +2985,7 @@ const light17 = {
         }
     }
 };
-const dark17 = {
+const dark18 = {
     colors: {
         intent: {
             primary: {
@@ -2924,11 +3042,11 @@ const dark17 = {
         }
     }
 };
-const theme21 = {
-    light: light17,
-    dark: dark17
+const theme22 = {
+    light: light18,
+    dark: dark18
 };
-const light18 = {
+const light19 = {
     colors: {
         intent: {
             primary: {
@@ -2985,7 +3103,7 @@ const light18 = {
         }
     }
 };
-const dark18 = {
+const dark19 = {
     colors: {
         intent: {
             primary: {
@@ -3042,11 +3160,11 @@ const dark18 = {
         }
     }
 };
-const theme22 = {
-    light: light18,
-    dark: dark18
+const theme23 = {
+    light: light19,
+    dark: dark19
 };
-const light19 = {
+const light20 = {
     colors: {
         intent: {
             primary: {
@@ -3103,7 +3221,7 @@ const light19 = {
         }
     }
 };
-const dark19 = {
+const dark20 = {
     colors: {
         intent: {
             primary: {
@@ -3160,11 +3278,11 @@ const dark19 = {
         }
     }
 };
-const theme23 = {
-    light: light19,
-    dark: dark19
+const theme24 = {
+    light: light20,
+    dark: dark20
 };
-const light20 = {
+const light21 = {
     colors: {
         intent: {
             primary: {
@@ -3221,7 +3339,7 @@ const light20 = {
         }
     }
 };
-const dark20 = {
+const dark21 = {
     colors: {
         intent: {
             primary: {
@@ -3278,11 +3396,11 @@ const dark20 = {
         }
     }
 };
-const theme24 = {
-    light: light20,
-    dark: dark20
+const theme25 = {
+    light: light21,
+    dark: dark21
 };
-const light21 = {
+const light22 = {
     colors: {
         intent: {
             primary: {
@@ -3339,7 +3457,7 @@ const light21 = {
         }
     }
 };
-const dark21 = {
+const dark22 = {
     colors: {
         intent: {
             primary: {
@@ -3396,11 +3514,11 @@ const dark21 = {
         }
     }
 };
-const theme25 = {
-    light: light21,
-    dark: dark21
+const theme26 = {
+    light: light22,
+    dark: dark22
 };
-const light22 = {
+const light23 = {
     colors: {
         intent: {
             primary: {
@@ -3457,7 +3575,7 @@ const light22 = {
         }
     }
 };
-const dark22 = {
+const dark23 = {
     colors: {
         intent: {
             primary: {
@@ -3478,124 +3596,6 @@ const dark22 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
-            }
-        },
-        role: {
-            paired: {
-                background: {
-                    DEFAULT: colors.stone[900],
-                    foreground: colors.stone[50]
-                },
-                muted: {
-                    DEFAULT: colors.stone[800],
-                    foreground: colors.stone[400]
-                },
-                surface: {
-                    DEFAULT: colors.stone[700],
-                    foreground: colors.stone[300]
-                },
-                "surface-1": {
-                    DEFAULT: colors.stone[600],
-                    foreground: colors.stone[200]
-                }
-            },
-            single: {
-                foreground: colors.stone[50],
-                border: {
-                    DEFAULT: colors.stone[700]
-                },
-                input: {
-                    DEFAULT: colors.stone[900],
-                    hover: colors.stone[800]
-                },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
-            }
-        }
-    }
-};
-const theme26 = {
-    light: light22,
-    dark: dark22
-};
-const light23 = {
-    colors: {
-        intent: {
-            primary: {
-                DEFAULT: colors.red[600],
-                foreground: colors.white
-            },
-            accent: {
-                DEFAULT: colors.sky[400],
-                foreground: colors.white
-            },
-            destructive: {
-                DEFAULT: colors.red[600],
-                foreground: colors.white
-            },
-            warning: {
-                DEFAULT: colors.amber[500],
-                foreground: colors.white
-            },
-            success: {
-                DEFAULT: colors.emerald[600],
-                foreground: colors.white
-            }
-        },
-        role: {
-            paired: {
-                background: {
-                    DEFAULT: colors.white,
-                    foreground: colors.stone[900]
-                },
-                muted: {
-                    DEFAULT: colors.stone[100],
-                    foreground: colors.stone[500]
-                },
-                surface: {
-                    DEFAULT: colors.stone[200],
-                    foreground: colors.stone[900]
-                },
-                "surface-1": {
-                    DEFAULT: colors.stone[300],
-                    foreground: colors.stone[900]
-                }
-            },
-            single: {
-                foreground: colors.stone[900],
-                border: {
-                    DEFAULT: colors.stone[300]
-                },
-                input: {
-                    DEFAULT: colors.white,
-                    hover: colors.stone[50]
-                },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
-            }
-        }
-    }
-};
-const dark23 = {
-    colors: {
-        intent: {
-            primary: {
-                DEFAULT: colors.red[500],
-                foreground: colors.white
-            },
-            accent: {
-                DEFAULT: colors.sky[400],
-                foreground: colors.white
-            },
-            destructive: {
-                DEFAULT: colors.red[500],
-                foreground: colors.white
-            },
-            warning: {
-                DEFAULT: colors.amber[400],
-                foreground: colors.white
-            },
-            success: {
-                DEFAULT: colors.emerald[500],
                 foreground: colors.white
             }
         },
@@ -3664,6 +3664,124 @@ const light24 = {
             paired: {
                 background: {
                     DEFAULT: colors.white,
+                    foreground: colors.stone[900]
+                },
+                muted: {
+                    DEFAULT: colors.stone[100],
+                    foreground: colors.stone[500]
+                },
+                surface: {
+                    DEFAULT: colors.stone[200],
+                    foreground: colors.stone[900]
+                },
+                "surface-1": {
+                    DEFAULT: colors.stone[300],
+                    foreground: colors.stone[900]
+                }
+            },
+            single: {
+                foreground: colors.stone[900],
+                border: {
+                    DEFAULT: colors.stone[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.stone[50]
+                },
+                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark24 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.sky[400],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.stone[900],
+                    foreground: colors.stone[50]
+                },
+                muted: {
+                    DEFAULT: colors.stone[800],
+                    foreground: colors.stone[400]
+                },
+                surface: {
+                    DEFAULT: colors.stone[700],
+                    foreground: colors.stone[300]
+                },
+                "surface-1": {
+                    DEFAULT: colors.stone[600],
+                    foreground: colors.stone[200]
+                }
+            },
+            single: {
+                foreground: colors.stone[50],
+                border: {
+                    DEFAULT: colors.stone[700]
+                },
+                input: {
+                    DEFAULT: colors.stone[900],
+                    hover: colors.stone[800]
+                },
+                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme28 = {
+    light: light24,
+    dark: dark24
+};
+const light25 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.sky[400],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.white,
                     foreground: colors.slate[900]
                 },
                 muted: {
@@ -3693,7 +3811,7 @@ const light24 = {
         }
     }
 };
-const dark24 = {
+const dark25 = {
     colors: {
         intent: {
             primary: {
@@ -3750,11 +3868,11 @@ const dark24 = {
         }
     }
 };
-const theme28 = {
-    light: light24,
-    dark: dark24
+const theme29 = {
+    light: light25,
+    dark: dark25
 };
-const light25 = {
+const light26 = {
     colors: {
         intent: {
             primary: {
@@ -3811,7 +3929,7 @@ const light25 = {
         }
     }
 };
-const dark25 = {
+const dark26 = {
     colors: {
         intent: {
             primary: {
@@ -3868,11 +3986,11 @@ const dark25 = {
         }
     }
 };
-const theme29 = {
-    light: light25,
-    dark: dark25
+const theme30 = {
+    light: light26,
+    dark: dark26
 };
-const light26 = {
+const light27 = {
     colors: {
         intent: {
             primary: {
@@ -3929,7 +4047,7 @@ const light26 = {
         }
     }
 };
-const dark26 = {
+const dark27 = {
     colors: {
         intent: {
             primary: {
@@ -3986,11 +4104,11 @@ const dark26 = {
         }
     }
 };
-const theme30 = {
-    light: light26,
-    dark: dark26
+const theme31 = {
+    light: light27,
+    dark: dark27
 };
-const light27 = {
+const light28 = {
     colors: {
         intent: {
             primary: {
@@ -4047,7 +4165,7 @@ const light27 = {
         }
     }
 };
-const dark27 = {
+const dark28 = {
     colors: {
         intent: {
             primary: {
@@ -4104,11 +4222,11 @@ const dark27 = {
         }
     }
 };
-const theme31 = {
-    light: light27,
-    dark: dark27
+const theme32 = {
+    light: light28,
+    dark: dark28
 };
-const light28 = {
+const light29 = {
     colors: {
         intent: {
             primary: {
@@ -4165,7 +4283,7 @@ const light28 = {
         }
     }
 };
-const dark28 = {
+const dark29 = {
     colors: {
         intent: {
             primary: {
@@ -4222,11 +4340,11 @@ const dark28 = {
         }
     }
 };
-const theme32 = {
-    light: light28,
-    dark: dark28
-};
 const theme33 = {
+    light: light29,
+    dark: dark29
+};
+const theme34 = {
     light: {
         colors: {
             intent: {
@@ -4342,7 +4460,7 @@ const theme33 = {
         }
     }
 };
-const theme34 = {
+const theme35 = {
     light: {
         colors: {
             intent: {
@@ -4458,7 +4576,7 @@ const theme34 = {
         }
     }
 };
-const light29 = {
+const light30 = {
     colors: {
         intent: {
             primary: {
@@ -4515,7 +4633,7 @@ const light29 = {
         }
     }
 };
-const dark29 = {
+const dark30 = {
     colors: {
         intent: {
             primary: {
@@ -4572,11 +4690,11 @@ const dark29 = {
         }
     }
 };
-const theme35 = {
-    light: light29,
-    dark: dark29
+const theme36 = {
+    light: light30,
+    dark: dark30
 };
-const light30 = {
+const light31 = {
     colors: {
         intent: {
             primary: {
@@ -4633,7 +4751,7 @@ const light30 = {
         }
     }
 };
-const dark30 = {
+const dark31 = {
     colors: {
         intent: {
             primary: {
@@ -4690,11 +4808,11 @@ const dark30 = {
         }
     }
 };
-const theme36 = {
-    light: light30,
-    dark: dark30
+const theme37 = {
+    light: light31,
+    dark: dark31
 };
-const light31 = {
+const light32 = {
     colors: {
         intent: {
             primary: {
@@ -4751,7 +4869,7 @@ const light31 = {
         }
     }
 };
-const dark31 = {
+const dark32 = {
     colors: {
         intent: {
             primary: {
@@ -4808,11 +4926,11 @@ const dark31 = {
         }
     }
 };
-const theme37 = {
-    light: light31,
-    dark: dark31
+const theme38 = {
+    light: light32,
+    dark: dark32
 };
-const light32 = {
+const light33 = {
     colors: {
         intent: {
             primary: {
@@ -4869,7 +4987,7 @@ const light32 = {
         }
     }
 };
-const dark32 = {
+const dark33 = {
     colors: {
         intent: {
             primary: {
@@ -4926,11 +5044,11 @@ const dark32 = {
         }
     }
 };
-const theme38 = {
-    light: light32,
-    dark: dark32
+const theme39 = {
+    light: light33,
+    dark: dark33
 };
-const light33 = {
+const light34 = {
     colors: {
         intent: {
             primary: {
@@ -4987,7 +5105,7 @@ const light33 = {
         }
     }
 };
-const dark33 = {
+const dark34 = {
     colors: {
         intent: {
             primary: {
@@ -5044,11 +5162,11 @@ const dark33 = {
         }
     }
 };
-const theme39 = {
-    light: light33,
-    dark: dark33
+const theme40 = {
+    light: light34,
+    dark: dark34
 };
-const light34 = {
+const light35 = {
     colors: {
         intent: {
             primary: {
@@ -5105,7 +5223,7 @@ const light34 = {
         }
     }
 };
-const dark34 = {
+const dark35 = {
     colors: {
         intent: {
             primary: {
@@ -5162,11 +5280,11 @@ const dark34 = {
         }
     }
 };
-const theme40 = {
-    light: light34,
-    dark: dark34
-};
 const theme41 = {
+    light: light35,
+    dark: dark35
+};
+const theme42 = {
     light: {
         colors: {
             intent: {
@@ -5283,48 +5401,49 @@ const theme41 = {
     }
 };
 const mod = {
-    blueOrange: theme,
-    cyanRed: theme1,
-    cyanSlate: theme2,
-    emeraldAmberForest: theme3,
-    emeraldPink: theme4,
-    fuchsiaEmerald: theme5,
-    gray: theme6,
-    indigoAmber: theme7,
-    limeFuchsiaNeon: theme8,
-    mauve: theme9,
-    mauveLimeElectric: theme10,
-    mauveTeal: theme11,
-    mist: theme12,
-    mistIndigoFjord: theme13,
-    mistVioletAurora: theme14,
-    monokaiCyan: theme15,
-    monokaiGreen: theme16,
-    monokaiPink: theme17,
-    olive: theme18,
-    oliveAmberSafari: theme19,
-    orangePinkSunset: theme20,
-    pinkEmerald: theme21,
-    pinkTeal: theme22,
-    purpleYellow: theme23,
-    rainbow: theme24,
-    redBlue: theme25,
-    redCyan: theme26,
-    redSky: theme27,
-    redSkySlate: theme28,
-    roseTeal: theme29,
-    skyAmber: theme30,
-    slateCyan: theme31,
-    slateTealOcean: theme32,
-    stone: theme33,
-    taupe: theme34,
-    taupeOliveClay: theme35,
-    taupeRoseBlush: theme36,
-    stoneOrangeEarth: theme37,
-    tealRose: theme38,
-    violetLime: theme39,
-    violetRoseDusk: theme40,
-    zinc: theme41
+    amberOliveSafari: theme,
+    blueOrange: theme1,
+    cyanRed: theme2,
+    cyanSlate: theme3,
+    emeraldAmberForest: theme4,
+    emeraldPink: theme5,
+    fuchsiaEmerald: theme6,
+    gray: theme7,
+    indigoAmber: theme8,
+    limeFuchsiaNeon: theme9,
+    mauve: theme10,
+    mauveLimeElectric: theme11,
+    mauveTeal: theme12,
+    mist: theme13,
+    mistIndigoFjord: theme14,
+    mistVioletAurora: theme15,
+    monokaiCyan: theme16,
+    monokaiGreen: theme17,
+    monokaiPink: theme18,
+    olive: theme19,
+    oliveAmberSafari: theme20,
+    orangePinkSunset: theme21,
+    pinkEmerald: theme22,
+    pinkTeal: theme23,
+    purpleYellow: theme24,
+    rainbow: theme25,
+    redBlue: theme26,
+    redCyan: theme27,
+    redSky: theme28,
+    redSkySlate: theme29,
+    roseTeal: theme30,
+    skyAmber: theme31,
+    slateCyan: theme32,
+    slateTealOcean: theme33,
+    stone: theme34,
+    taupe: theme35,
+    taupeOliveClay: theme36,
+    taupeRoseBlush: theme37,
+    stoneOrangeEarth: theme38,
+    tealRose: theme39,
+    violetLime: theme40,
+    violetRoseDusk: theme41,
+    zinc: theme42
 };
 function isSingleColorObject(value) {
     return typeof value === "object" && "DEFAULT" in value;

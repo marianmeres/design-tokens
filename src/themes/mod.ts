@@ -11,6 +11,8 @@
 /** A complete theme definition with required light mode and optional dark mode. */
 export type { ThemeSchema } from "../types.ts";
 
+/** Amber primary / olive accent safari theme — golden warmth with earthy highlights. */
+export { default as amberOliveSafari } from "./amber-olive-safari.ts";
 /** Blue primary / orange accent theme. */
 export { default as blueOrange } from "./blue-orange.ts";
 /** Cyan primary / red accent theme. */
