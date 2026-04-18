@@ -1,994 +1,1245 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Theme Preview Builder</title>
-<style id="style-light"></style>
-<style id="style-dark"></style>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Theme Preview Builder</title>
+		<style id="style-light"></style>
+		<style id="style-dark"></style>
+		<style>
+			*, *::before, *::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
 
-body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-	background: #f5f5f5;
-	color: #1a1a1a;
-	padding: 1.5rem;
-	line-height: 1.5;
-}
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+				background: #f5f5f5;
+				color: #1a1a1a;
+				padding: 1.5rem;
+				line-height: 1.5;
+			}
 
-h1 { font-size: 1.25rem; font-weight: 600; }
-h2 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
-h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; color: #666; }
+			h1 {
+				font-size: 1.25rem;
+				font-weight: 600;
+			}
+			h2 {
+				font-size: 1rem;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+			}
+			h3 {
+				font-size: 0.85rem;
+				font-weight: 600;
+				margin-bottom: 0.25rem;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: #666;
+			}
 
-header {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	margin-bottom: 1.5rem;
-	flex-wrap: wrap;
-}
+			header {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				margin-bottom: 1.5rem;
+				flex-wrap: wrap;
+			}
 
-header select {
-	font-size: 0.9rem;
-	padding: 0.35rem 0.5rem;
-}
+			header select {
+				font-size: 0.9rem;
+				padding: 0.35rem 0.5rem;
+			}
 
-button.export-btn, button.nav-btn {
-	padding: 0.4rem 1rem;
-	font-size: 0.85rem;
-	font-weight: 600;
-	background: #2563eb;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-}
-button.export-btn:hover, button.nav-btn:hover { background: #1d4ed8; }
-button.nav-btn { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+			button.export-btn, button.nav-btn {
+				padding: 0.4rem 1rem;
+				font-size: 0.85rem;
+				font-weight: 600;
+				background: #2563eb;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+			button.export-btn:hover, button.nav-btn:hover {
+				background: #1d4ed8;
+			}
+			button.nav-btn {
+				padding: 0.4rem 0.6rem;
+				font-size: 0.8rem;
+			}
 
-/* Preview panels */
-#preview {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1.5rem;
-	margin-bottom: 2rem;
-}
+			/* Preview panels */
+			#preview {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1.5rem;
+				margin-bottom: 2rem;
+			}
 
-.preview-panel {
-	border-radius: 8px;
-	overflow: hidden;
-	border: 1px solid #ddd;
-}
+			.preview-panel {
+				border-radius: 8px;
+				overflow: hidden;
+				border: 1px solid #ddd;
+			}
 
-.preview-panel-inner {
-	padding: 1rem;
-}
+			.preview-panel-inner {
+				padding: 1rem;
+			}
 
-.preview-panel h2 {
-	padding: 0.5rem 1rem;
-	font-size: 0.8rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-}
+			.preview-panel h2 {
+				padding: 0.5rem 1rem;
+				font-size: 0.8rem;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+			}
 
-.preview-light .preview-panel-inner { background: var(--dt-color-background); color: var(--dt-color-background-foreground); }
-.preview-dark .preview-panel-inner { background: var(--dt-color-background); color: var(--dt-color-background-foreground); }
+			.preview-light .preview-panel-inner {
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+			}
+			.preview-dark .preview-panel-inner {
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+			}
 
-.preview-light h2 { background: #e5e7eb; color: #374151; }
-.preview-dark h2 { background: #374151; color: #e5e7eb; }
+			.preview-light h2 {
+				background: #e5e7eb;
+				color: #374151;
+			}
+			.preview-dark h2 {
+				background: #374151;
+				color: #e5e7eb;
+			}
 
-/* Nested surface boxes */
-.nested-surfaces .surface-box {
-	padding: 0.75rem;
-	border-radius: 6px;
-	margin-top: 0.5rem;
-}
-.surface-box .surface-label {
-	font-size: 0.75rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	opacity: 0.9;
-	margin-bottom: 0.25rem;
-}
+			/* Nested surface boxes */
+			.nested-surfaces .surface-box {
+				padding: 0.75rem;
+				border-radius: 6px;
+				margin-top: 0.5rem;
+			}
+			.surface-box .surface-label {
+				font-size: 0.75rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				opacity: 0.9;
+				margin-bottom: 0.25rem;
+			}
 
-.bg-background { background: var(--dt-color-background); color: var(--dt-color-background-foreground); }
-.bg-muted { background: var(--dt-color-muted); color: var(--dt-color-muted-foreground); }
-.bg-surface { background: var(--dt-color-surface); color: var(--dt-color-surface-foreground); }
-.bg-surface-1 { background: var(--dt-color-surface-1); color: var(--dt-color-surface-1-foreground); }
+			.bg-background {
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+			}
+			.bg-muted {
+				background: var(--dt-color-muted);
+				color: var(--dt-color-muted-foreground);
+			}
+			.bg-surface {
+				background: var(--dt-color-surface);
+				color: var(--dt-color-surface-foreground);
+			}
+			.bg-surface-1 {
+				background: var(--dt-color-surface-1);
+				color: var(--dt-color-surface-1-foreground);
+			}
 
-/* Hero intent swatches (primary + accent) */
-.intent-hero {
-	display: flex;
-	gap: 0.75rem;
-	margin-top: 1rem;
-}
-.intent-hero-swatch {
-	flex: 1;
-	padding: 1.5rem 1rem;
-	border-radius: 8px;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	font-weight: 600;
-	font-size: 0.9rem;
-	text-align: center;
-}
+			/* Hero intent swatches (primary + accent) */
+			.intent-hero {
+				display: flex;
+				gap: 0.75rem;
+				margin-top: 1rem;
+			}
+			.intent-hero-swatch {
+				flex: 1;
+				padding: 1.5rem 1rem;
+				border-radius: 8px;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				font-weight: 600;
+				font-size: 0.9rem;
+				text-align: center;
+			}
 
-/* Secondary intent swatches */
-.intent-swatches {
-	display: flex;
-	gap: 0.5rem;
-	margin-top: 0.75rem;
-	flex-wrap: wrap;
-}
-.intent-swatch {
-	padding: 0.5rem 0.75rem;
-	border-radius: 6px;
-	font-size: 0.75rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	font-weight: 500;
-	flex: 1;
-	text-align: center;
-}
+			/* Secondary intent swatches */
+			.intent-swatches {
+				display: flex;
+				gap: 0.5rem;
+				margin-top: 0.75rem;
+				flex-wrap: wrap;
+			}
+			.intent-swatch {
+				padding: 0.5rem 0.75rem;
+				border-radius: 6px;
+				font-size: 0.75rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				font-weight: 500;
+				flex: 1;
+				text-align: center;
+			}
 
-.swatch-primary { background: var(--dt-color-primary); color: var(--dt-color-primary-foreground); }
-.swatch-accent { background: var(--dt-color-accent); color: var(--dt-color-accent-foreground); }
-.swatch-destructive { background: var(--dt-color-destructive); color: var(--dt-color-destructive-foreground); }
-.swatch-warning { background: var(--dt-color-warning); color: var(--dt-color-warning-foreground); }
-.swatch-success { background: var(--dt-color-success); color: var(--dt-color-success-foreground); }
+			.swatch-primary {
+				background: var(--dt-color-primary);
+				color: var(--dt-color-primary-foreground);
+			}
+			.swatch-accent {
+				background: var(--dt-color-accent);
+				color: var(--dt-color-accent-foreground);
+			}
+			.swatch-destructive {
+				background: var(--dt-color-destructive);
+				color: var(--dt-color-destructive-foreground);
+			}
+			.swatch-warning {
+				background: var(--dt-color-warning);
+				color: var(--dt-color-warning-foreground);
+			}
+			.swatch-success {
+				background: var(--dt-color-success);
+				color: var(--dt-color-success-foreground);
+			}
 
-/* Single role indicators */
-.role-singles {
-	display: flex;
-	gap: 0.5rem;
-	margin-top: 0.75rem;
-	flex-wrap: wrap;
-}
-.role-single-swatch {
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	font-size: 0.7rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-}
-.role-single-chip {
-	width: 1.25rem;
-	height: 1.25rem;
-	border-radius: 3px;
-	border: 1px solid rgba(128,128,128,0.3);
-}
-.chip-foreground { background: var(--dt-color-foreground); }
-.chip-border { background: var(--dt-color-border); }
-.chip-input { background: var(--dt-color-input); border: 1px solid var(--dt-color-border); }
-.chip-ring { background: var(--dt-color-ring); }
+			/* Single role indicators */
+			.role-singles {
+				display: flex;
+				gap: 0.5rem;
+				margin-top: 0.75rem;
+				flex-wrap: wrap;
+			}
+			.role-single-swatch {
+				display: flex;
+				align-items: center;
+				gap: 0.35rem;
+				font-size: 0.7rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+			}
+			.role-single-chip {
+				width: 1.25rem;
+				height: 1.25rem;
+				border-radius: 3px;
+				border: 1px solid rgba(128, 128, 128, 0.3);
+			}
+			.chip-foreground {
+				background: var(--dt-color-foreground);
+			}
+			.chip-border {
+				background: var(--dt-color-border);
+			}
+			.chip-input {
+				background: var(--dt-color-input);
+				border: 1px solid var(--dt-color-border);
+			}
+			.chip-ring {
+				background: var(--dt-color-ring);
+			}
 
-/* Link demo */
-.link-demo {
-	margin-top: 0.75rem;
-	font-size: 0.8rem;
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-}
-.link-demo a {
-	color: var(--dt-color-primary);
-	text-decoration: underline;
-	text-underline-offset: 2px;
-	cursor: pointer;
-	font-weight: 500;
-	transition: color 0.15s;
-}
-.link-demo a:hover {
-	color: var(--dt-color-primary-hover);
-}
-.link-demo a:active {
-	color: var(--dt-color-primary-active);
-}
-.link-demo .state-chip {
-	display: inline-block;
-	padding: 0.2rem 0.5rem;
-	border-radius: 4px;
-	font-size: 0.65rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-}
-.link-demo .state-default { background: var(--dt-color-primary); color: var(--dt-color-primary-foreground); }
-.link-demo .state-hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground); }
-.link-demo .state-active { background: var(--dt-color-primary-active); color: var(--dt-color-primary-foreground); }
+			/* Link demo */
+			.link-demo {
+				margin-top: 0.75rem;
+				font-size: 0.8rem;
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
+			.link-demo a {
+				color: var(--dt-color-primary);
+				text-decoration: underline;
+				text-underline-offset: 2px;
+				cursor: pointer;
+				font-weight: 500;
+				transition: color 0.15s;
+			}
+			.link-demo a:hover {
+				color: var(--dt-color-primary-hover);
+			}
+			.link-demo a:active {
+				color: var(--dt-color-primary-active);
+			}
+			.link-demo .state-chip {
+				display: inline-block;
+				padding: 0.2rem 0.5rem;
+				border-radius: 4px;
+				font-size: 0.65rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+			}
+			.link-demo .state-default {
+				background: var(--dt-color-primary);
+				color: var(--dt-color-primary-foreground);
+			}
+			.link-demo .state-hover {
+				background: var(--dt-color-primary-hover);
+				color: var(--dt-color-primary-foreground);
+			}
+			.link-demo .state-active {
+				background: var(--dt-color-primary-active);
+				color: var(--dt-color-primary-foreground);
+			}
 
-/* Bordered element demo */
-.bordered-demo {
-	margin-top: 0.75rem;
-	padding: 0.6rem 0.75rem;
-	border: 2px solid var(--dt-color-border);
-	border-radius: 6px;
-	background: var(--dt-color-input);
-	color: var(--dt-color-foreground);
-	font-size: 0.75rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-}
-.bordered-demo .ring-demo {
-	display: inline-block;
-	padding: 0.25rem 0.5rem;
-	border-radius: 4px;
-	outline: 3px solid var(--dt-color-ring);
-	outline-offset: 1px;
-	background: var(--dt-color-input);
-}
+			/* Bordered element demo */
+			.bordered-demo {
+				margin-top: 0.75rem;
+				padding: 0.6rem 0.75rem;
+				border: 2px solid var(--dt-color-border);
+				border-radius: 6px;
+				background: var(--dt-color-input);
+				color: var(--dt-color-foreground);
+				font-size: 0.75rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+			.bordered-demo .ring-demo {
+				display: inline-block;
+				padding: 0.25rem 0.5rem;
+				border-radius: 4px;
+				outline: 3px solid var(--dt-color-ring);
+				outline-offset: 1px;
+				background: var(--dt-color-input);
+			}
 
-/* Controls */
-.controls-toggle {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 0.75rem;
-	cursor: pointer;
-	user-select: none;
-	font-size: 0.9rem;
-	font-weight: 600;
-	color: #555;
-	background: none;
-	border: none;
-	padding: 0.5rem 0;
-}
-.controls-toggle:hover { color: #222; }
-.controls-toggle .arrow {
-	display: inline-block;
-	transition: transform 0.2s;
-	font-size: 0.7rem;
-}
-.controls-toggle .arrow.open { transform: rotate(90deg); }
+			/* Controls */
+			.controls-toggle {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				margin-bottom: 0.75rem;
+				cursor: pointer;
+				user-select: none;
+				font-size: 0.9rem;
+				font-weight: 600;
+				color: #555;
+				background: none;
+				border: none;
+				padding: 0.5rem 0;
+			}
+			.controls-toggle:hover {
+				color: #222;
+			}
+			.controls-toggle .arrow {
+				display: inline-block;
+				transition: transform 0.2s;
+				font-size: 0.7rem;
+			}
+			.controls-toggle .arrow.open {
+				transform: rotate(90deg);
+			}
 
-#controls {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1.5rem;
-}
-#controls.collapsed { display: none; }
+			#controls {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1.5rem;
+			}
+			#controls.collapsed {
+				display: none;
+			}
 
-.controls-panel {
-	background: white;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	padding: 1rem;
-}
+			.controls-panel {
+				background: white;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				padding: 1rem;
+			}
 
-fieldset {
-	border: 1px solid #e5e7eb;
-	border-radius: 6px;
-	padding: 0.75rem;
-	margin-bottom: 0.75rem;
-}
-fieldset legend {
-	font-size: 0.8rem;
-	font-weight: 600;
-	padding: 0 0.35rem;
-	color: #555;
-}
+			fieldset {
+				border: 1px solid #e5e7eb;
+				border-radius: 6px;
+				padding: 0.75rem;
+				margin-bottom: 0.75rem;
+			}
+			fieldset legend {
+				font-size: 0.8rem;
+				font-weight: 600;
+				padding: 0 0.35rem;
+				color: #555;
+			}
 
-.color-row {
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	margin-bottom: 0.3rem;
-	font-size: 0.75rem;
-}
-.color-row label {
-	width: 7rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	font-size: 0.7rem;
-	flex-shrink: 0;
-	text-align: right;
-	padding-right: 0.35rem;
-	color: #555;
-}
-.color-row select {
-	font-size: 0.7rem;
-	padding: 0.15rem 0.25rem;
-	border: 1px solid #d1d5db;
-	border-radius: 3px;
-	background: white;
-}
-.color-row .shade-select { width: 4rem; }
-.color-row .family-select { width: 6rem; }
-.color-chip {
-	width: 1.25rem;
-	height: 1.25rem;
-	border-radius: 3px;
-	border: 1px solid rgba(0,0,0,0.15);
-	flex-shrink: 0;
-}
+			.color-row {
+				display: flex;
+				align-items: center;
+				gap: 0.35rem;
+				margin-bottom: 0.3rem;
+				font-size: 0.75rem;
+			}
+			.color-row label {
+				width: 7rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				font-size: 0.7rem;
+				flex-shrink: 0;
+				text-align: right;
+				padding-right: 0.35rem;
+				color: #555;
+			}
+			.color-row select {
+				font-size: 0.7rem;
+				padding: 0.15rem 0.25rem;
+				border: 1px solid #d1d5db;
+				border-radius: 3px;
+				background: white;
+			}
+			.color-row .shade-select {
+				width: 4rem;
+			}
+			.color-row .family-select {
+				width: 6rem;
+			}
+			.color-chip {
+				width: 1.25rem;
+				height: 1.25rem;
+				border-radius: 3px;
+				border: 1px solid rgba(0, 0, 0, 0.15);
+				flex-shrink: 0;
+			}
 
-.ring-row {
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	margin-bottom: 0.3rem;
-}
-.ring-row label {
-	width: 7rem;
-	font-family: ui-monospace, "SF Mono", Monaco, monospace;
-	font-size: 0.7rem;
-	flex-shrink: 0;
-	text-align: right;
-	padding-right: 0.35rem;
-	color: #555;
-}
-.ring-row input[type="range"] { width: 4rem; }
-.ring-row .percent-label { font-size: 0.7rem; color: #888; width: 2rem; }
+			.ring-row {
+				display: flex;
+				align-items: center;
+				gap: 0.35rem;
+				margin-bottom: 0.3rem;
+			}
+			.ring-row label {
+				width: 7rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				font-size: 0.7rem;
+				flex-shrink: 0;
+				text-align: right;
+				padding-right: 0.35rem;
+				color: #555;
+			}
+			.ring-row input[type="range"] {
+				width: 4rem;
+			}
+			.ring-row .percent-label {
+				font-size: 0.7rem;
+				color: #888;
+				width: 2rem;
+			}
 
-/* Toast */
-.toast {
-	position: fixed;
-	bottom: 1.5rem;
-	right: 1.5rem;
-	background: #16a34a;
-	color: white;
-	padding: 0.6rem 1.2rem;
-	border-radius: 6px;
-	font-size: 0.85rem;
-	font-weight: 500;
-	opacity: 0;
-	transition: opacity 0.3s;
-	pointer-events: none;
-}
-.toast.show { opacity: 1; }
+			/* Toast */
+			.toast {
+				position: fixed;
+				bottom: 1.5rem;
+				right: 1.5rem;
+				background: #16a34a;
+				color: white;
+				padding: 0.6rem 1.2rem;
+				border-radius: 6px;
+				font-size: 0.85rem;
+				font-weight: 500;
+				opacity: 0;
+				transition: opacity 0.3s;
+				pointer-events: none;
+			}
+			.toast.show {
+				opacity: 1;
+			}
 
-@media (max-width: 900px) {
-	#preview, #controls { grid-template-columns: 1fr; }
-}
-</style>
-</head>
-<body>
+			@media (max-width: 900px) {
+				#preview, #controls {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Theme Preview Builder</h1>
+			<button class="nav-btn" id="prev-btn" title="Previous theme">&larr;</button>
+			<select id="theme-select"></select>
+			<button class="nav-btn" id="next-btn" title="Next theme">&rarr;</button>
+			<button class="export-btn" id="export-btn">Export to clipboard</button>
+		</header>
 
-<header>
-	<h1>Theme Preview Builder</h1>
-	<button class="nav-btn" id="prev-btn" title="Previous theme">&larr;</button>
-	<select id="theme-select"></select>
-	<button class="nav-btn" id="next-btn" title="Next theme">&rarr;</button>
-	<button class="export-btn" id="export-btn">Export to clipboard</button>
-</header>
-
-<section id="preview">
-	<div class="preview-panel preview-light">
-		<h2>Light</h2>
-		<div class="preview-panel-inner">
-			<div class="nested-surfaces">
-				<div class="surface-box bg-background">
-					<div class="surface-label">background / foreground</div>
-					<div class="surface-box bg-muted">
-						<div class="surface-label">muted / muted-foreground</div>
-						<div class="surface-box bg-surface">
-							<div class="surface-label">surface / surface-foreground</div>
-							<div class="surface-box bg-surface-1">
-								<div class="surface-label">surface-1 / surface-1-foreground</div>
+		<section id="preview">
+			<div class="preview-panel preview-light">
+				<h2>Light</h2>
+				<div class="preview-panel-inner">
+					<div class="nested-surfaces">
+						<div class="surface-box bg-background">
+							<div class="surface-label">background / foreground</div>
+							<div class="surface-box bg-muted">
+								<div class="surface-label">muted / muted-foreground</div>
+								<div class="surface-box bg-surface">
+									<div class="surface-label">
+										surface / surface-foreground
+									</div>
+									<div class="surface-box bg-surface-1">
+										<div class="surface-label">
+											surface-1 / surface-1-foreground
+										</div>
+									</div>
+								</div>
 							</div>
+						</div>
+					</div>
+					<div class="intent-hero">
+						<div class="intent-hero-swatch swatch-primary">primary</div>
+						<div class="intent-hero-swatch swatch-accent">accent</div>
+					</div>
+					<div class="intent-swatches">
+						<div class="intent-swatch swatch-destructive">destructive</div>
+						<div class="intent-swatch swatch-warning">warning</div>
+						<div class="intent-swatch swatch-success">success</div>
+					</div>
+					<div class="link-demo">
+						<a href="javascript:void(0)">Hover &amp; click me</a>
+						<span class="state-chip state-default">default</span>
+						<span class="state-chip state-hover">hover</span>
+						<span class="state-chip state-active">active</span>
+					</div>
+					<div class="bordered-demo">
+						<span>input + border</span>
+						<span class="ring-demo">ring</span>
+					</div>
+					<div class="role-singles">
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-foreground"></div>foreground
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-border"></div>border
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-input"></div>input
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-ring"></div>ring
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="intent-hero">
-				<div class="intent-hero-swatch swatch-primary">primary</div>
-				<div class="intent-hero-swatch swatch-accent">accent</div>
-			</div>
-			<div class="intent-swatches">
-				<div class="intent-swatch swatch-destructive">destructive</div>
-				<div class="intent-swatch swatch-warning">warning</div>
-				<div class="intent-swatch swatch-success">success</div>
-			</div>
-			<div class="link-demo">
-				<a href="javascript:void(0)">Hover &amp; click me</a>
-				<span class="state-chip state-default">default</span>
-				<span class="state-chip state-hover">hover</span>
-				<span class="state-chip state-active">active</span>
-			</div>
-			<div class="bordered-demo">
-				<span>input + border</span>
-				<span class="ring-demo">ring</span>
-			</div>
-			<div class="role-singles">
-				<div class="role-single-swatch"><div class="role-single-chip chip-foreground"></div>foreground</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-border"></div>border</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-input"></div>input</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-ring"></div>ring</div>
-			</div>
-		</div>
-	</div>
-	<div class="preview-panel preview-dark">
-		<h2>Dark</h2>
-		<div class="preview-panel-inner">
-			<div class="nested-surfaces">
-				<div class="surface-box bg-background">
-					<div class="surface-label">background / foreground</div>
-					<div class="surface-box bg-muted">
-						<div class="surface-label">muted / muted-foreground</div>
-						<div class="surface-box bg-surface">
-							<div class="surface-label">surface / surface-foreground</div>
-							<div class="surface-box bg-surface-1">
-								<div class="surface-label">surface-1 / surface-1-foreground</div>
+			<div class="preview-panel preview-dark">
+				<h2>Dark</h2>
+				<div class="preview-panel-inner">
+					<div class="nested-surfaces">
+						<div class="surface-box bg-background">
+							<div class="surface-label">background / foreground</div>
+							<div class="surface-box bg-muted">
+								<div class="surface-label">muted / muted-foreground</div>
+								<div class="surface-box bg-surface">
+									<div class="surface-label">
+										surface / surface-foreground
+									</div>
+									<div class="surface-box bg-surface-1">
+										<div class="surface-label">
+											surface-1 / surface-1-foreground
+										</div>
+									</div>
+								</div>
 							</div>
+						</div>
+					</div>
+					<div class="intent-hero">
+						<div class="intent-hero-swatch swatch-primary">primary</div>
+						<div class="intent-hero-swatch swatch-accent">accent</div>
+					</div>
+					<div class="intent-swatches">
+						<div class="intent-swatch swatch-destructive">destructive</div>
+						<div class="intent-swatch swatch-warning">warning</div>
+						<div class="intent-swatch swatch-success">success</div>
+					</div>
+					<div class="link-demo">
+						<a href="javascript:void(0)">Hover &amp; click me</a>
+						<span class="state-chip state-default">default</span>
+						<span class="state-chip state-hover">hover</span>
+						<span class="state-chip state-active">active</span>
+					</div>
+					<div class="bordered-demo">
+						<span>input + border</span>
+						<span class="ring-demo">ring</span>
+					</div>
+					<div class="role-singles">
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-foreground"></div>foreground
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-border"></div>border
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-input"></div>input
+						</div>
+						<div class="role-single-swatch">
+							<div class="role-single-chip chip-ring"></div>ring
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="intent-hero">
-				<div class="intent-hero-swatch swatch-primary">primary</div>
-				<div class="intent-hero-swatch swatch-accent">accent</div>
+		</section>
+
+		<button class="controls-toggle" id="controls-toggle">
+			<span class="arrow" id="controls-arrow">&#9654;</span>
+			Color Settings
+		</button>
+		<section id="controls" class="collapsed">
+			<div class="controls-panel" id="controls-light">
+				<h2>Light Mode</h2>
 			</div>
-			<div class="intent-swatches">
-				<div class="intent-swatch swatch-destructive">destructive</div>
-				<div class="intent-swatch swatch-warning">warning</div>
-				<div class="intent-swatch swatch-success">success</div>
+			<div class="controls-panel" id="controls-dark">
+				<h2>Dark Mode</h2>
 			</div>
-			<div class="link-demo">
-				<a href="javascript:void(0)">Hover &amp; click me</a>
-				<span class="state-chip state-default">default</span>
-				<span class="state-chip state-hover">hover</span>
-				<span class="state-chip state-active">active</span>
-			</div>
-			<div class="bordered-demo">
-				<span>input + border</span>
-				<span class="ring-demo">ring</span>
-			</div>
-			<div class="role-singles">
-				<div class="role-single-swatch"><div class="role-single-chip chip-foreground"></div>foreground</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-border"></div>border</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-input"></div>input</div>
-				<div class="role-single-swatch"><div class="role-single-chip chip-ring"></div>ring</div>
-			</div>
-		</div>
-	</div>
-</section>
-
-<button class="controls-toggle" id="controls-toggle">
-	<span class="arrow" id="controls-arrow">&#9654;</span>
-	Color Settings
-</button>
-<section id="controls" class="collapsed">
-	<div class="controls-panel" id="controls-light">
-		<h2>Light Mode</h2>
-	</div>
-	<div class="controls-panel" id="controls-dark">
-		<h2>Dark Mode</h2>
-	</div>
-</section>
-
-<div class="toast" id="toast">Copied to clipboard!</div>
-
-<script type="module">
-import {
-	colors,
-	themes,
-	generateCssTokens,
-	toCssString,
-	buildHexToNameMap,
-	selectionForHex,
-	hexForSelection,
-	parseRingValue,
-	buildRingValue,
-	themeToTypeScript,
-} from "./dist/bundle.js";
-
-// ── constants ──────────────────────────────────────────────
-
-const COLOR_FAMILIES = [
-	"black", "white",
-	"slate", "gray", "zinc", "neutral", "stone",
-	"mauve", "mist", "olive", "taupe",
-	"red", "orange", "amber", "yellow",
-	"lime", "green", "emerald", "teal",
-	"cyan", "sky", "blue", "indigo",
-	"violet", "purple", "fuchsia", "pink", "rose",
-];
-const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
-const INTENTS = ["primary", "accent", "destructive", "warning", "success"];
-const PAIRED_ROLES = ["background", "muted", "surface", "surface-1"];
-const PREFIX = "dt-";
-
-const hexToName = buildHexToNameMap(colors);
-
-// ── state ──────────────────────────────────────────────────
-
-const state = {
-	selectedThemeName: null,
-	schema: null,
-};
-
-// ── refs map: mode → path → { familySel, shadeSel, chip, rangeSel?, percentLabel? } ──
-const refs = { light: {}, dark: {} };
-
-// ── render ──────────────────────────────────────────────────
-
-function render() {
-	const lightTokens = generateCssTokens(state.schema.light, PREFIX, "light");
-	const darkTokens = state.schema.dark
-		? generateCssTokens(state.schema.dark, PREFIX, "dark")
-		: null;
-
-	document.getElementById("style-light").textContent =
-		toCssString(lightTokens, ".preview-light .preview-panel-inner");
-	if (darkTokens) {
-		document.getElementById("style-dark").textContent =
-			toCssString(darkTokens, ".preview-dark .preview-panel-inner");
-	}
-}
-
-// ── helpers ─────────────────────────────────────────────────
-
-function getNestedValue(obj, path) {
-	return path.split(".").reduce((o, k) => o?.[k], obj);
-}
-
-function setNestedValue(obj, path, value) {
-	const parts = path.split(".");
-	const last = parts.pop();
-	const parent = parts.reduce((o, k) => o[k], obj);
-	parent[last] = value;
-}
-
-function populateFamilySelect(sel) {
-	sel.innerHTML = "";
-	for (const f of COLOR_FAMILIES) {
-		const opt = document.createElement("option");
-		opt.value = f;
-		opt.textContent = f;
-		sel.appendChild(opt);
-	}
-}
-
-function populateShadeSelect(sel) {
-	sel.innerHTML = "";
-	for (const s of SHADES) {
-		const opt = document.createElement("option");
-		opt.value = s;
-		opt.textContent = s;
-		sel.appendChild(opt);
-	}
-}
-
-function syncSelectsFromHex(hex, ref) {
-	const sel = selectionForHex(hex, hexToName);
-	if (sel) {
-		ref.familySel.value = sel.family;
-		if (sel.shade !== null) {
-			ref.shadeSel.style.display = "";
-			ref.shadeSel.value = sel.shade;
-		} else {
-			ref.shadeSel.style.display = "none";
-		}
-	} else {
-		// Unknown hex — reset to black
-		ref.familySel.value = "black";
-		ref.shadeSel.style.display = "none";
-	}
-	ref.chip.style.background = hex;
-}
-
-function currentHexFromRef(ref) {
-	const family = ref.familySel.value;
-	if (family === "black" || family === "white") {
-		return family === "black" ? colors.black : colors.white;
-	}
-	const shade = parseInt(ref.shadeSel.value);
-	return hexForSelection(colors, family, shade);
-}
-
-// ── control row factory ─────────────────────────────────────
-
-function createColorRow(container, label, mode, schemaPath) {
-	const row = document.createElement("div");
-	row.className = "color-row";
-
-	const lbl = document.createElement("label");
-	lbl.textContent = label;
-	row.appendChild(lbl);
-
-	const familySel = document.createElement("select");
-	familySel.className = "family-select";
-	populateFamilySelect(familySel);
-	row.appendChild(familySel);
-
-	const shadeSel = document.createElement("select");
-	shadeSel.className = "shade-select";
-	populateShadeSelect(shadeSel);
-	row.appendChild(shadeSel);
-
-	const chip = document.createElement("div");
-	chip.className = "color-chip";
-	row.appendChild(chip);
-
-	container.appendChild(row);
-
-	const ref = { familySel, shadeSel, chip };
-	refs[mode][schemaPath] = ref;
-
-	function onChange() {
-		const family = familySel.value;
-		if (family === "black" || family === "white") {
-			shadeSel.style.display = "none";
-		} else {
-			shadeSel.style.display = "";
-		}
-		const hex = currentHexFromRef(ref);
-		if (hex) {
-			chip.style.background = hex;
-			setNestedValue(state.schema[mode], schemaPath, hex);
-			render();
-		}
-	}
-
-	familySel.addEventListener("change", () => {
-		const family = familySel.value;
-		if (family !== "black" && family !== "white") {
-			shadeSel.style.display = "";
-			// Default to 500
-			shadeSel.value = "500";
-		}
-		onChange();
-	});
-	shadeSel.addEventListener("change", onChange);
-
-	return ref;
-}
-
-function createRingRow(container, mode) {
-	const row = document.createElement("div");
-	row.className = "ring-row";
-
-	const lbl = document.createElement("label");
-	lbl.textContent = "ring";
-	row.appendChild(lbl);
-
-	const familySel = document.createElement("select");
-	familySel.className = "family-select";
-	populateFamilySelect(familySel);
-	row.appendChild(familySel);
-
-	const shadeSel = document.createElement("select");
-	shadeSel.className = "shade-select";
-	populateShadeSelect(shadeSel);
-	row.appendChild(shadeSel);
-
-	const rangeInput = document.createElement("input");
-	rangeInput.type = "range";
-	rangeInput.min = "5";
-	rangeInput.max = "50";
-	rangeInput.value = "20";
-	row.appendChild(rangeInput);
-
-	const percentLabel = document.createElement("span");
-	percentLabel.className = "percent-label";
-	percentLabel.textContent = "20%";
-	row.appendChild(percentLabel);
-
-	const chip = document.createElement("div");
-	chip.className = "color-chip";
-	row.appendChild(chip);
-
-	container.appendChild(row);
-
-	const ref = { familySel, shadeSel, chip, rangeInput, percentLabel };
-	refs[mode]["colors.role.single.ring"] = ref;
-
-	function onChange() {
-		const family = familySel.value;
-		if (family === "black" || family === "white") {
-			shadeSel.style.display = "none";
-		} else {
-			shadeSel.style.display = "";
-		}
-		const hex = currentHexFromRef(ref);
-		const percent = parseInt(rangeInput.value);
-		percentLabel.textContent = percent + "%";
-		if (hex) {
-			chip.style.background = hex;
-			const val = buildRingValue(hex, percent);
-			state.schema[mode].colors.role.single.ring = val;
-			render();
-		}
-	}
-
-	familySel.addEventListener("change", () => {
-		const family = familySel.value;
-		if (family !== "black" && family !== "white") {
-			shadeSel.style.display = "";
-			shadeSel.value = "500";
-		}
-		onChange();
-	});
-	shadeSel.addEventListener("change", onChange);
-	rangeInput.addEventListener("input", onChange);
-
-	return ref;
-}
-
-// ── role base presets ────────────────────────────────────────
-
-// Neutral families that support the full 50-950 shade range
-const NEUTRAL_FAMILIES = ["slate", "gray", "zinc", "neutral", "stone"];
-
-const ROLE_PRESETS = {
-	light: {
-		// background: uses white or family-50
-		paired: {
-			background:   { DEFAULT: 50,  foreground: 900 },
-			muted:        { DEFAULT: 100, foreground: 500 },
-			surface:      { DEFAULT: 200, foreground: 900 },
-			"surface-1":  { DEFAULT: 300, foreground: 900 },
-		},
-		single: {
-			foreground: 900,
-			border: 300,
-			input: 50,
-			inputHover: 100,
-		},
-	},
-	dark: {
-		paired: {
-			background:   { DEFAULT: 900, foreground: 50 },
-			muted:        { DEFAULT: 800, foreground: 400 },
-			surface:      { DEFAULT: 700, foreground: 300 },
-			"surface-1":  { DEFAULT: 600, foreground: 200 },
-		},
-		single: {
-			foreground: 50,
-			border: 700,
-			input: 900,
-			inputHover: 800,
-		},
-	},
-};
-
-function applyRoleBase(family, mode) {
-	const preset = ROLE_PRESETS[mode];
-	const s = state.schema[mode];
-	const c = colors[family];
-
-	// Paired
-	for (const [role, shades] of Object.entries(preset.paired)) {
-		const bgHex = (mode === "light" && role === "background")
-			? (colors.white || c[shades.DEFAULT])
-			: c[shades.DEFAULT];
-		s.colors.role.paired[role].DEFAULT = bgHex;
-		s.colors.role.paired[role].foreground = c[shades.foreground];
-		syncSelectsFromHex(bgHex, refs[mode][`colors.role.paired.${role}.DEFAULT`]);
-		syncSelectsFromHex(c[shades.foreground], refs[mode][`colors.role.paired.${role}.foreground`]);
-	}
-
-	// Single (except ring — that stays as-is, it's typically based on intent/accent)
-	s.colors.role.single.foreground = c[preset.single.foreground];
-	syncSelectsFromHex(c[preset.single.foreground], refs[mode]["colors.role.single.foreground"]);
-
-	s.colors.role.single.border = { DEFAULT: c[preset.single.border] };
-	syncSelectsFromHex(c[preset.single.border], refs[mode]["colors.role.single.border.DEFAULT"]);
-
-	const inputObj = typeof s.colors.role.single.input === "object"
-		? s.colors.role.single.input : { DEFAULT: s.colors.role.single.input };
-	inputObj.DEFAULT = (mode === "light") ? (colors.white || c[preset.single.input]) : c[preset.single.input];
-	inputObj.hover = c[preset.single.inputHover];
-	s.colors.role.single.input = inputObj;
-	syncSelectsFromHex(inputObj.DEFAULT, refs[mode]["colors.role.single.input.DEFAULT"]);
-	syncSelectsFromHex(inputObj.hover, refs[mode]["colors.role.single.input.hover"]);
-
-	render();
-}
-
-// ── build controls ──────────────────────────────────────────
-
-function buildControlsForMode(containerId, mode) {
-	const container = document.getElementById(containerId);
-
-	// Intent colors
-	const intentFs = document.createElement("fieldset");
-	const intentLeg = document.createElement("legend");
-	intentLeg.textContent = "Intent Colors";
-	intentFs.appendChild(intentLeg);
-
-	for (const intent of INTENTS) {
-		createColorRow(intentFs, intent, mode, `colors.intent.${intent}.DEFAULT`);
-		createColorRow(intentFs, intent + "-fg", mode, `colors.intent.${intent}.foreground`);
-	}
-	container.appendChild(intentFs);
-
-	// Role base quick-pick
-	const roleBaseRow = document.createElement("div");
-	roleBaseRow.className = "color-row";
-	roleBaseRow.style.marginBottom = "0.5rem";
-
-	const roleBaseLbl = document.createElement("label");
-	roleBaseLbl.textContent = "Role base";
-	roleBaseLbl.style.fontWeight = "600";
-	roleBaseRow.appendChild(roleBaseLbl);
-
-	const roleBaseSel = document.createElement("select");
-	roleBaseSel.className = "family-select";
-	roleBaseSel.style.width = "auto";
-	const placeholder = document.createElement("option");
-	placeholder.value = "";
-	placeholder.textContent = "pick family...";
-	placeholder.disabled = true;
-	placeholder.selected = true;
-	roleBaseSel.appendChild(placeholder);
-	// All families that have shade ranges (exclude black/white)
-	for (const f of COLOR_FAMILIES.filter(f => f !== "black" && f !== "white")) {
-		const opt = document.createElement("option");
-		opt.value = f;
-		opt.textContent = f;
-		roleBaseSel.appendChild(opt);
-	}
-	roleBaseRow.appendChild(roleBaseSel);
-
-	const roleBaseHint = document.createElement("span");
-	roleBaseHint.style.cssText = "font-size:0.65rem;color:#999;";
-	roleBaseHint.textContent = "sets all role colors at once";
-	roleBaseRow.appendChild(roleBaseHint);
-
-	roleBaseSel.addEventListener("change", () => {
-		if (roleBaseSel.value) applyRoleBase(roleBaseSel.value, mode);
-	});
-
-	// Paired role colors
-	const pairedFs = document.createElement("fieldset");
-	const pairedLeg = document.createElement("legend");
-	pairedLeg.textContent = "Role Colors (Paired)";
-	pairedFs.appendChild(pairedLeg);
-
-	pairedFs.appendChild(roleBaseRow);
-
-	for (const role of PAIRED_ROLES) {
-		createColorRow(pairedFs, role, mode, `colors.role.paired.${role}.DEFAULT`);
-		createColorRow(pairedFs, role + "-fg", mode, `colors.role.paired.${role}.foreground`);
-	}
-	container.appendChild(pairedFs);
-
-	// Single role colors
-	const singleFs = document.createElement("fieldset");
-	const singleLeg = document.createElement("legend");
-	singleLeg.textContent = "Role Colors (Single)";
-	singleFs.appendChild(singleLeg);
-
-	createColorRow(singleFs, "foreground", mode, "colors.role.single.foreground");
-	createColorRow(singleFs, "border", mode, "colors.role.single.border.DEFAULT");
-	createColorRow(singleFs, "input", mode, "colors.role.single.input.DEFAULT");
-	createColorRow(singleFs, "input-hover", mode, "colors.role.single.input.hover");
-	createRingRow(singleFs, mode);
-
-	container.appendChild(singleFs);
-}
-
-buildControlsForMode("controls-light", "light");
-buildControlsForMode("controls-dark", "dark");
-
-// ── theme loading ───────────────────────────────────────────
-
-function loadTheme(name) {
-	state.selectedThemeName = name;
-	state.schema = structuredClone(themes[name]);
-
-	// Ensure dark mode exists (all bundled themes have it, but just in case)
-	if (!state.schema.dark) {
-		state.schema.dark = structuredClone(state.schema.light);
-	}
-
-	// Sync all control selects
-	for (const mode of ["light", "dark"]) {
-		const modeSchema = state.schema[mode];
-
-		// Intent
-		for (const intent of INTENTS) {
-			const pair = modeSchema.colors.intent[intent];
-			syncSelectsFromHex(pair.DEFAULT, refs[mode][`colors.intent.${intent}.DEFAULT`]);
-			syncSelectsFromHex(pair.foreground, refs[mode][`colors.intent.${intent}.foreground`]);
-		}
-
-		// Paired roles
-		for (const role of PAIRED_ROLES) {
-			const pair = modeSchema.colors.role.paired[role];
-			syncSelectsFromHex(pair.DEFAULT, refs[mode][`colors.role.paired.${role}.DEFAULT`]);
-			syncSelectsFromHex(pair.foreground, refs[mode][`colors.role.paired.${role}.foreground`]);
-		}
-
-		// Single roles
-		const single = modeSchema.colors.role.single;
-
-		// foreground (plain string)
-		syncSelectsFromHex(
-			typeof single.foreground === "string" ? single.foreground : single.foreground.DEFAULT,
-			refs[mode]["colors.role.single.foreground"]
-		);
-
-		// border
-		syncSelectsFromHex(
-			typeof single.border === "string" ? single.border : single.border.DEFAULT,
-			refs[mode]["colors.role.single.border.DEFAULT"]
-		);
-
-		// input
-		const input = typeof single.input === "string"
-			? { DEFAULT: single.input }
-			: single.input;
-		syncSelectsFromHex(input.DEFAULT, refs[mode]["colors.role.single.input.DEFAULT"]);
-		if (input.hover) {
-			syncSelectsFromHex(input.hover, refs[mode]["colors.role.single.input.hover"]);
-		}
-
-		// ring
-		const ringRef = refs[mode]["colors.role.single.ring"];
-		const ringVal = typeof single.ring === "string" ? single.ring : single.ring?.DEFAULT ?? "";
-		const parsed = parseRingValue(ringVal);
-		if (parsed) {
-			syncSelectsFromHex(parsed.hex, ringRef);
-			ringRef.rangeInput.value = parsed.percent;
-			ringRef.percentLabel.textContent = parsed.percent + "%";
-		}
-	}
-
-	render();
-}
-
-// ── populate theme select ───────────────────────────────────
-
-const themeSelect = document.getElementById("theme-select");
-const themeNames = Object.keys(themes).sort();
-for (const name of themeNames) {
-	const opt = document.createElement("option");
-	opt.value = name;
-	// camelCase → kebab-case for display
-	opt.textContent = name.replace(/([A-Z])/g, "-$1").toLowerCase();
-	themeSelect.appendChild(opt);
-}
-themeSelect.addEventListener("change", () => loadTheme(themeSelect.value));
-
-// ── prev/next ───────────────────────────────────────────────
-
-function cycleTheme(delta) {
-	const idx = themeNames.indexOf(state.selectedThemeName);
-	const next = (idx + delta + themeNames.length) % themeNames.length;
-	themeSelect.value = themeNames[next];
-	loadTheme(themeNames[next]);
-}
-
-document.getElementById("prev-btn").addEventListener("click", () => cycleTheme(-1));
-document.getElementById("next-btn").addEventListener("click", () => cycleTheme(1));
-
-// ── collapsible controls ────────────────────────────────────
-
-document.getElementById("controls-toggle").addEventListener("click", () => {
-	const controls = document.getElementById("controls");
-	const arrow = document.getElementById("controls-arrow");
-	const collapsed = controls.classList.toggle("collapsed");
-	arrow.classList.toggle("open", !collapsed);
-});
-
-// ── export ──────────────────────────────────────────────────
-
-document.getElementById("export-btn").addEventListener("click", async () => {
-	const ts = themeToTypeScript(state.schema, hexToName);
-	try {
-		await navigator.clipboard.writeText(ts);
-		showToast("Copied to clipboard!");
-	} catch {
-		// Fallback: show in a textarea
-		const ta = document.createElement("textarea");
-		ta.value = ts;
-		ta.style.cssText = "position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
-		const close = () => ta.remove();
-		ta.addEventListener("click", close);
-		document.body.appendChild(ta);
-		ta.select();
-	}
-});
-
-function showToast(msg) {
-	const toast = document.getElementById("toast");
-	toast.textContent = msg;
-	toast.classList.add("show");
-	setTimeout(() => toast.classList.remove("show"), 2000);
-}
-
-// ── init ────────────────────────────────────────────────────
-
-loadTheme(themeNames[0]);
-</script>
-</body>
+		</section>
+
+		<div class="toast" id="toast">Copied to clipboard!</div>
+
+		<script type="module">
+			import {
+				buildHexToNameMap,
+				buildRingValue,
+				colors,
+				generateCssTokens,
+				hexForSelection,
+				parseRingValue,
+				selectionForHex,
+				themes,
+				themeToTypeScript,
+				toCssString,
+			} from "./dist/bundle.js";
+
+			// ── constants ──────────────────────────────────────────────
+
+			const COLOR_FAMILIES = [
+				"black",
+				"white",
+				"slate",
+				"gray",
+				"zinc",
+				"neutral",
+				"stone",
+				"mauve",
+				"mist",
+				"olive",
+				"taupe",
+				"red",
+				"orange",
+				"amber",
+				"yellow",
+				"lime",
+				"green",
+				"emerald",
+				"teal",
+				"cyan",
+				"sky",
+				"blue",
+				"indigo",
+				"violet",
+				"purple",
+				"fuchsia",
+				"pink",
+				"rose",
+			];
+			const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+			const INTENTS = ["primary", "accent", "destructive", "warning", "success"];
+			const PAIRED_ROLES = ["background", "muted", "surface", "surface-1"];
+			const PREFIX = "dt-";
+
+			const hexToName = buildHexToNameMap(colors);
+
+			// ── state ──────────────────────────────────────────────────
+
+			const state = {
+				selectedThemeName: null,
+				schema: null,
+			};
+
+			// ── refs map: mode → path → { familySel, shadeSel, chip, rangeSel?, percentLabel? } ──
+			const refs = { light: {}, dark: {} };
+
+			// ── render ──────────────────────────────────────────────────
+
+			function render() {
+				const lightTokens = generateCssTokens(
+					state.schema.light,
+					PREFIX,
+					"light",
+				);
+				const darkTokens = state.schema.dark
+					? generateCssTokens(state.schema.dark, PREFIX, "dark")
+					: null;
+
+				document.getElementById("style-light").textContent = toCssString(
+					lightTokens,
+					".preview-light .preview-panel-inner",
+				);
+				if (darkTokens) {
+					document.getElementById("style-dark").textContent = toCssString(
+						darkTokens,
+						".preview-dark .preview-panel-inner",
+					);
+				}
+			}
+
+			// ── helpers ─────────────────────────────────────────────────
+
+			function getNestedValue(obj, path) {
+				return path.split(".").reduce((o, k) => o?.[k], obj);
+			}
+
+			function setNestedValue(obj, path, value) {
+				const parts = path.split(".");
+				const last = parts.pop();
+				const parent = parts.reduce((o, k) => o[k], obj);
+				parent[last] = value;
+			}
+
+			function populateFamilySelect(sel) {
+				sel.innerHTML = "";
+				for (const f of COLOR_FAMILIES) {
+					const opt = document.createElement("option");
+					opt.value = f;
+					opt.textContent = f;
+					sel.appendChild(opt);
+				}
+			}
+
+			function populateShadeSelect(sel) {
+				sel.innerHTML = "";
+				for (const s of SHADES) {
+					const opt = document.createElement("option");
+					opt.value = s;
+					opt.textContent = s;
+					sel.appendChild(opt);
+				}
+			}
+
+			function syncSelectsFromHex(hex, ref) {
+				const sel = selectionForHex(hex, hexToName);
+				if (sel) {
+					ref.familySel.value = sel.family;
+					if (sel.shade !== null) {
+						ref.shadeSel.style.display = "";
+						ref.shadeSel.value = sel.shade;
+					} else {
+						ref.shadeSel.style.display = "none";
+					}
+				} else {
+					// Unknown hex — reset to black
+					ref.familySel.value = "black";
+					ref.shadeSel.style.display = "none";
+				}
+				ref.chip.style.background = hex;
+			}
+
+			function currentHexFromRef(ref) {
+				const family = ref.familySel.value;
+				if (family === "black" || family === "white") {
+					return family === "black" ? colors.black : colors.white;
+				}
+				const shade = parseInt(ref.shadeSel.value);
+				return hexForSelection(colors, family, shade);
+			}
+
+			// ── control row factory ─────────────────────────────────────
+
+			function createColorRow(container, label, mode, schemaPath) {
+				const row = document.createElement("div");
+				row.className = "color-row";
+
+				const lbl = document.createElement("label");
+				lbl.textContent = label;
+				row.appendChild(lbl);
+
+				const familySel = document.createElement("select");
+				familySel.className = "family-select";
+				populateFamilySelect(familySel);
+				row.appendChild(familySel);
+
+				const shadeSel = document.createElement("select");
+				shadeSel.className = "shade-select";
+				populateShadeSelect(shadeSel);
+				row.appendChild(shadeSel);
+
+				const chip = document.createElement("div");
+				chip.className = "color-chip";
+				row.appendChild(chip);
+
+				container.appendChild(row);
+
+				const ref = { familySel, shadeSel, chip };
+				refs[mode][schemaPath] = ref;
+
+				function onChange() {
+					const family = familySel.value;
+					if (family === "black" || family === "white") {
+						shadeSel.style.display = "none";
+					} else {
+						shadeSel.style.display = "";
+					}
+					const hex = currentHexFromRef(ref);
+					if (hex) {
+						chip.style.background = hex;
+						setNestedValue(state.schema[mode], schemaPath, hex);
+						render();
+					}
+				}
+
+				familySel.addEventListener("change", () => {
+					const family = familySel.value;
+					if (family !== "black" && family !== "white") {
+						shadeSel.style.display = "";
+						// Default to 500
+						shadeSel.value = "500";
+					}
+					onChange();
+				});
+				shadeSel.addEventListener("change", onChange);
+
+				return ref;
+			}
+
+			function createRingRow(container, mode) {
+				const row = document.createElement("div");
+				row.className = "ring-row";
+
+				const lbl = document.createElement("label");
+				lbl.textContent = "ring";
+				row.appendChild(lbl);
+
+				const familySel = document.createElement("select");
+				familySel.className = "family-select";
+				populateFamilySelect(familySel);
+				row.appendChild(familySel);
+
+				const shadeSel = document.createElement("select");
+				shadeSel.className = "shade-select";
+				populateShadeSelect(shadeSel);
+				row.appendChild(shadeSel);
+
+				const rangeInput = document.createElement("input");
+				rangeInput.type = "range";
+				rangeInput.min = "5";
+				rangeInput.max = "50";
+				rangeInput.value = "20";
+				row.appendChild(rangeInput);
+
+				const percentLabel = document.createElement("span");
+				percentLabel.className = "percent-label";
+				percentLabel.textContent = "20%";
+				row.appendChild(percentLabel);
+
+				const chip = document.createElement("div");
+				chip.className = "color-chip";
+				row.appendChild(chip);
+
+				container.appendChild(row);
+
+				const ref = { familySel, shadeSel, chip, rangeInput, percentLabel };
+				refs[mode]["colors.role.single.ring"] = ref;
+
+				function onChange() {
+					const family = familySel.value;
+					if (family === "black" || family === "white") {
+						shadeSel.style.display = "none";
+					} else {
+						shadeSel.style.display = "";
+					}
+					const hex = currentHexFromRef(ref);
+					const percent = parseInt(rangeInput.value);
+					percentLabel.textContent = percent + "%";
+					if (hex) {
+						chip.style.background = hex;
+						const val = buildRingValue(hex, percent);
+						state.schema[mode].colors.role.single.ring = val;
+						render();
+					}
+				}
+
+				familySel.addEventListener("change", () => {
+					const family = familySel.value;
+					if (family !== "black" && family !== "white") {
+						shadeSel.style.display = "";
+						shadeSel.value = "500";
+					}
+					onChange();
+				});
+				shadeSel.addEventListener("change", onChange);
+				rangeInput.addEventListener("input", onChange);
+
+				return ref;
+			}
+
+			// ── role base presets ────────────────────────────────────────
+
+			// Neutral families that support the full 50-950 shade range
+			const NEUTRAL_FAMILIES = ["slate", "gray", "zinc", "neutral", "stone"];
+
+			const ROLE_PRESETS = {
+				light: {
+					// background: uses white or family-50
+					paired: {
+						background: { DEFAULT: 50, foreground: 900 },
+						muted: { DEFAULT: 100, foreground: 500 },
+						surface: { DEFAULT: 200, foreground: 900 },
+						"surface-1": { DEFAULT: 300, foreground: 900 },
+					},
+					single: {
+						foreground: 900,
+						border: 300,
+						input: 50,
+						inputHover: 100,
+					},
+				},
+				dark: {
+					paired: {
+						background: { DEFAULT: 900, foreground: 50 },
+						muted: { DEFAULT: 800, foreground: 400 },
+						surface: { DEFAULT: 700, foreground: 300 },
+						"surface-1": { DEFAULT: 600, foreground: 200 },
+					},
+					single: {
+						foreground: 50,
+						border: 700,
+						input: 900,
+						inputHover: 800,
+					},
+				},
+			};
+
+			function applyRoleBase(family, mode) {
+				const preset = ROLE_PRESETS[mode];
+				const s = state.schema[mode];
+				const c = colors[family];
+
+				// Paired
+				for (const [role, shades] of Object.entries(preset.paired)) {
+					const bgHex = (mode === "light" && role === "background")
+						? (colors.white || c[shades.DEFAULT])
+						: c[shades.DEFAULT];
+					s.colors.role.paired[role].DEFAULT = bgHex;
+					s.colors.role.paired[role].foreground = c[shades.foreground];
+					syncSelectsFromHex(
+						bgHex,
+						refs[mode][`colors.role.paired.${role}.DEFAULT`],
+					);
+					syncSelectsFromHex(
+						c[shades.foreground],
+						refs[mode][`colors.role.paired.${role}.foreground`],
+					);
+				}
+
+				// Single (except ring — that stays as-is, it's typically based on intent/accent)
+				s.colors.role.single.foreground = c[preset.single.foreground];
+				syncSelectsFromHex(
+					c[preset.single.foreground],
+					refs[mode]["colors.role.single.foreground"],
+				);
+
+				s.colors.role.single.border = { DEFAULT: c[preset.single.border] };
+				syncSelectsFromHex(
+					c[preset.single.border],
+					refs[mode]["colors.role.single.border.DEFAULT"],
+				);
+
+				const inputObj = typeof s.colors.role.single.input === "object"
+					? s.colors.role.single.input
+					: { DEFAULT: s.colors.role.single.input };
+				inputObj.DEFAULT = (mode === "light")
+					? (colors.white || c[preset.single.input])
+					: c[preset.single.input];
+				inputObj.hover = c[preset.single.inputHover];
+				s.colors.role.single.input = inputObj;
+				syncSelectsFromHex(
+					inputObj.DEFAULT,
+					refs[mode]["colors.role.single.input.DEFAULT"],
+				);
+				syncSelectsFromHex(
+					inputObj.hover,
+					refs[mode]["colors.role.single.input.hover"],
+				);
+
+				render();
+			}
+
+			// ── build controls ──────────────────────────────────────────
+
+			function buildControlsForMode(containerId, mode) {
+				const container = document.getElementById(containerId);
+
+				// Intent colors
+				const intentFs = document.createElement("fieldset");
+				const intentLeg = document.createElement("legend");
+				intentLeg.textContent = "Intent Colors";
+				intentFs.appendChild(intentLeg);
+
+				for (const intent of INTENTS) {
+					createColorRow(
+						intentFs,
+						intent,
+						mode,
+						`colors.intent.${intent}.DEFAULT`,
+					);
+					createColorRow(
+						intentFs,
+						intent + "-fg",
+						mode,
+						`colors.intent.${intent}.foreground`,
+					);
+				}
+				container.appendChild(intentFs);
+
+				// Role base quick-pick
+				const roleBaseRow = document.createElement("div");
+				roleBaseRow.className = "color-row";
+				roleBaseRow.style.marginBottom = "0.5rem";
+
+				const roleBaseLbl = document.createElement("label");
+				roleBaseLbl.textContent = "Role base";
+				roleBaseLbl.style.fontWeight = "600";
+				roleBaseRow.appendChild(roleBaseLbl);
+
+				const roleBaseSel = document.createElement("select");
+				roleBaseSel.className = "family-select";
+				roleBaseSel.style.width = "auto";
+				const placeholder = document.createElement("option");
+				placeholder.value = "";
+				placeholder.textContent = "pick family...";
+				placeholder.disabled = true;
+				placeholder.selected = true;
+				roleBaseSel.appendChild(placeholder);
+				// All families that have shade ranges (exclude black/white)
+				for (
+					const f of COLOR_FAMILIES.filter((f) =>
+						f !== "black" && f !== "white"
+					)
+				) {
+					const opt = document.createElement("option");
+					opt.value = f;
+					opt.textContent = f;
+					roleBaseSel.appendChild(opt);
+				}
+				roleBaseRow.appendChild(roleBaseSel);
+
+				const roleBaseHint = document.createElement("span");
+				roleBaseHint.style.cssText = "font-size:0.65rem;color:#999;";
+				roleBaseHint.textContent = "sets all role colors at once";
+				roleBaseRow.appendChild(roleBaseHint);
+
+				roleBaseSel.addEventListener("change", () => {
+					if (roleBaseSel.value) applyRoleBase(roleBaseSel.value, mode);
+				});
+
+				// Paired role colors
+				const pairedFs = document.createElement("fieldset");
+				const pairedLeg = document.createElement("legend");
+				pairedLeg.textContent = "Role Colors (Paired)";
+				pairedFs.appendChild(pairedLeg);
+
+				pairedFs.appendChild(roleBaseRow);
+
+				for (const role of PAIRED_ROLES) {
+					createColorRow(
+						pairedFs,
+						role,
+						mode,
+						`colors.role.paired.${role}.DEFAULT`,
+					);
+					createColorRow(
+						pairedFs,
+						role + "-fg",
+						mode,
+						`colors.role.paired.${role}.foreground`,
+					);
+				}
+				container.appendChild(pairedFs);
+
+				// Single role colors
+				const singleFs = document.createElement("fieldset");
+				const singleLeg = document.createElement("legend");
+				singleLeg.textContent = "Role Colors (Single)";
+				singleFs.appendChild(singleLeg);
+
+				createColorRow(
+					singleFs,
+					"foreground",
+					mode,
+					"colors.role.single.foreground",
+				);
+				createColorRow(
+					singleFs,
+					"border",
+					mode,
+					"colors.role.single.border.DEFAULT",
+				);
+				createColorRow(
+					singleFs,
+					"input",
+					mode,
+					"colors.role.single.input.DEFAULT",
+				);
+				createColorRow(
+					singleFs,
+					"input-hover",
+					mode,
+					"colors.role.single.input.hover",
+				);
+				createRingRow(singleFs, mode);
+
+				container.appendChild(singleFs);
+			}
+
+			buildControlsForMode("controls-light", "light");
+			buildControlsForMode("controls-dark", "dark");
+
+			// ── theme loading ───────────────────────────────────────────
+
+			function loadTheme(name) {
+				state.selectedThemeName = name;
+				state.schema = structuredClone(themes.bundledThemes[name]);
+
+				// Ensure dark mode exists (all bundled themes have it, but just in case)
+				if (!state.schema.dark) {
+					state.schema.dark = structuredClone(state.schema.light);
+				}
+
+				// Sync all control selects
+				for (const mode of ["light", "dark"]) {
+					const modeSchema = state.schema[mode];
+
+					// Intent
+					for (const intent of INTENTS) {
+						const pair = modeSchema.colors.intent[intent];
+						syncSelectsFromHex(
+							pair.DEFAULT,
+							refs[mode][`colors.intent.${intent}.DEFAULT`],
+						);
+						syncSelectsFromHex(
+							pair.foreground,
+							refs[mode][`colors.intent.${intent}.foreground`],
+						);
+					}
+
+					// Paired roles
+					for (const role of PAIRED_ROLES) {
+						const pair = modeSchema.colors.role.paired[role];
+						syncSelectsFromHex(
+							pair.DEFAULT,
+							refs[mode][`colors.role.paired.${role}.DEFAULT`],
+						);
+						syncSelectsFromHex(
+							pair.foreground,
+							refs[mode][`colors.role.paired.${role}.foreground`],
+						);
+					}
+
+					// Single roles
+					const single = modeSchema.colors.role.single;
+
+					// foreground (plain string)
+					syncSelectsFromHex(
+						typeof single.foreground === "string"
+							? single.foreground
+							: single.foreground.DEFAULT,
+						refs[mode]["colors.role.single.foreground"],
+					);
+
+					// border
+					syncSelectsFromHex(
+						typeof single.border === "string"
+							? single.border
+							: single.border.DEFAULT,
+						refs[mode]["colors.role.single.border.DEFAULT"],
+					);
+
+					// input
+					const input = typeof single.input === "string"
+						? { DEFAULT: single.input }
+						: single.input;
+					syncSelectsFromHex(
+						input.DEFAULT,
+						refs[mode]["colors.role.single.input.DEFAULT"],
+					);
+					if (input.hover) {
+						syncSelectsFromHex(
+							input.hover,
+							refs[mode]["colors.role.single.input.hover"],
+						);
+					}
+
+					// ring
+					const ringRef = refs[mode]["colors.role.single.ring"];
+					const ringVal = typeof single.ring === "string"
+						? single.ring
+						: single.ring?.DEFAULT ?? "";
+					const parsed = parseRingValue(ringVal);
+					if (parsed) {
+						syncSelectsFromHex(parsed.hex, ringRef);
+						ringRef.rangeInput.value = parsed.percent;
+						ringRef.percentLabel.textContent = parsed.percent + "%";
+					}
+				}
+
+				render();
+			}
+
+			// ── populate theme select ───────────────────────────────────
+
+			const themeSelect = document.getElementById("theme-select");
+			// Use the registry map so non-theme exports (bundledThemes,
+			// bundledThemeNames, getBundledTheme, themeNames) are excluded.
+			const themeNames = Object.keys(themes.bundledThemes).sort();
+			for (const name of themeNames) {
+				const opt = document.createElement("option");
+				opt.value = name;
+				// camelCase → kebab-case for display
+				opt.textContent = name.replace(/([A-Z])/g, "-$1").toLowerCase();
+				themeSelect.appendChild(opt);
+			}
+			themeSelect.addEventListener("change", () => loadTheme(themeSelect.value));
+
+			// ── prev/next ───────────────────────────────────────────────
+
+			function cycleTheme(delta) {
+				const idx = themeNames.indexOf(state.selectedThemeName);
+				const next = (idx + delta + themeNames.length) % themeNames.length;
+				themeSelect.value = themeNames[next];
+				loadTheme(themeNames[next]);
+			}
+
+			document.getElementById("prev-btn").addEventListener(
+				"click",
+				() => cycleTheme(-1),
+			);
+			document.getElementById("next-btn").addEventListener(
+				"click",
+				() => cycleTheme(1),
+			);
+
+			// ── collapsible controls ────────────────────────────────────
+
+			document.getElementById("controls-toggle").addEventListener("click", () => {
+				const controls = document.getElementById("controls");
+				const arrow = document.getElementById("controls-arrow");
+				const collapsed = controls.classList.toggle("collapsed");
+				arrow.classList.toggle("open", !collapsed);
+			});
+
+			// ── export ──────────────────────────────────────────────────
+
+			document.getElementById("export-btn").addEventListener("click", async () => {
+				const ts = themeToTypeScript(state.schema, hexToName);
+				try {
+					await navigator.clipboard.writeText(ts);
+					showToast("Copied to clipboard!");
+				} catch {
+					// Fallback: show in a textarea
+					const ta = document.createElement("textarea");
+					ta.value = ts;
+					ta.style.cssText =
+						"position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
+					const close = () => ta.remove();
+					ta.addEventListener("click", close);
+					document.body.appendChild(ta);
+					ta.select();
+				}
+			});
+
+			function showToast(msg) {
+				const toast = document.getElementById("toast");
+				toast.textContent = msg;
+				toast.classList.add("show");
+				setTimeout(() => toast.classList.remove("show"), 2000);
+			}
+
+			// ── init ────────────────────────────────────────────────────
+
+			loadTheme(themeNames[0]);
+		</script>
+	</body>
 </html>

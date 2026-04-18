@@ -17,6 +17,12 @@ export { generateThemeCss } from "./generate.ts";
 /** Convert a tokens record to a CSS declaration block string. */
 export { toCssString } from "./generate.ts";
 
+/** Options accepted by {@link generateCssTokens}. */
+export type { GenerateOptions } from "./generate.ts";
+
+/** Options accepted by {@link generateThemeCss}. */
+export type { GenerateThemeOptions } from "./generate.ts";
+
 /** Base color value with optional hover/active pseudo states. */
 export type { ColorPair } from "./types.ts";
 
@@ -29,8 +35,11 @@ export type { GeneratedTokens } from "./types.ts";
 /** Known intent color keys: primary, accent, destructive, warning, success. */
 export type { IntentColorKey } from "./types.ts";
 
-/** Known role color keys (paired with foreground): background, muted, surface. */
+/** Known role color keys (paired with foreground, required): background, muted, surface. */
 export type { RolePairedKey } from "./types.ts";
+
+/** Known role color keys (paired with foreground, optional): surface-1. */
+export type { RolePairedOptionalKey } from "./types.ts";
 
 /** Known role color keys (single value): foreground, border, input, ring. */
 export type { RoleSingleKey } from "./types.ts";
@@ -49,6 +58,9 @@ export type { WithOptional } from "./types.ts";
 
 /** Helper: require known keys, allow additional. */
 export type { WithRequired } from "./types.ts";
+
+/** Helper: mix required + optional known keys, allow additional. */
+export type { WithKnown } from "./types.ts";
 
 /** Parse a hex color string to an `[r, g, b]` tuple. */
 export { hexToRgb } from "./utils.ts";

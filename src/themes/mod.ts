@@ -10,6 +10,8 @@
  * @module
  */
 
+import type { ThemeSchema } from "../types.ts";
+
 /** A complete theme definition with required light mode and optional dark mode. */
 export type { ThemeSchema } from "../types.ts";
 
@@ -100,6 +102,50 @@ export { default as violetRoseDusk } from "./violet-rose-dusk.ts";
 /** Neutral zinc monochrome theme. */
 export { default as zinc } from "./zinc.ts";
 
+import amberOliveSafari_ from "./amber-olive-safari.ts";
+import blueOrange_ from "./blue-orange.ts";
+import cyanRed_ from "./cyan-red.ts";
+import cyanSlate_ from "./cyan-slate.ts";
+import emeraldAmberForest_ from "./emerald-amber-forest.ts";
+import emeraldPink_ from "./emerald-pink.ts";
+import fuchsiaEmerald_ from "./fuchsia-emerald.ts";
+import gray_ from "./gray.ts";
+import indigoAmber_ from "./indigo-amber.ts";
+import limeFuchsiaNeon_ from "./lime-fuchsia-neon.ts";
+import mauve_ from "./mauve.ts";
+import mauveLimeElectric_ from "./mauve-lime-electric.ts";
+import mauveTeal_ from "./mauve-teal.ts";
+import mist_ from "./mist.ts";
+import mistIndigoFjord_ from "./mist-indigo-fjord.ts";
+import mistVioletAurora_ from "./mist-violet-aurora.ts";
+import monokaiCyan_ from "./monokai-cyan.ts";
+import monokaiGreen_ from "./monokai-green.ts";
+import monokaiPink_ from "./monokai-pink.ts";
+import olive_ from "./olive.ts";
+import oliveAmberSafari_ from "./olive-amber-safari.ts";
+import orangePinkSunset_ from "./orange-pink-sunset.ts";
+import pinkEmerald_ from "./pink-emerald.ts";
+import pinkTeal_ from "./pink-teal.ts";
+import purpleYellow_ from "./purple-yellow.ts";
+import rainbow_ from "./rainbow.ts";
+import redBlue_ from "./red-blue.ts";
+import redCyan_ from "./red-cyan.ts";
+import redSky_ from "./red-sky.ts";
+import redSkySlate_ from "./red-sky-slate.ts";
+import roseTeal_ from "./rose-teal.ts";
+import skyAmber_ from "./sky-amber.ts";
+import slateCyan_ from "./slate-cyan.ts";
+import slateTealOcean_ from "./slate-teal-ocean.ts";
+import stone_ from "./stone.ts";
+import stoneOrangeEarth_ from "./stone-orange-earth.ts";
+import taupe_ from "./taupe.ts";
+import taupeOliveClay_ from "./taupe-olive-clay.ts";
+import taupeRoseBlush_ from "./taupe-rose-blush.ts";
+import tealRose_ from "./teal-rose.ts";
+import violetLime_ from "./violet-lime.ts";
+import violetRoseDusk_ from "./violet-rose-dusk.ts";
+import zinc_ from "./zinc.ts";
+
 /** Kebab-case theme names matching the generated CSS filenames (without extension). */
 export const themeNames = [
 	"amber-olive-safari",
@@ -146,3 +192,58 @@ export const themeNames = [
 	"violet-rose-dusk",
 	"zinc",
 ] as const;
+
+/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */
+export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
+	amberOliveSafari: amberOliveSafari_,
+	blueOrange: blueOrange_,
+	cyanRed: cyanRed_,
+	cyanSlate: cyanSlate_,
+	emeraldAmberForest: emeraldAmberForest_,
+	emeraldPink: emeraldPink_,
+	fuchsiaEmerald: fuchsiaEmerald_,
+	gray: gray_,
+	indigoAmber: indigoAmber_,
+	limeFuchsiaNeon: limeFuchsiaNeon_,
+	mauve: mauve_,
+	mauveLimeElectric: mauveLimeElectric_,
+	mauveTeal: mauveTeal_,
+	mist: mist_,
+	mistIndigoFjord: mistIndigoFjord_,
+	mistVioletAurora: mistVioletAurora_,
+	monokaiCyan: monokaiCyan_,
+	monokaiGreen: monokaiGreen_,
+	monokaiPink: monokaiPink_,
+	olive: olive_,
+	oliveAmberSafari: oliveAmberSafari_,
+	orangePinkSunset: orangePinkSunset_,
+	pinkEmerald: pinkEmerald_,
+	pinkTeal: pinkTeal_,
+	purpleYellow: purpleYellow_,
+	rainbow: rainbow_,
+	redBlue: redBlue_,
+	redCyan: redCyan_,
+	redSky: redSky_,
+	redSkySlate: redSkySlate_,
+	roseTeal: roseTeal_,
+	skyAmber: skyAmber_,
+	slateCyan: slateCyan_,
+	slateTealOcean: slateTealOcean_,
+	stone: stone_,
+	stoneOrangeEarth: stoneOrangeEarth_,
+	taupe: taupe_,
+	taupeOliveClay: taupeOliveClay_,
+	taupeRoseBlush: taupeRoseBlush_,
+	tealRose: tealRose_,
+	violetLime: violetLime_,
+	violetRoseDusk: violetRoseDusk_,
+	zinc: zinc_,
+};
+
+/** All bundled theme names (camelCase). */
+export const bundledThemeNames: readonly string[] = Object.keys(bundledThemes);
+
+/** Look up a bundled theme by camelCase name. Returns undefined if unknown. */
+export function getBundledTheme(name: string): ThemeSchema | undefined {
+	return bundledThemes[name];
+}

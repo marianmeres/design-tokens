@@ -1,19 +1,16 @@
 export { colors } from "../../src/colors.ts";
 export * as themes from "../../src/themes/mod.ts";
-export {
-	generateCssTokens,
-	toCssString,
-} from "../../src/generate.ts";
+export { generateCssTokens, toCssString } from "../../src/generate.ts";
 export type {
-	ThemeSchema,
-	TokenSchema,
 	ColorPair,
 	ColorValue,
 	SingleColor,
+	ThemeSchema,
+	TokenSchema,
 } from "../../src/types.ts";
 
 import { colors } from "../../src/colors.ts";
-import type { ThemeSchema, SingleColor } from "../../src/types.ts";
+import type { SingleColor, ThemeSchema } from "../../src/types.ts";
 
 type ColorsMap = typeof colors;
 
@@ -27,9 +24,11 @@ export function buildHexToNameMap(
 			// black, white
 			map.set(value.toLowerCase(), family);
 		} else {
-			for (const [shade, hex] of Object.entries(
-				value as Record<string, string>,
-			)) {
+			for (
+				const [shade, hex] of Object.entries(
+					value as Record<string, string>,
+				)
+			) {
 				if (!map.has(hex.toLowerCase())) {
 					map.set(hex.toLowerCase(), `${family}-${shade}`);
 				}
@@ -77,8 +76,9 @@ export function selectionForHex(
 ): { family: string; shade: number | null } | null {
 	const name = hexToName.get(hex.toLowerCase());
 	if (!name) return null;
-	if (name === "black" || name === "white")
+	if (name === "black" || name === "white") {
 		return { family: name, shade: null };
+	}
 	const idx = name.lastIndexOf("-");
 	return {
 		family: name.substring(0, idx),
@@ -114,8 +114,9 @@ function singleColorToTs(
 	const parts: string[] = [];
 	parts.push(`DEFAULT: ${colorRef(val.DEFAULT, hexToName)}`);
 	if (val.hover) parts.push(`hover: ${colorRef(val.hover, hexToName)}`);
-	if (val.active)
+	if (val.active) {
 		parts.push(`active: ${colorRef(val.active, hexToName)}`);
+	}
 	return `{\n\t\t\t\t\t${parts.join(",\n\t\t\t\t\t")},\n\t\t\t\t}`;
 }
 
@@ -140,23 +141,29 @@ export function themeToTypeScript(
 		}
 
 		const pairedLines: string[] = [];
-		for (const [key, pair] of Object.entries(
-			s.colors.role.paired,
-		)) {
+		for (
+			const [key, pair] of Object.entries(
+				s.colors.role.paired,
+			)
+		) {
 			const parts = [
 				`DEFAULT: ${colorRef(pair.DEFAULT, hexToName)}`,
 				`foreground: ${colorRef(pair.foreground, hexToName)}`,
 			];
 			const qkey = key.includes("-") ? `"${key}"` : key;
 			pairedLines.push(
-				`\t\t\t\t${qkey}: {\n\t\t\t\t\t${parts.join(",\n\t\t\t\t\t")},\n\t\t\t\t}`,
+				`\t\t\t\t${qkey}: {\n\t\t\t\t\t${
+					parts.join(",\n\t\t\t\t\t")
+				},\n\t\t\t\t}`,
 			);
 		}
 
 		const singleLines: string[] = [];
-		for (const [key, val] of Object.entries(
-			s.colors.role.single,
-		)) {
+		for (
+			const [key, val] of Object.entries(
+				s.colors.role.single,
+			)
+		) {
 			singleLines.push(
 				`\t\t\t\t${key}: ${singleColorToTs(val, hexToName)}`,
 			);
@@ -192,7 +199,9 @@ ${lightTs}
 		out += `\n${darkTs}\n`;
 	}
 
-	out += `\nconst theme: ThemeSchema = { light${schema.dark ? ", dark" : ""} };\n\nexport default theme;\n`;
+	out += `\nconst theme: ThemeSchema = { light${
+		schema.dark ? ", dark" : ""
+	} };\n\nexport default theme;\n`;
 
 	return out;
 }

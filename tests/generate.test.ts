@@ -198,3 +198,159 @@ Deno.test("generateThemeCss - only light mode when dark is undefined", () => {
 	const rootCount = css.split(":root").length - 1;
 	assertEquals(rootCount, 1);
 });
+
+// --- prefix normalization (I3) ---
+
+Deno.test("generateCssTokens - prefix without trailing dash is normalized", () => {
+	const tokens = generateCssTokens(minimalSchema, "app");
+	assertEquals(tokens["app-color-primary"], "#27272a");
+	assert(!tokens["appcolor-primary"]);
+});
+
+Deno.test("generateCssTokens - prefix with trailing dash is preserved", () => {
+	const tokens = generateCssTokens(minimalSchema, "app-");
+	assertEquals(tokens["app-color-primary"], "#27272a");
+});
+
+Deno.test("generateCssTokens - empty prefix produces unprefixed tokens", () => {
+	const tokens = generateCssTokens(minimalSchema, "");
+	assert(tokens["color-primary"]);
+	assert(!tokens["-color-primary"]);
+});
+
+// --- deriveStates option (I1) ---
+
+Deno.test("generateCssTokens - deriveStates=false makes states fall back to DEFAULT", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX, {
+		deriveStates: false,
+	});
+	assertEquals(tokens["my-color-primary-hover"], "#27272a");
+	assertEquals(tokens["my-color-primary-active"], "#27272a");
+	assert(!tokens["my-color-primary-hover"].includes("color-mix"));
+});
+
+Deno.test("generateCssTokens - deriveStates=true (default) produces color-mix", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX, {
+		deriveStates: true,
+	});
+	assert(tokens["my-color-primary-hover"].includes("color-mix"));
+});
+
+Deno.test("generateCssTokens - mode string shorthand still works", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
+	assert(tokens["my-color-primary-hover"].includes("white"));
+});
+
+// --- surfaceForegroundContrast (D2) ---
+
+Deno.test("generateCssTokens - default surface-intent-foreground uses 50% mix", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX);
+	assert(tokens["my-color-surface-primary-foreground"].includes("50%"));
+});
+
+Deno.test("generateCssTokens - surface-intent-foreground contrast is configurable", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX, {
+		surfaceForegroundContrast: 75,
+	});
+	assert(tokens["my-color-surface-primary-foreground"].includes("75%"));
+});
+
+// --- foregroundHover/foregroundActive (D1) ---
+
+Deno.test("generateCssTokens - foregroundHover/Active default to foreground", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX);
+	assertEquals(tokens["my-color-primary-foreground-hover"], "#ffffff");
+	assertEquals(tokens["my-color-primary-foreground-active"], "#ffffff");
+});
+
+Deno.test("generateCssTokens - explicit foregroundHover/Active are respected", () => {
+	const schema: TokenSchema = {
+		...minimalSchema,
+		colors: {
+			...minimalSchema.colors,
+			intent: {
+				...minimalSchema.colors.intent,
+				primary: {
+					DEFAULT: "#27272a",
+					foreground: "#ffffff",
+					foregroundHover: "#eeeeee",
+					foregroundActive: "#dddddd",
+				},
+			},
+		},
+	};
+	const tokens = generateCssTokens(schema, PREFIX);
+	assertEquals(tokens["my-color-primary-foreground-hover"], "#eeeeee");
+	assertEquals(tokens["my-color-primary-foreground-active"], "#dddddd");
+});
+
+// --- surface-1 support (B1) ---
+
+Deno.test("generateCssTokens - surface-1 paired token is auto-derived", () => {
+	const schema: TokenSchema = {
+		...minimalSchema,
+		colors: {
+			...minimalSchema.colors,
+			role: {
+				...minimalSchema.colors.role,
+				paired: {
+					...minimalSchema.colors.role.paired,
+					"surface-1": { DEFAULT: "#d4d4d8", foreground: "#18181b" },
+				},
+			},
+		},
+	};
+	const tokens = generateCssTokens(schema, PREFIX);
+	assertEquals(tokens["my-color-surface-1"], "#d4d4d8");
+	assert(tokens["my-color-surface-1-hover"].includes("color-mix"));
+});
+
+// --- token grouping (B7) ---
+
+Deno.test("toCssString - surface-1 and surface group together", () => {
+	const schema: TokenSchema = {
+		...minimalSchema,
+		colors: {
+			...minimalSchema.colors,
+			role: {
+				...minimalSchema.colors.role,
+				paired: {
+					...minimalSchema.colors.role.paired,
+					"surface-1": { DEFAULT: "#d4d4d8", foreground: "#18181b" },
+				},
+			},
+		},
+	};
+	const tokens = generateCssTokens(schema, PREFIX);
+	const css = toCssString(tokens);
+	// surface, surface-primary, surface-1 should all be within one contiguous
+	// group (no blank line between them).
+	const surfaceIdx = css.indexOf("--my-color-surface:");
+	const surface1Idx = css.indexOf("--my-color-surface-1:");
+	const surfacePrimaryIdx = css.indexOf("--my-color-surface-primary:");
+	assert(surfaceIdx > 0 && surface1Idx > 0 && surfacePrimaryIdx > 0);
+	const block = css.substring(
+		Math.min(surfaceIdx, surface1Idx, surfacePrimaryIdx),
+		Math.max(surfaceIdx, surface1Idx, surfacePrimaryIdx) + 50,
+	);
+	assert(
+		!block.includes("\n\n"),
+		"surface-* tokens should not be separated by blank lines",
+	);
+});
+
+// --- cssLayer option (I8) ---
+
+Deno.test("generateThemeCss - cssLayer wraps output in @layer", () => {
+	const schema: ThemeSchema = { light: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX, { cssLayer: "tokens" });
+	assert(css.startsWith("@layer tokens {"));
+	assert(css.trimEnd().endsWith("}"));
+	assert(css.includes(":root"));
+});
+
+Deno.test("generateThemeCss - no cssLayer by default", () => {
+	const schema: ThemeSchema = { light: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX);
+	assert(!css.includes("@layer"));
+});

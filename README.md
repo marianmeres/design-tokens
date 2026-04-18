@@ -37,6 +37,8 @@ const theme: ThemeSchema = {
 					background: { DEFAULT: "#ffffff", foreground: "#171717" },
 					muted: { DEFAULT: "#f5f5f5", foreground: "#737373" },
 					surface: { DEFAULT: "#e5e5e5", foreground: "#171717" },
+					// Optional extra elevation (all bundled themes include it):
+					"surface-1": { DEFAULT: "#d4d4d4", foreground: "#171717" },
 				},
 				single: {
 					foreground: "#171717",
@@ -49,6 +51,7 @@ const theme: ThemeSchema = {
 	},
 };
 
+// The prefix's trailing dash is optional — "my" and "my-" are equivalent.
 const css = generateThemeCss(theme, "my-");
 // → :root { --my-color-primary: #2563eb; ... }
 ```
@@ -62,6 +65,7 @@ All bundled themes are available as pre-built CSS files with the `stuic-` prefix
 ```
 
 Or via bundler import:
+
 ```ts
 import "@marianmeres/design-tokens/css/mauve-teal.css";
 ```
@@ -98,6 +102,10 @@ const myTheme: ThemeSchema = {
 						DEFAULT: colors.slate[200],
 						foreground: colors.slate[900],
 					},
+					"surface-1": {
+						DEFAULT: colors.slate[300],
+						foreground: colors.slate[900],
+					},
 				},
 				single: {
 					foreground: colors.slate[900],
@@ -124,6 +132,29 @@ import { gray, stone, zinc } from "@marianmeres/design-tokens/themes";
 import { generateThemeCss } from "@marianmeres/design-tokens";
 
 const css = generateThemeCss(zinc, "app-");
+```
+
+Dynamic lookup via the registry (useful when the theme name comes from config):
+
+```ts
+import { bundledThemeNames, getBundledTheme } from "@marianmeres/design-tokens/themes";
+
+const theme = getBundledTheme("mauveTeal");
+if (theme) {
+	const css = generateThemeCss(theme, "app-");
+}
+```
+
+### Options
+
+`generateThemeCss` and `generateCssTokens` accept an options object:
+
+```ts
+generateThemeCss(zinc, "app-", {
+	deriveStates: false, // disable color-mix hover/active derivation
+	surfaceForegroundContrast: 70, // stronger contrast on surface-{intent}-foreground
+	cssLayer: "tokens", // wrap output in @layer tokens { ... }
+});
 ```
 
 ## Reboot bridge

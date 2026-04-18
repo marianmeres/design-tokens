@@ -1,9 +1,9 @@
 import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
-import * as themes from "../src/themes/mod.ts";
+import { bundledThemes } from "../src/themes/mod.ts";
 import { generateThemeCss } from "../src/generate.ts";
 
-const PREFIX = "stuic-";
+const PREFIX = Deno.env.get("CSS_PREFIX") ?? "stuic-";
 const OUT_DIR = "css";
 
 /** camelCase → kebab-case */
@@ -13,10 +13,7 @@ function toKebab(s: string): string {
 
 await ensureDir(OUT_DIR);
 
-const entries = Object.entries(themes).filter(
-	(e): e is [string, themes.ThemeSchema] =>
-		e[0] !== "ThemeSchema" && e[0] !== "themeNames"
-);
+const entries = Object.entries(bundledThemes);
 
 for (const [name, theme] of entries) {
 	const css = "/* prettier-ignore */\n" + generateThemeCss(theme, PREFIX);
@@ -24,4 +21,6 @@ for (const [name, theme] of entries) {
 	await Deno.writeTextFile(join(OUT_DIR, fileName), css);
 }
 
-console.log(`Generated ${entries.length} CSS files in ${OUT_DIR}/`);
+console.log(
+	`Generated ${entries.length} CSS files in ${OUT_DIR}/ with prefix "${PREFIX}".`,
+);

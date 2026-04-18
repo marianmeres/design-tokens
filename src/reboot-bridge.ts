@@ -8,26 +8,49 @@
  */
 
 import type { GeneratedTokens, ThemeSchema } from "./types.ts";
-import { generateCssTokens, toCssString } from "./generate.ts";
+import { generateCssTokens, type GenerateThemeOptions, toCssString } from "./generate.ts";
 import { hexToRgbTriplet } from "./utils.ts";
+
+/**
+ * Normalize a CSS variable prefix to always end with a single dash (empty
+ * prefix passes through).
+ */
+function normalizePrefix(prefix: string): string {
+	if (prefix === "") return "";
+	return prefix.endsWith("-") ? prefix : prefix + "-";
+}
 
 /**
  * Generate Bootstrap Reboot bridge CSS variables from design tokens.
  *
  * Maps design tokens to the --bs-* variables that Reboot's CSS rules actually use.
- * For RGB triplet variables (--bs-*-rgb), hex values are parsed automatically.
- * Non-hex values are passed through for hex fields but cannot produce RGB triplets.
+ *
+ * ### About `-rgb` companion variables
+ *
+ * Bootstrap derives alpha-blended colors via `rgba(var(--bs-foo-rgb), 0.5)` —
+ * which requires a raw `r, g, b` triplet, not a `var()` reference. This bridge
+ * generates `--bs-*-rgb` companions ONLY when the underlying token resolves
+ * to a literal hex color. For auto-derived tokens (e.g. the implicit
+ * `primary-hover` when no explicit hover is given) the value is a
+ * `color-mix()` expression, which cannot be decomposed into an RGB triplet at
+ * build time — those companions are omitted, and any Reboot rule that needs
+ * them (notably `rgba(var(--bs-link-color-rgb), …)` alpha variants) will fall
+ * back to Reboot's defaults.
+ *
+ * If you need complete alpha-blend support, provide explicit hex `hover` /
+ * `active` values on your `ColorPair`s.
  *
  * @param tokens - Generated token key-value pairs (from generateCssTokens)
- * @param prefix - The same prefix used in generateCssTokens
+ * @param prefix - The same prefix used in generateCssTokens (trailing dash optional)
  */
 export function generateRebootBridge(
 	tokens: GeneratedTokens,
 	prefix: string,
 ): GeneratedTokens {
+	const p = normalizePrefix(prefix);
 	const bridge: GeneratedTokens = {};
-	const get = (key: string) => tokens[`${prefix}color-${key}`];
-	const ref = (key: string) => `var(--${prefix}color-${key})`;
+	const get = (key: string) => tokens[`${p}color-${key}`];
+	const ref = (key: string) => `var(--${p}color-${key})`;
 
 	// Helper: set a --bs-* var to a var() reference
 	const set = (bsKey: string, tokenKey: string) => {
@@ -53,10 +76,10 @@ export function generateRebootBridge(
 	setWithRgb("link-color", "primary");
 
 	// Link hover — use primary-hover token
-	if (tokens[`${prefix}color-primary-hover`]) {
+	if (tokens[`${p}color-primary-hover`]) {
 		bridge[`bs-link-hover-color`] = ref("primary-hover");
 		const triplet = hexToRgbTriplet(
-			tokens[`${prefix}color-primary-hover`],
+			tokens[`${p}color-primary-hover`],
 		);
 		if (triplet) bridge[`bs-link-hover-color-rgb`] = triplet;
 	}
@@ -91,28 +114,35 @@ export function generateRebootBridge(
  * Generate complete themed CSS including both design tokens AND reboot bridge.
  *
  * @param schema - Theme schema with light (required) and dark (optional) modes
- * @param prefix - Required CSS variable prefix
+ * @param prefix - CSS variable prefix (trailing dash optional)
+ * @param options - Forwarded to {@link generateCssTokens} for each mode
  */
 export function generateThemedCss(
 	schema: ThemeSchema,
 	prefix: string,
+	options: Omit<GenerateThemeOptions, "cssLayer"> = {},
 ): string {
 	// Light mode
-	const lightTokens = generateCssTokens(schema.light, prefix, "light");
+	const lightTokens = generateCssTokens(schema.light, prefix, {
+		...options,
+		mode: "light",
+	});
 	const lightBridge = generateRebootBridge(lightTokens, prefix);
 	let css = toCssString({ ...lightTokens, ...lightBridge });
 
-	// Override reboot's RGB triplet approach for links so that color-mix() values work
+	// Reboot's default `a` rules use `rgba(var(--bs-link-color-rgb), …)` for
+	// alpha variants. When the underlying token is a `color-mix()` expression
+	// the -rgb companion doesn't exist — these overrides force the plain
+	// `var()` path so links still render correctly.
 	css += "\na { color: var(--bs-link-color); }";
 	css += "\na:hover { color: var(--bs-link-hover-color); }";
 
 	// Dark mode
 	if (schema.dark) {
-		const darkTokens = generateCssTokens(
-			schema.dark,
-			prefix,
-			"dark",
-		);
+		const darkTokens = generateCssTokens(schema.dark, prefix, {
+			...options,
+			mode: "dark",
+		});
 		const darkBridge = generateRebootBridge(darkTokens, prefix);
 		css += "\n" +
 			toCssString(

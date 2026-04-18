@@ -48,6 +48,8 @@ const lines: string[] = [
 	` * @module`,
 	` */`,
 	``,
+	`import type { ThemeSchema } from "../types.ts";`,
+	``,
 	`/** A complete theme definition with required light mode and optional dark mode. */`,
 	`export type { ThemeSchema } from "../types.ts";`,
 	``,
@@ -55,18 +57,56 @@ const lines: string[] = [
 
 for (const { kebab, camel, jsdoc } of entries) {
 	lines.push(`${jsdoc}`);
-	lines.push(`export { default as ${camel} } from "./${kebab}.ts";`);
+	lines.push(
+		`export { default as ${camel} } from "./${kebab}.ts";`,
+	);
+}
+
+// Build a camelCase import + registry map inline so the registry has no
+// runtime dependency on this module's own export namespace (avoids ESM
+// circular-import surprises).
+lines.push(``);
+for (const { kebab, camel } of entries) {
+	lines.push(`import ${camel}_ from "./${kebab}.ts";`);
 }
 
 lines.push(``);
 lines.push(
-	`/** Kebab-case theme names matching the generated CSS filenames (without extension). */`
+	`/** Kebab-case theme names matching the generated CSS filenames (without extension). */`,
 );
 lines.push(`export const themeNames = [`);
 for (const { kebab } of entries) {
 	lines.push(`\t"${kebab}",`);
 }
 lines.push(`] as const;`);
+
+lines.push(``);
+lines.push(
+	`/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */`,
+);
+lines.push(`export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {`);
+for (const { camel } of entries) {
+	lines.push(`\t${camel}: ${camel}_,`);
+}
+lines.push(`};`);
+
+lines.push(``);
+lines.push(
+	`/** All bundled theme names (camelCase). */`,
+);
+lines.push(
+	`export const bundledThemeNames: readonly string[] = Object.keys(bundledThemes);`,
+);
+
+lines.push(``);
+lines.push(
+	`/** Look up a bundled theme by camelCase name. Returns undefined if unknown. */`,
+);
+lines.push(
+	`export function getBundledTheme(name: string): ThemeSchema | undefined {`,
+);
+lines.push(`\treturn bundledThemes[name];`);
+lines.push(`}`);
 lines.push(``);
 
 await Deno.writeTextFile(MOD_FILE, lines.join("\n"));
@@ -76,5 +116,5 @@ const cmd = new Deno.Command("deno", { args: ["fmt", MOD_FILE] });
 await cmd.output();
 
 console.log(
-	`Generated ${MOD_FILE} with ${entries.length} themes.`
+	`Generated ${MOD_FILE} with ${entries.length} themes.`,
 );
