@@ -1,6 +1,6 @@
 {
   "name": "@marianmeres/design-tokens",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "exports": {
     ".": "./src/mod.ts",
     "./reboot": "./src/reboot-bridge.ts",
