@@ -5,7 +5,6 @@
  * light and dark modes, with automatic hover/active state derivation
  * using `color-mix()`.
  *
- * @module
  */
 
 /** Generate CSS token key-value pairs from a {@link TokenSchema}. */
