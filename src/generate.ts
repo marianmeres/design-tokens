@@ -67,16 +67,17 @@ function isSingleColorObject(value: SingleColor): value is ColorValue {
 
 /**
  * Derive hover/active using color-mix (pure CSS, no Tailwind).
- * Light mode: darken. Dark mode: lighten.
+ * Mix toward `--<prefix>color-foreground` so hover stays theme-coherent and
+ * doesn't drift in hue (mixing toward pure `black`/`white` rotates hue
+ * through OKLCH-zero, which reads as a warm shift on low-chroma neutrals).
  */
 function deriveColorMixStates(
 	cssVarRef: string,
-	mode: "light" | "dark",
+	foregroundRef: string,
 ): { hover: string; active: string } {
-	const mix = mode === "light" ? "black" : "white";
 	return {
-		hover: `color-mix(in oklch, ${cssVarRef}, ${mix} 10%)`,
-		active: `color-mix(in oklch, ${cssVarRef}, ${mix} 20%)`,
+		hover: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 10%)`,
+		active: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 20%)`,
 	};
 }
 
@@ -85,10 +86,12 @@ function fillPairStates(
 	pair: ColorPair,
 	prefix: string,
 	key: string,
-	mode: "light" | "dark",
 ): ColorPair {
 	if (pair.hover !== undefined && pair.active !== undefined) return pair;
-	const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, mode);
+	const derived = deriveColorMixStates(
+		`var(--${prefix}color-${key})`,
+		`var(--${prefix}color-foreground)`,
+	);
 	return {
 		...pair,
 		hover: pair.hover ?? derived.hover,
@@ -101,10 +104,12 @@ function fillColorValueStates(
 	color: ColorValue,
 	prefix: string,
 	key: string,
-	mode: "light" | "dark",
 ): ColorValue {
 	if (color.hover !== undefined && color.active !== undefined) return color;
-	const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, mode);
+	const derived = deriveColorMixStates(
+		`var(--${prefix}color-${key})`,
+		`var(--${prefix}color-foreground)`,
+	);
 	return {
 		...color,
 		hover: color.hover ?? derived.hover,
@@ -175,7 +180,7 @@ export function generateCssTokens(
 
 	// Intent colors (auto-derive hover/active via color-mix when enabled)
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
-		const filled = deriveStates ? fillPairStates(pair, p, key, mode) : pair;
+		const filled = deriveStates ? fillPairStates(pair, p, key) : pair;
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -194,7 +199,7 @@ export function generateCssTokens(
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
 		const filled = key === "background" || !deriveStates
 			? pair
-			: fillPairStates(pair, p, key, mode);
+			: fillPairStates(pair, p, key);
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -204,7 +209,7 @@ export function generateCssTokens(
 			generateSingleColorTokens(
 				tokens,
 				key,
-				fillColorValueStates(color, p, key, mode),
+				fillColorValueStates(color, p, key),
 				p,
 			);
 		} else {

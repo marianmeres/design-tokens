@@ -144,6 +144,58 @@
 				color: var(--dt-color-surface-1-foreground);
 			}
 
+			/* Role button demo (background, muted, surface, surface-1 + hover) */
+			.role-buttons {
+				display: flex;
+				gap: 0.5rem;
+				margin-top: 0.75rem;
+				flex-wrap: wrap;
+			}
+			.role-button {
+				flex: 1;
+				min-width: 6rem;
+				padding: 0.5rem 0.75rem;
+				border: 1px solid var(--dt-color-border, rgba(128, 128, 128, 0.3));
+				border-radius: 6px;
+				font-size: 0.75rem;
+				font-family: ui-monospace, "SF Mono", Monaco, monospace;
+				font-weight: 500;
+				cursor: pointer;
+				transition: background 0.15s, color 0.15s;
+			}
+			.role-button.btn-background {
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+			}
+			.role-button.btn-background:hover {
+				background: var(--dt-color-background-hover);
+				color: var(--dt-color-background-foreground-hover);
+			}
+			.role-button.btn-muted {
+				background: var(--dt-color-muted);
+				color: var(--dt-color-muted-foreground);
+			}
+			.role-button.btn-muted:hover {
+				background: var(--dt-color-muted-hover);
+				color: var(--dt-color-muted-foreground-hover);
+			}
+			.role-button.btn-surface {
+				background: var(--dt-color-surface);
+				color: var(--dt-color-surface-foreground);
+			}
+			.role-button.btn-surface:hover {
+				background: var(--dt-color-surface-hover);
+				color: var(--dt-color-surface-foreground-hover);
+			}
+			.role-button.btn-surface-1 {
+				background: var(--dt-color-surface-1);
+				color: var(--dt-color-surface-1-foreground);
+			}
+			.role-button.btn-surface-1:hover {
+				background: var(--dt-color-surface-1-hover);
+				color: var(--dt-color-surface-1-foreground-hover);
+			}
+
 			/* Hero intent swatches (primary + accent) */
 			.intent-hero {
 				display: flex;
@@ -154,10 +206,13 @@
 				flex: 1;
 				padding: 1.5rem 1rem;
 				border-radius: 8px;
+				border: 1px solid var(--dt-color-border);
 				font-family: ui-monospace, "SF Mono", Monaco, monospace;
 				font-weight: 600;
 				font-size: 0.9rem;
 				text-align: center;
+				cursor: pointer;
+				transition: background 0.15s, color 0.15s;
 			}
 
 			/* Secondary intent swatches */
@@ -170,32 +225,55 @@
 			.intent-swatch {
 				padding: 0.5rem 0.75rem;
 				border-radius: 6px;
+				border: 1px solid var(--dt-color-border);
 				font-size: 0.75rem;
 				font-family: ui-monospace, "SF Mono", Monaco, monospace;
 				font-weight: 500;
 				flex: 1;
 				text-align: center;
+				cursor: pointer;
+				transition: background 0.15s, color 0.15s;
 			}
 
 			.swatch-primary {
 				background: var(--dt-color-primary);
 				color: var(--dt-color-primary-foreground);
 			}
+			.swatch-primary:hover {
+				background: var(--dt-color-primary-hover);
+				color: var(--dt-color-primary-foreground-hover);
+			}
 			.swatch-accent {
 				background: var(--dt-color-accent);
 				color: var(--dt-color-accent-foreground);
+			}
+			.swatch-accent:hover {
+				background: var(--dt-color-accent-hover);
+				color: var(--dt-color-accent-foreground-hover);
 			}
 			.swatch-destructive {
 				background: var(--dt-color-destructive);
 				color: var(--dt-color-destructive-foreground);
 			}
+			.swatch-destructive:hover {
+				background: var(--dt-color-destructive-hover);
+				color: var(--dt-color-destructive-foreground-hover);
+			}
 			.swatch-warning {
 				background: var(--dt-color-warning);
 				color: var(--dt-color-warning-foreground);
 			}
+			.swatch-warning:hover {
+				background: var(--dt-color-warning-hover);
+				color: var(--dt-color-warning-foreground-hover);
+			}
 			.swatch-success {
 				background: var(--dt-color-success);
 				color: var(--dt-color-success-foreground);
+			}
+			.swatch-success:hover {
+				background: var(--dt-color-success-hover);
+				color: var(--dt-color-success-foreground-hover);
 			}
 
 			/* Single role indicators */
@@ -471,6 +549,12 @@
 							</div>
 						</div>
 					</div>
+					<div class="role-buttons">
+						<button class="role-button btn-background">background</button>
+						<button class="role-button btn-muted">muted</button>
+						<button class="role-button btn-surface">surface</button>
+						<button class="role-button btn-surface-1">surface-1</button>
+					</div>
 					<div class="intent-hero">
 						<div class="intent-hero-swatch swatch-primary">primary</div>
 						<div class="intent-hero-swatch swatch-accent">accent</div>
@@ -526,6 +610,12 @@
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="role-buttons">
+						<button class="role-button btn-background">background</button>
+						<button class="role-button btn-muted">muted</button>
+						<button class="role-button btn-surface">surface</button>
+						<button class="role-button btn-surface-1">surface-1</button>
 					</div>
 					<div class="intent-hero">
 						<div class="intent-hero-swatch swatch-primary">primary</div>

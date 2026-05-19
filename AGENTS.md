@@ -101,7 +101,7 @@ Entry points:
 1. All public functions must have JSDoc and explicit return types (Deno/JSR requirement)
 2. Token naming: `--{prefix}color-{key}`, `--{prefix}color-{key}-hover`, etc.
 3. Prefix is auto-normalized — `"my"` and `"my-"` both produce `--my-color-*`. Empty string produces unprefixed.
-4. Hover/active auto-derived via `color-mix(in oklch, ...)` — light darkens with black, dark lightens with white. Disable with `deriveStates: false`.
+4. Hover/active auto-derived via `color-mix(in oklch, base, var(--{prefix}color-foreground) 10%/20%)` — mode-independent, theme-coherent (avoids OKLCH hue drift through pure black/white). Disable with `deriveStates: false`.
 5. Surface-intent tokens derived via `color-mix(in srgb, ...)` from intent + background. Foreground contrast defaults to 50% — tune via `surfaceForegroundContrast`.
 6. Theme files use `export default` with `ThemeSchema` type annotation. All bundled themes include an optional `surface-1` paired role (extra elevation).
 7. Formatting: tabs, 90-char line width, 4-space indent width (`deno fmt`)

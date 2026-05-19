@@ -67,20 +67,28 @@ Deno.test("generateCssTokens - derives hover/active with color-mix when not prov
 		),
 	);
 	assert(
-		tokens["my-color-primary-hover"].includes("black 10%"),
+		tokens["my-color-primary-hover"].includes(
+			"var(--my-color-foreground) 10%",
+		),
 	);
 	assert(
-		tokens["my-color-primary-active"].includes("black 20%"),
+		tokens["my-color-primary-active"].includes(
+			"var(--my-color-foreground) 20%",
+		),
 	);
 });
 
-Deno.test("generateCssTokens - dark mode derives with white instead of black", () => {
+Deno.test("generateCssTokens - dark mode uses the same foreground-targeted derivation", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
 	assert(
-		tokens["my-color-primary-hover"].includes("white 10%"),
+		tokens["my-color-primary-hover"].includes(
+			"var(--my-color-foreground) 10%",
+		),
 	);
 	assert(
-		tokens["my-color-primary-active"].includes("white 20%"),
+		tokens["my-color-primary-active"].includes(
+			"var(--my-color-foreground) 20%",
+		),
 	);
 });
 
@@ -237,8 +245,9 @@ Deno.test("generateCssTokens - deriveStates=true (default) produces color-mix", 
 });
 
 Deno.test("generateCssTokens - mode string shorthand still works", () => {
+	// Dark mode flips the surface-intent foreground contrast mix from black to white.
 	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
-	assert(tokens["my-color-primary-hover"].includes("white"));
+	assert(tokens["my-color-surface-primary-foreground"].includes("white"));
 });
 
 // --- surfaceForegroundContrast (D2) ---
