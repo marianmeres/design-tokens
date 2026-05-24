@@ -56,39 +56,63 @@ Deno.test("generateCssTokens - empty prefix is valid", () => {
 	assertEquals(tokens["color-primary"], "#27272a");
 });
 
-Deno.test("generateCssTokens - derives hover/active with color-mix when not provided", () => {
+Deno.test("generateCssTokens - intent colors derive hover/active toward black in light mode", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX);
+	assert(tokens["my-color-primary-hover"].includes("color-mix(in oklch,"));
+	assert(tokens["my-color-primary-hover"].includes("var(--my-color-primary)"));
+	assert(tokens["my-color-primary-hover"].includes("black 10%"));
+	assert(tokens["my-color-primary-active"].includes("black 20%"));
+});
+
+Deno.test("generateCssTokens - intent colors derive hover/active toward white in dark mode", () => {
+	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
+	assert(tokens["my-color-primary-hover"].includes("white 10%"));
+	assert(tokens["my-color-primary-active"].includes("white 20%"));
+});
+
+Deno.test("generateCssTokens - role paired colors derive hover/active toward foreground", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX);
 	assert(
-		tokens["my-color-primary-hover"].includes("color-mix(in oklch,"),
+		tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"),
 	);
 	assert(
-		tokens["my-color-primary-hover"].includes(
-			"var(--my-color-primary)",
-		),
-	);
-	assert(
-		tokens["my-color-primary-hover"].includes(
-			"var(--my-color-foreground) 10%",
-		),
-	);
-	assert(
-		tokens["my-color-primary-active"].includes(
-			"var(--my-color-foreground) 20%",
-		),
+		tokens["my-color-muted-active"].includes("var(--my-color-foreground) 20%"),
 	);
 });
 
-Deno.test("generateCssTokens - dark mode uses the same foreground-targeted derivation", () => {
+Deno.test("generateCssTokens - role paired colors stay foreground-targeted in dark mode", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
 	assert(
-		tokens["my-color-primary-hover"].includes(
-			"var(--my-color-foreground) 10%",
-		),
+		tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"),
+	);
+	// Role bucket must never use black/white targets — guards against
+	// accidental cross-bucket regression.
+	assert(!tokens["my-color-muted-hover"].includes("black"));
+	assert(!tokens["my-color-muted-hover"].includes("white"));
+});
+
+Deno.test("generateCssTokens - role single object colors derive toward foreground", () => {
+	const schema: TokenSchema = {
+		...minimalSchema,
+		colors: {
+			...minimalSchema.colors,
+			role: {
+				...minimalSchema.colors.role,
+				single: {
+					...minimalSchema.colors.role.single,
+					// Override the fixture's `input` (which has explicit hover) so
+					// hover is auto-derived.
+					input: { DEFAULT: "#fafafa" },
+				},
+			},
+		},
+	};
+	const tokens = generateCssTokens(schema, PREFIX);
+	assert(
+		tokens["my-color-input-hover"].includes("var(--my-color-foreground) 10%"),
 	);
 	assert(
-		tokens["my-color-primary-active"].includes(
-			"var(--my-color-foreground) 20%",
-		),
+		tokens["my-color-input-active"].includes("var(--my-color-foreground) 20%"),
 	);
 });
 

@@ -5550,24 +5550,25 @@ function normalizePrefix(prefix) {
 function isSingleColorObject(value) {
     return value !== null && typeof value === "object" && !Array.isArray(value) && "DEFAULT" in value;
 }
-function deriveColorMixStates(cssVarRef, foregroundRef) {
+function deriveColorMixStates(cssVarRef, strategy) {
+    const target = strategy.kind === "contrast" ? strategy.mode === "light" ? "black" : "white" : strategy.ref;
     return {
-        hover: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 10%)`,
-        active: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 20%)`
+        hover: `color-mix(in oklch, ${cssVarRef}, ${target} 10%)`,
+        active: `color-mix(in oklch, ${cssVarRef}, ${target} 20%)`
     };
 }
-function fillPairStates(pair, prefix, key) {
+function fillPairStates(pair, prefix, key, strategy) {
     if (pair.hover !== undefined && pair.active !== undefined) return pair;
-    const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, `var(--${prefix}color-foreground)`);
+    const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, strategy);
     return {
         ...pair,
         hover: pair.hover ?? derived.hover,
         active: pair.active ?? derived.active
     };
 }
-function fillColorValueStates(color, prefix, key) {
+function fillColorValueStates(color, prefix, key, strategy) {
     if (color.hover !== undefined && color.active !== undefined) return color;
-    const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, `var(--${prefix}color-foreground)`);
+    const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, strategy);
     return {
         ...color,
         hover: color.hover ?? derived.hover,
@@ -5602,8 +5603,12 @@ function generateCssTokens(schema, prefix, options = {}) {
     const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
     const p = normalizePrefix(prefix);
     const tokens = {};
+    const intentStrategy = {
+        kind: "contrast",
+        mode
+    };
     for (const [key, pair] of Object.entries(schema.colors.intent)){
-        const filled = deriveStates ? fillPairStates(pair, p, key) : pair;
+        const filled = deriveStates ? fillPairStates(pair, p, key, intentStrategy) : pair;
         generatePairedColorTokens(tokens, key, filled, p);
     }
     const contrastMix = mode === "light" ? "black" : "white";
@@ -5612,13 +5617,17 @@ function generateCssTokens(schema, prefix, options = {}) {
         tokens[`${p}color-surface-${key}-foreground`] = `color-mix(in srgb, var(--${p}color-${key}), ${contrastMix} ${surfaceContrast}%)`;
         tokens[`${p}color-surface-${key}-border`] = `color-mix(in srgb, var(--${p}color-${key}) 30%, var(--${p}color-background))`;
     }
+    const roleStrategy = {
+        kind: "foreground",
+        ref: `var(--${p}color-foreground)`
+    };
     for (const [key, pair] of Object.entries(schema.colors.role.paired)){
-        const filled = key === "background" || !deriveStates ? pair : fillPairStates(pair, p, key);
+        const filled = key === "background" || !deriveStates ? pair : fillPairStates(pair, p, key, roleStrategy);
         generatePairedColorTokens(tokens, key, filled, p);
     }
     for (const [key, color] of Object.entries(schema.colors.role.single)){
         if (isSingleColorObject(color) && deriveStates) {
-            generateSingleColorTokens(tokens, key, fillColorValueStates(color, p, key), p);
+            generateSingleColorTokens(tokens, key, fillColorValueStates(color, p, key, roleStrategy), p);
         } else {
             generateSingleColorTokens(tokens, key, color, p);
         }

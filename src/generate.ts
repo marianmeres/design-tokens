@@ -10,8 +10,16 @@ import type {
 /** Options for token generation. */
 export type GenerateOptions = {
 	/**
-	 * Light or dark mode. Affects the direction of auto-derived hover/active
-	 * states (darkens in light mode, lightens in dark mode).
+	 * Light or dark mode. Affects two things:
+	 *
+	 * 1. The direction of intent hover/active derivation (mixes toward `black`
+	 *    in light mode, `white` in dark mode), so saturated brand colors stay
+	 *    clean.
+	 * 2. The `surface-{intent}-foreground` contrast mix (same black/white
+	 *    direction).
+	 *
+	 * Role color hover/active is mode-independent — it always mixes toward
+	 * `--{prefix}color-foreground`, which itself flips per mode.
 	 *
 	 * @default "light"
 	 */
@@ -76,18 +84,30 @@ function isSingleColorObject(value: SingleColor): value is ColorValue {
 }
 
 /**
- * Derive hover/active using color-mix (pure CSS, no Tailwind).
- * Mix toward `--<prefix>color-foreground` so hover stays theme-coherent and
- * doesn't drift in hue (mixing toward pure `black`/`white` rotates hue
- * through OKLCH-zero, which reads as a warm shift on low-chroma neutrals).
+ * Strategy for deriving hover/active via color-mix.
+ *
+ * - `contrast` mixes toward pure `black`/`white` (mode-aware). Used for the
+ *   saturated intent bucket where neutral darkening/lightening reads cleanly.
+ * - `foreground` mixes toward a theme color reference (typically
+ *   `--{prefix}color-foreground`). Used for low-chroma role colors, where
+ *   mixing through pure black/white rotates hue through OKLCH chroma-zero and
+ *   reads as a warm shift on neutrals.
  */
+type MixStrategy =
+	| { kind: "contrast"; mode: "light" | "dark" }
+	| { kind: "foreground"; ref: string };
+
 function deriveColorMixStates(
 	cssVarRef: string,
-	foregroundRef: string,
+	strategy: MixStrategy,
 ): { hover: string; active: string } {
+	const target =
+		strategy.kind === "contrast"
+			? strategy.mode === "light" ? "black" : "white"
+			: strategy.ref;
 	return {
-		hover: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 10%)`,
-		active: `color-mix(in oklch, ${cssVarRef}, ${foregroundRef} 20%)`,
+		hover: `color-mix(in oklch, ${cssVarRef}, ${target} 10%)`,
+		active: `color-mix(in oklch, ${cssVarRef}, ${target} 20%)`,
 	};
 }
 
@@ -96,12 +116,10 @@ function fillPairStates(
 	pair: ColorPair,
 	prefix: string,
 	key: string,
+	strategy: MixStrategy,
 ): ColorPair {
 	if (pair.hover !== undefined && pair.active !== undefined) return pair;
-	const derived = deriveColorMixStates(
-		`var(--${prefix}color-${key})`,
-		`var(--${prefix}color-foreground)`,
-	);
+	const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, strategy);
 	return {
 		...pair,
 		hover: pair.hover ?? derived.hover,
@@ -114,12 +132,10 @@ function fillColorValueStates(
 	color: ColorValue,
 	prefix: string,
 	key: string,
+	strategy: MixStrategy,
 ): ColorValue {
 	if (color.hover !== undefined && color.active !== undefined) return color;
-	const derived = deriveColorMixStates(
-		`var(--${prefix}color-${key})`,
-		`var(--${prefix}color-foreground)`,
-	);
+	const derived = deriveColorMixStates(`var(--${prefix}color-${key})`, strategy);
 	return {
 		...color,
 		hover: color.hover ?? derived.hover,
@@ -187,9 +203,14 @@ export function generateCssTokens(
 	const p = normalizePrefix(prefix);
 	const tokens: GeneratedTokens = {};
 
-	// Intent colors (auto-derive hover/active via color-mix when enabled)
+	// Intent colors (auto-derive hover/active via color-mix when enabled).
+	// Saturated brand colors mix toward black/white (mode-aware) — neutral
+	// darken/lighten keeps the hue clean.
+	const intentStrategy: MixStrategy = { kind: "contrast", mode };
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
-		const filled = deriveStates ? fillPairStates(pair, p, key) : pair;
+		const filled = deriveStates
+			? fillPairStates(pair, p, key, intentStrategy)
+			: pair;
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -204,12 +225,20 @@ export function generateCssTokens(
 			`color-mix(in srgb, var(--${p}color-${key}) 30%, var(--${p}color-background))`;
 	}
 
+	// Role colors mix toward `--<prefix>color-foreground` so low-chroma
+	// neutrals stay hue-coherent (avoids OKLCH hue drift through chroma-zero
+	// when mixing toward pure black/white).
+	const roleStrategy: MixStrategy = {
+		kind: "foreground",
+		ref: `var(--${p}color-foreground)`,
+	};
+
 	// Role colors (paired) — auto-derive except "background"
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
 		const filled =
 			key === "background" || !deriveStates
 				? pair
-				: fillPairStates(pair, p, key);
+				: fillPairStates(pair, p, key, roleStrategy);
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -219,7 +248,7 @@ export function generateCssTokens(
 			generateSingleColorTokens(
 				tokens,
 				key,
-				fillColorValueStates(color, p, key),
+				fillColorValueStates(color, p, key, roleStrategy),
 				p,
 			);
 		} else {

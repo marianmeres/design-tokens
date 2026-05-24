@@ -11,7 +11,7 @@ Generate CSS token key-value pairs from a single-mode token schema.
 - `schema` (`TokenSchema`) — Color definitions for intent, role paired, and role single colors
 - `prefix` (`string`) — CSS variable prefix. Auto-normalized: `"my"` and `"my-"` are equivalent. `""` produces unprefixed tokens.
 - `options` (`GenerateOptions | "light" | "dark"`, optional) — A mode string for quick switching, or an options object. Default: `{}`
-  - `mode` (`"light" | "dark"`, optional) — Controls the `surface-{intent}-foreground` contrast direction (mixes with black in light mode, white in dark mode). Does not affect hover/active derivation, which always mixes toward `--{prefix}color-foreground`. Default: `"light"`
+  - `mode` (`"light" | "dark"`, optional) — Controls two things: (a) the `surface-{intent}-foreground` contrast mix (toward `black` in light, `white` in dark), and (b) the direction of **intent** hover/active derivation (toward `black` in light, `white` in dark). **Role** hover/active is mode-independent — it always mixes toward `--{prefix}color-foreground`, which itself flips per mode. Default: `"light"`
   - `deriveStates` (`boolean`, optional) — When `false`, missing hover/active fall back to DEFAULT instead of being derived via `color-mix()`. Useful for environments without `color-mix()` support. Default: `true`
   - `surfaceForegroundContrast` (`number`, optional) — Mix percentage (0–100) used to derive the `surface-{intent}-foreground` token. Higher values increase contrast against the tinted surface background. Default: `50`
 
