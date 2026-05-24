@@ -138,10 +138,10 @@ function generatePairedColorTokens(
 	tokens[`${prefix}color-${key}-hover`] = pair.hover ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-active`] = pair.active ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-foreground`] = pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-hover`] = pair.foregroundHover ??
-		pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-active`] = pair.foregroundActive ??
-		pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-hover`] =
+		pair.foregroundHover ?? pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-active`] =
+		pair.foregroundActive ?? pair.foreground;
 }
 
 /** Generate color tokens for a single color */
@@ -178,9 +178,8 @@ export function generateCssTokens(
 	prefix: string,
 	options: GenerateOptions | "light" | "dark" = {},
 ): GeneratedTokens {
-	const opts: GenerateOptions = typeof options === "string"
-		? { mode: options }
-		: options;
+	const opts: GenerateOptions =
+		typeof options === "string" ? { mode: options } : options;
 	const mode = opts.mode ?? "light";
 	const deriveStates = opts.deriveStates ?? true;
 	const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
@@ -207,9 +206,10 @@ export function generateCssTokens(
 
 	// Role colors (paired) — auto-derive except "background"
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
-		const filled = key === "background" || !deriveStates
-			? pair
-			: fillPairStates(pair, p, key);
+		const filled =
+			key === "background" || !deriveStates
+				? pair
+				: fillPairStates(pair, p, key);
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -290,30 +290,41 @@ export function generateThemeCss(
 	options: GenerateThemeOptions = {},
 ): string {
 	const { cssLayer, prettierIgnore, ...genOptions } = options;
+	const PRETTIER_IGNORE_PREFIX = "/* prettier-ignore */\n";
 
 	let css = toCssString(
-		generateCssTokens(schema.light, prefix, { ...genOptions, mode: "light" }),
+		generateCssTokens(schema.light, prefix, {
+			...genOptions,
+			mode: "light",
+		}),
 	);
+	if (!cssLayer && prettierIgnore) {
+		css = PRETTIER_IGNORE_PREFIX + css;
+	}
+
 	if (schema.dark) {
-		css += "\n" +
-			toCssString(
-				generateCssTokens(schema.dark, prefix, {
-					...genOptions,
-					mode: "dark",
-				}),
-				":root.dark",
-			);
+		let darkCss = toCssString(
+			generateCssTokens(schema.dark, prefix, {
+				...genOptions,
+				mode: "dark",
+			}),
+			":root.dark",
+		);
+		if (!cssLayer && prettierIgnore) {
+			darkCss = PRETTIER_IGNORE_PREFIX + darkCss;
+		}
+		css += "\n" + darkCss;
 	}
 
 	if (cssLayer) {
-		const indented = css.split("\n").map((l) => (l ? "\t" + l : l)).join(
-			"\n",
-		);
+		const indented = css
+			.split("\n")
+			.map((l) => (l ? "\t" + l : l))
+			.join("\n");
 		css = `@layer ${cssLayer} {\n${indented}}\n`;
-	}
-
-	if (prettierIgnore) {
-		css = "/* prettier-ignore */\n" + css;
+		if (prettierIgnore) {
+			css = PRETTIER_IGNORE_PREFIX + css;
+		}
 	}
 
 	return css;

@@ -387,3 +387,23 @@ Deno.test("generateThemeCss - no prettier-ignore comment by default", () => {
 	const css = generateThemeCss(schema, PREFIX);
 	assert(!css.includes("prettier-ignore"));
 });
+
+Deno.test("generateThemeCss - prettierIgnore marks each :root block separately when no cssLayer", () => {
+	const schema: ThemeSchema = { light: minimalSchema, dark: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX, { prettierIgnore: true });
+	const pragmas = css.match(/\/\* prettier-ignore \*\//g) ?? [];
+	assertEquals(pragmas.length, 2);
+	assert(css.startsWith("/* prettier-ignore */\n:root {"));
+	assert(css.includes("/* prettier-ignore */\n:root.dark {"));
+});
+
+Deno.test("generateThemeCss - prettierIgnore with cssLayer + dark still emits a single pragma", () => {
+	const schema: ThemeSchema = { light: minimalSchema, dark: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX, {
+		prettierIgnore: true,
+		cssLayer: "tokens",
+	});
+	const pragmas = css.match(/\/\* prettier-ignore \*\//g) ?? [];
+	assertEquals(pragmas.length, 1);
+	assert(css.startsWith("/* prettier-ignore */\n@layer tokens {"));
+});
