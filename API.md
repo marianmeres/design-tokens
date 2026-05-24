@@ -71,6 +71,7 @@ Generate complete CSS for a theme with light mode and optional dark mode.
 - `prefix` (`string`) — CSS variable prefix (trailing dash optional)
 - `options` (`GenerateThemeOptions`, optional) — Accepts all `GenerateOptions` (except `mode`, which is set per section) plus:
   - `cssLayer` (`string`, optional) — Wrap the output in `@layer {name} { ... }`. Useful for CSS cascade control.
+  - `prettierIgnore` (`boolean`, optional) — Prepend a `/* prettier-ignore */` comment so Prettier preserves the generated whitespace alignment when the output is written to a file that later gets formatted. Default: `false`.
 
 **Returns:** `string` — Complete CSS with `:root` for light and `:root.dark` for dark mode, optionally wrapped in `@layer`.
 
@@ -290,10 +291,11 @@ Options passed to `generateCssTokens`. See the function docs above for field mea
 ```typescript
 type GenerateThemeOptions = Omit<GenerateOptions, "mode"> & {
 	cssLayer?: string;
+	prettierIgnore?: boolean;
 };
 ```
 
-Options passed to `generateThemeCss`. Omits `mode` (set automatically per section) and adds `cssLayer` for optional `@layer` wrapping.
+Options passed to `generateThemeCss`. Omits `mode` (set automatically per section) and adds `cssLayer` for optional `@layer` wrapping plus `prettierIgnore` to prepend a `/* prettier-ignore */` pragma for build pipelines that pass the output through Prettier.
 
 ---
 

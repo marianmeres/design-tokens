@@ -43,6 +43,16 @@ export type GenerateThemeOptions = Omit<GenerateOptions, "mode"> & {
 	 * Wrap the output in `@layer {name} { ... }`. Pass a layer name to enable.
 	 */
 	cssLayer?: string;
+
+	/**
+	 * Prepend a `/* prettier-ignore *\/` comment so Prettier preserves the
+	 * generated whitespace alignment when the output is written to a file that
+	 * later gets formatted. Has no runtime effect; only meaningful for build
+	 * pipelines that pass the result through Prettier.
+	 *
+	 * @default false
+	 */
+	prettierIgnore?: boolean;
 };
 
 /**
@@ -279,7 +289,7 @@ export function generateThemeCss(
 	prefix: string,
 	options: GenerateThemeOptions = {},
 ): string {
-	const { cssLayer, ...genOptions } = options;
+	const { cssLayer, prettierIgnore, ...genOptions } = options;
 
 	let css = toCssString(
 		generateCssTokens(schema.light, prefix, { ...genOptions, mode: "light" }),
@@ -300,6 +310,10 @@ export function generateThemeCss(
 			"\n",
 		);
 		css = `@layer ${cssLayer} {\n${indented}}\n`;
+	}
+
+	if (prettierIgnore) {
+		css = "/* prettier-ignore */\n" + css;
 	}
 
 	return css;

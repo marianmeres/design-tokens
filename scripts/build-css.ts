@@ -16,7 +16,7 @@ await ensureDir(OUT_DIR);
 const entries = Object.entries(bundledThemes);
 
 for (const [name, theme] of entries) {
-	const css = "/* prettier-ignore */\n" + generateThemeCss(theme, PREFIX);
+	const css = generateThemeCss(theme, PREFIX, { prettierIgnore: true });
 	const fileName = `${toKebab(name)}.css`;
 	await Deno.writeTextFile(join(OUT_DIR, fileName), css);
 }

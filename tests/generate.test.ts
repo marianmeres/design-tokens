@@ -363,3 +363,27 @@ Deno.test("generateThemeCss - no cssLayer by default", () => {
 	const css = generateThemeCss(schema, PREFIX);
 	assert(!css.includes("@layer"));
 });
+
+// --- prettierIgnore option ---
+
+Deno.test("generateThemeCss - prettierIgnore prepends pragma comment", () => {
+	const schema: ThemeSchema = { light: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX, { prettierIgnore: true });
+	assert(css.startsWith("/* prettier-ignore */\n"));
+	assert(css.includes(":root"));
+});
+
+Deno.test("generateThemeCss - prettierIgnore sits outside @layer wrapper", () => {
+	const schema: ThemeSchema = { light: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX, {
+		prettierIgnore: true,
+		cssLayer: "tokens",
+	});
+	assert(css.startsWith("/* prettier-ignore */\n@layer tokens {"));
+});
+
+Deno.test("generateThemeCss - no prettier-ignore comment by default", () => {
+	const schema: ThemeSchema = { light: minimalSchema };
+	const css = generateThemeCss(schema, PREFIX);
+	assert(!css.includes("prettier-ignore"));
+});

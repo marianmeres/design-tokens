@@ -55,7 +55,7 @@ Entry points:
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `generateCssTokens(schema, prefix, options?)` | Generate token key-value pairs. Third arg: `GenerateOptions` object or `"light"`/`"dark"` shorthand |
 | `toCssString(tokens, selector?)`              | Convert tokens to a CSS declaration block (groups by base color name)                               |
-| `generateThemeCss(schema, prefix, options?)`  | Generate complete CSS for light + optional dark mode; supports `cssLayer` wrapping                  |
+| `generateThemeCss(schema, prefix, options?)`  | Generate complete CSS for light + optional dark mode; supports `cssLayer` wrapping and `prettierIgnore` pragma       |
 | `hexToRgb(hex)`                               | Parse hex to `[r, g, b]` tuple                                                                      |
 | `hexToRgbTriplet(hex)`                        | Convert hex to `"r, g, b"` string                                                                   |
 
@@ -83,7 +83,7 @@ Entry points:
 | `SingleColor`           | `string \| ColorValue`                                                          |
 | `GeneratedTokens`       | `Record<string, string>`                                                        |
 | `GenerateOptions`       | `{ mode?, deriveStates?, surfaceForegroundContrast? }`                          |
-| `GenerateThemeOptions`  | `Omit<GenerateOptions, "mode"> & { cssLayer? }`                                 |
+| `GenerateThemeOptions`  | `Omit<GenerateOptions, "mode"> & { cssLayer?, prettierIgnore? }`                |
 | `RolePairedKey`         | Required: `"background" \| "muted" \| "surface"`                                |
 | `RolePairedOptionalKey` | Optional: `"surface-1"` (all bundled themes ship it)                            |
 
