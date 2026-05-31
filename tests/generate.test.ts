@@ -58,7 +58,7 @@ Deno.test("generateCssTokens - empty prefix is valid", () => {
 
 Deno.test("generateCssTokens - intent colors derive hover/active toward black in light mode", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX);
-	assert(tokens["my-color-primary-hover"].includes("color-mix(in oklch,"));
+	assert(tokens["my-color-primary-hover"].includes("color-mix(in oklab,"));
 	assert(tokens["my-color-primary-hover"].includes("var(--my-color-primary)"));
 	assert(tokens["my-color-primary-hover"].includes("black 10%"));
 	assert(tokens["my-color-primary-active"].includes("black 20%"));

@@ -89,9 +89,15 @@ function isSingleColorObject(value: SingleColor): value is ColorValue {
  * - `contrast` mixes toward pure `black`/`white` (mode-aware). Used for the
  *   saturated intent bucket where neutral darkening/lightening reads cleanly.
  * - `foreground` mixes toward a theme color reference (typically
- *   `--{prefix}color-foreground`). Used for low-chroma role colors, where
- *   mixing through pure black/white rotates hue through OKLCH chroma-zero and
- *   reads as a warm shift on neutrals.
+ *   `--{prefix}color-foreground`). Used for role colors as a softer,
+ *   theme-tinted darken/lighten than pure black/white.
+ *
+ * Both mix `in oklab` (rectangular), NOT `oklch` (polar): polar hue
+ * interpolation collapses to a powerless (`none`) hue when a low-chroma color
+ * is mixed toward an achromatic endpoint like black/white, which browsers
+ * paint as hue 0 — a visible red/mauve shift on near-neutral colors (e.g. the
+ * neutral-primary themes). `oklab` scales the a/b axes toward the target and
+ * preserves hue for both neutral and saturated colors.
  */
 type MixStrategy =
 	| { kind: "contrast"; mode: "light" | "dark" }
@@ -106,8 +112,8 @@ function deriveColorMixStates(
 			? strategy.mode === "light" ? "black" : "white"
 			: strategy.ref;
 	return {
-		hover: `color-mix(in oklch, ${cssVarRef}, ${target} 10%)`,
-		active: `color-mix(in oklch, ${cssVarRef}, ${target} 20%)`,
+		hover: `color-mix(in oklab, ${cssVarRef}, ${target} 10%)`,
+		active: `color-mix(in oklab, ${cssVarRef}, ${target} 20%)`,
 	};
 }
 
@@ -225,9 +231,8 @@ export function generateCssTokens(
 			`color-mix(in srgb, var(--${p}color-${key}) 30%, var(--${p}color-background))`;
 	}
 
-	// Role colors mix toward `--<prefix>color-foreground` so low-chroma
-	// neutrals stay hue-coherent (avoids OKLCH hue drift through chroma-zero
-	// when mixing toward pure black/white).
+	// Role colors mix toward `--<prefix>color-foreground` for a softer,
+	// theme-tinted hover/active than the saturated bucket's pure black/white.
 	const roleStrategy: MixStrategy = {
 		kind: "foreground",
 		ref: `var(--${p}color-foreground)`,

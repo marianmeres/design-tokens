@@ -1,36 +1,36 @@
 /* prettier-ignore */
 :root {
 	--stuic-color-primary:                        #1f2937;
-	--stuic-color-primary-hover:                  color-mix(in oklch, var(--stuic-color-primary), black 10%);
-	--stuic-color-primary-active:                 color-mix(in oklch, var(--stuic-color-primary), black 20%);
+	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), black 10%);
+	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), black 20%);
 	--stuic-color-primary-foreground:             #ffffff;
 	--stuic-color-primary-foreground-hover:       #ffffff;
 	--stuic-color-primary-foreground-active:      #ffffff;
 
 	--stuic-color-accent:                         #6b7280;
-	--stuic-color-accent-hover:                   color-mix(in oklch, var(--stuic-color-accent), black 10%);
-	--stuic-color-accent-active:                  color-mix(in oklch, var(--stuic-color-accent), black 20%);
+	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), black 10%);
+	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), black 20%);
 	--stuic-color-accent-foreground:              #ffffff;
 	--stuic-color-accent-foreground-hover:        #ffffff;
 	--stuic-color-accent-foreground-active:       #ffffff;
 
 	--stuic-color-destructive:                    #6b7280;
-	--stuic-color-destructive-hover:              color-mix(in oklch, var(--stuic-color-destructive), black 10%);
-	--stuic-color-destructive-active:             color-mix(in oklch, var(--stuic-color-destructive), black 20%);
+	--stuic-color-destructive-hover:              color-mix(in oklab, var(--stuic-color-destructive), black 10%);
+	--stuic-color-destructive-active:             color-mix(in oklab, var(--stuic-color-destructive), black 20%);
 	--stuic-color-destructive-foreground:         #ffffff;
 	--stuic-color-destructive-foreground-hover:   #ffffff;
 	--stuic-color-destructive-foreground-active:  #ffffff;
 
 	--stuic-color-warning:                        #9ca3af;
-	--stuic-color-warning-hover:                  color-mix(in oklch, var(--stuic-color-warning), black 10%);
-	--stuic-color-warning-active:                 color-mix(in oklch, var(--stuic-color-warning), black 20%);
+	--stuic-color-warning-hover:                  color-mix(in oklab, var(--stuic-color-warning), black 10%);
+	--stuic-color-warning-active:                 color-mix(in oklab, var(--stuic-color-warning), black 20%);
 	--stuic-color-warning-foreground:             #000000;
 	--stuic-color-warning-foreground-hover:       #000000;
 	--stuic-color-warning-foreground-active:      #000000;
 
 	--stuic-color-success:                        #6b7280;
-	--stuic-color-success-hover:                  color-mix(in oklch, var(--stuic-color-success), black 10%);
-	--stuic-color-success-active:                 color-mix(in oklch, var(--stuic-color-success), black 20%);
+	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), black 10%);
+	--stuic-color-success-active:                 color-mix(in oklab, var(--stuic-color-success), black 20%);
 	--stuic-color-success-foreground:             #ffffff;
 	--stuic-color-success-foreground-hover:       #ffffff;
 	--stuic-color-success-foreground-active:      #ffffff;
@@ -51,14 +51,14 @@
 	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), black 50%);
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
 	--stuic-color-surface:                        #e5e7eb;
-	--stuic-color-surface-hover:                  color-mix(in oklch, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
-	--stuic-color-surface-active:                 color-mix(in oklch, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-hover:                  color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-active:                 color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
 	--stuic-color-surface-foreground:             #111827;
 	--stuic-color-surface-foreground-hover:       #111827;
 	--stuic-color-surface-foreground-active:      #111827;
 	--stuic-color-surface-1:                      #d1d5db;
-	--stuic-color-surface-1-hover:                color-mix(in oklch, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
-	--stuic-color-surface-1-active:               color-mix(in oklch, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-1-hover:                color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-1-active:               color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
 	--stuic-color-surface-1-foreground:           #111827;
 	--stuic-color-surface-1-foreground-hover:     #111827;
 	--stuic-color-surface-1-foreground-active:    #111827;
@@ -71,8 +71,8 @@
 	--stuic-color-background-foreground-active:   #111827;
 
 	--stuic-color-muted:                          #f3f4f6;
-	--stuic-color-muted-hover:                    color-mix(in oklch, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
-	--stuic-color-muted-active:                   color-mix(in oklch, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
+	--stuic-color-muted-hover:                    color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
+	--stuic-color-muted-active:                   color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
 	--stuic-color-muted-foreground:               #6b7280;
 	--stuic-color-muted-foreground-hover:         #6b7280;
 	--stuic-color-muted-foreground-active:        #6b7280;
@@ -82,12 +82,12 @@
 	--stuic-color-foreground-active:              #111827;
 
 	--stuic-color-border:                         #d1d5db;
-	--stuic-color-border-hover:                   color-mix(in oklch, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
-	--stuic-color-border-active:                  color-mix(in oklch, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
+	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
+	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
 
 	--stuic-color-input:                          #f9fafb;
 	--stuic-color-input-hover:                    #f3f4f6;
-	--stuic-color-input-active:                   color-mix(in oklch, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
+	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
 
 	--stuic-color-ring:                           color-mix(in srgb, #1f2937 20%, transparent);
 	--stuic-color-ring-hover:                     color-mix(in srgb, #1f2937 20%, transparent);
@@ -97,36 +97,36 @@
 /* prettier-ignore */
 :root.dark {
 	--stuic-color-primary:                        #e5e7eb;
-	--stuic-color-primary-hover:                  color-mix(in oklch, var(--stuic-color-primary), white 10%);
-	--stuic-color-primary-active:                 color-mix(in oklch, var(--stuic-color-primary), white 20%);
+	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), white 10%);
+	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), white 20%);
 	--stuic-color-primary-foreground:             #000000;
 	--stuic-color-primary-foreground-hover:       #000000;
 	--stuic-color-primary-foreground-active:      #000000;
 
 	--stuic-color-accent:                         #6b7280;
-	--stuic-color-accent-hover:                   color-mix(in oklch, var(--stuic-color-accent), white 10%);
-	--stuic-color-accent-active:                  color-mix(in oklch, var(--stuic-color-accent), white 20%);
+	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), white 10%);
+	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), white 20%);
 	--stuic-color-accent-foreground:              #ffffff;
 	--stuic-color-accent-foreground-hover:        #ffffff;
 	--stuic-color-accent-foreground-active:       #ffffff;
 
 	--stuic-color-destructive:                    #6b7280;
-	--stuic-color-destructive-hover:              color-mix(in oklch, var(--stuic-color-destructive), white 10%);
-	--stuic-color-destructive-active:             color-mix(in oklch, var(--stuic-color-destructive), white 20%);
+	--stuic-color-destructive-hover:              color-mix(in oklab, var(--stuic-color-destructive), white 10%);
+	--stuic-color-destructive-active:             color-mix(in oklab, var(--stuic-color-destructive), white 20%);
 	--stuic-color-destructive-foreground:         #ffffff;
 	--stuic-color-destructive-foreground-hover:   #ffffff;
 	--stuic-color-destructive-foreground-active:  #ffffff;
 
 	--stuic-color-warning:                        #9ca3af;
-	--stuic-color-warning-hover:                  color-mix(in oklch, var(--stuic-color-warning), white 10%);
-	--stuic-color-warning-active:                 color-mix(in oklch, var(--stuic-color-warning), white 20%);
+	--stuic-color-warning-hover:                  color-mix(in oklab, var(--stuic-color-warning), white 10%);
+	--stuic-color-warning-active:                 color-mix(in oklab, var(--stuic-color-warning), white 20%);
 	--stuic-color-warning-foreground:             #000000;
 	--stuic-color-warning-foreground-hover:       #000000;
 	--stuic-color-warning-foreground-active:      #000000;
 
 	--stuic-color-success:                        #6b7280;
-	--stuic-color-success-hover:                  color-mix(in oklch, var(--stuic-color-success), white 10%);
-	--stuic-color-success-active:                 color-mix(in oklch, var(--stuic-color-success), white 20%);
+	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), white 10%);
+	--stuic-color-success-active:                 color-mix(in oklab, var(--stuic-color-success), white 20%);
 	--stuic-color-success-foreground:             #ffffff;
 	--stuic-color-success-foreground-hover:       #ffffff;
 	--stuic-color-success-foreground-active:      #ffffff;
@@ -147,14 +147,14 @@
 	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), white 50%);
 	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
 	--stuic-color-surface:                        #374151;
-	--stuic-color-surface-hover:                  color-mix(in oklch, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
-	--stuic-color-surface-active:                 color-mix(in oklch, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-hover:                  color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-active:                 color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
 	--stuic-color-surface-foreground:             #d1d5db;
 	--stuic-color-surface-foreground-hover:       #d1d5db;
 	--stuic-color-surface-foreground-active:      #d1d5db;
 	--stuic-color-surface-1:                      #4b5563;
-	--stuic-color-surface-1-hover:                color-mix(in oklch, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
-	--stuic-color-surface-1-active:               color-mix(in oklch, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-1-hover:                color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-1-active:               color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
 	--stuic-color-surface-1-foreground:           #e5e7eb;
 	--stuic-color-surface-1-foreground-hover:     #e5e7eb;
 	--stuic-color-surface-1-foreground-active:    #e5e7eb;
@@ -167,8 +167,8 @@
 	--stuic-color-background-foreground-active:   #f9fafb;
 
 	--stuic-color-muted:                          #1f2937;
-	--stuic-color-muted-hover:                    color-mix(in oklch, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
-	--stuic-color-muted-active:                   color-mix(in oklch, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
+	--stuic-color-muted-hover:                    color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
+	--stuic-color-muted-active:                   color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
 	--stuic-color-muted-foreground:               #9ca3af;
 	--stuic-color-muted-foreground-hover:         #9ca3af;
 	--stuic-color-muted-foreground-active:        #9ca3af;
@@ -178,12 +178,12 @@
 	--stuic-color-foreground-active:              #f9fafb;
 
 	--stuic-color-border:                         #374151;
-	--stuic-color-border-hover:                   color-mix(in oklch, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
-	--stuic-color-border-active:                  color-mix(in oklch, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
+	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
+	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
 
 	--stuic-color-input:                          #111827;
 	--stuic-color-input-hover:                    #1f2937;
-	--stuic-color-input-active:                   color-mix(in oklch, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
+	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
 
 	--stuic-color-ring:                           color-mix(in srgb, #e5e7eb 25%, transparent);
 	--stuic-color-ring-hover:                     color-mix(in srgb, #e5e7eb 25%, transparent);

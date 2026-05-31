@@ -101,7 +101,7 @@ Entry points:
 1. All public functions must have JSDoc and explicit return types (Deno/JSR requirement)
 2. Token naming: `--{prefix}color-{key}`, `--{prefix}color-{key}-hover`, etc.
 3. Prefix is auto-normalized — `"my"` and `"my-"` both produce `--my-color-*`. Empty string produces unprefixed.
-4. Hover/active auto-derived via `color-mix(in oklch, ...)` with a per-bucket strategy: **intent** colors (saturated brand) mix toward `black` / `white` 10%/20% (mode-aware) so saturated hues stay clean; **role** colors (paired + single) mix toward `var(--{prefix}color-foreground)` 10%/20% so low-chroma neutrals don't hue-drift through OKLCH chroma-zero. Disable with `deriveStates: false`.
+4. Hover/active auto-derived via `color-mix(in oklab, ...)` with a per-bucket strategy: **intent** colors (saturated brand) mix toward `black` / `white` 10%/20% (mode-aware); **role** colors (paired + single) mix toward `var(--{prefix}color-foreground)` 10%/20% for a softer, theme-tinted shift. `oklab` (rectangular) is used rather than `oklch` (polar) because polar hue interpolation collapses to a powerless hue on low-chroma colors mixed toward black/white, painting as a red/mauve shift on near-neutral themes. Disable with `deriveStates: false`.
 5. Surface-intent tokens derived via `color-mix(in srgb, ...)` from intent + background. Foreground contrast defaults to 50% — tune via `surfaceForegroundContrast`.
 6. Theme files use `export default` with `ThemeSchema` type annotation. All bundled themes include an optional `surface-1` paired role (extra elevation).
 7. Formatting: tabs, 90-char line width, 4-space indent width (`deno fmt`)

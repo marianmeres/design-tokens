@@ -5553,8 +5553,8 @@ function isSingleColorObject(value) {
 function deriveColorMixStates(cssVarRef, strategy) {
     const target = strategy.kind === "contrast" ? strategy.mode === "light" ? "black" : "white" : strategy.ref;
     return {
-        hover: `color-mix(in oklch, ${cssVarRef}, ${target} 10%)`,
-        active: `color-mix(in oklch, ${cssVarRef}, ${target} 20%)`
+        hover: `color-mix(in oklab, ${cssVarRef}, ${target} 10%)`,
+        active: `color-mix(in oklab, ${cssVarRef}, ${target} 20%)`
     };
 }
 function fillPairStates(pair, prefix, key, strategy) {

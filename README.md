@@ -122,7 +122,7 @@ const myTheme: ThemeSchema = {
 const css = generateThemeCss(myTheme, "my-");
 ```
 
-Hover/active states are auto-derived via `color-mix(in oklch, ...)` when omitted. You can
+Hover/active states are auto-derived via `color-mix(in oklab, ...)` when omitted. You can
 provide explicit values to override the derivation.
 
 ## Bundled themes
