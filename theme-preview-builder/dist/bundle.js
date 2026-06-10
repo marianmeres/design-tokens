@@ -816,6 +816,242 @@ const light4 = {
     colors: {
         intent: {
             primary: {
+                DEFAULT: colors.yellow[400],
+                foreground: colors.black
+            },
+            accent: {
+                DEFAULT: colors.pink[500],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.rose[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.mauve[50],
+                    foreground: colors.mauve[900]
+                },
+                muted: {
+                    DEFAULT: colors.mauve[100],
+                    foreground: colors.mauve[500]
+                },
+                surface: {
+                    DEFAULT: colors.mauve[200],
+                    foreground: colors.mauve[900]
+                },
+                "surface-1": {
+                    DEFAULT: colors.mauve[300],
+                    foreground: colors.mauve[900]
+                }
+            },
+            single: {
+                foreground: colors.mauve[900],
+                border: {
+                    DEFAULT: colors.mauve[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.mauve[50]
+                },
+                ring: `color-mix(in srgb, ${colors.yellow[400]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark4 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.yellow[400],
+                foreground: colors.black
+            },
+            accent: {
+                DEFAULT: colors.pink[400],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.rose[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.violet[950],
+                    foreground: colors.violet[50]
+                },
+                muted: {
+                    DEFAULT: colors.violet[900],
+                    foreground: colors.violet[300]
+                },
+                surface: {
+                    DEFAULT: colors.violet[800],
+                    foreground: colors.violet[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.violet[700],
+                    foreground: colors.violet[100]
+                }
+            },
+            single: {
+                foreground: colors.violet[50],
+                border: {
+                    DEFAULT: colors.violet[800]
+                },
+                input: {
+                    DEFAULT: colors.violet[950],
+                    hover: colors.violet[900]
+                },
+                ring: `color-mix(in srgb, ${colors.yellow[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme4 = {
+    light: light4,
+    dark: dark4
+};
+const light5 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.blue[600],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.lime[400],
+                foreground: colors.black
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.yellow[50],
+                    foreground: colors.yellow[950]
+                },
+                muted: {
+                    DEFAULT: colors.yellow[100],
+                    foreground: colors.yellow[700]
+                },
+                surface: {
+                    DEFAULT: colors.yellow[200],
+                    foreground: colors.yellow[950]
+                },
+                "surface-1": {
+                    DEFAULT: colors.yellow[300],
+                    foreground: colors.yellow[950]
+                }
+            },
+            single: {
+                foreground: colors.yellow[950],
+                border: {
+                    DEFAULT: colors.yellow[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.yellow[50]
+                },
+                ring: `color-mix(in srgb, ${colors.blue[600]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark5 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.blue[500],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.lime[400],
+                foreground: colors.black
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.sky[950],
+                    foreground: colors.sky[50]
+                },
+                muted: {
+                    DEFAULT: colors.sky[900],
+                    foreground: colors.sky[400]
+                },
+                surface: {
+                    DEFAULT: colors.sky[800],
+                    foreground: colors.sky[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.sky[700],
+                    foreground: colors.sky[100]
+                }
+            },
+            single: {
+                foreground: colors.sky[50],
+                border: {
+                    DEFAULT: colors.sky[800]
+                },
+                input: {
+                    DEFAULT: colors.sky[950],
+                    hover: colors.sky[900]
+                },
+                ring: `color-mix(in srgb, ${colors.blue[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme5 = {
+    light: light5,
+    dark: dark5
+};
+const light6 = {
+    colors: {
+        intent: {
+            primary: {
                 DEFAULT: colors.emerald[700],
                 foreground: colors.white
             },
@@ -869,7 +1105,7 @@ const light4 = {
         }
     }
 };
-const dark4 = {
+const dark6 = {
     colors: {
         intent: {
             primary: {
@@ -926,11 +1162,11 @@ const dark4 = {
         }
     }
 };
-const theme4 = {
-    light: light4,
-    dark: dark4
+const theme6 = {
+    light: light6,
+    dark: dark6
 };
-const light5 = {
+const light7 = {
     colors: {
         intent: {
             primary: {
@@ -987,7 +1223,7 @@ const light5 = {
         }
     }
 };
-const dark5 = {
+const dark7 = {
     colors: {
         intent: {
             primary: {
@@ -1044,11 +1280,11 @@ const dark5 = {
         }
     }
 };
-const theme5 = {
-    light: light5,
-    dark: dark5
+const theme7 = {
+    light: light7,
+    dark: dark7
 };
-const light6 = {
+const light8 = {
     colors: {
         intent: {
             primary: {
@@ -1105,7 +1341,7 @@ const light6 = {
         }
     }
 };
-const dark6 = {
+const dark8 = {
     colors: {
         intent: {
             primary: {
@@ -1162,11 +1398,11 @@ const dark6 = {
         }
     }
 };
-const theme6 = {
-    light: light6,
-    dark: dark6
+const theme8 = {
+    light: light8,
+    dark: dark8
 };
-const theme7 = {
+const theme9 = {
     light: {
         colors: {
             intent: {
@@ -1282,7 +1518,127 @@ const theme7 = {
         }
     }
 };
-const light7 = {
+const pink = "#f6329b";
+const mint = "#5deab5";
+const light9 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: pink,
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: mint,
+                foreground: colors.emerald[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.teal[50],
+                    foreground: colors.teal[950]
+                },
+                muted: {
+                    DEFAULT: colors.teal[100],
+                    foreground: colors.teal[700]
+                },
+                surface: {
+                    DEFAULT: colors.teal[200],
+                    foreground: colors.teal[950]
+                },
+                "surface-1": {
+                    DEFAULT: colors.teal[300],
+                    foreground: colors.teal[950]
+                }
+            },
+            single: {
+                foreground: colors.teal[950],
+                border: {
+                    DEFAULT: colors.teal[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.teal[50]
+                },
+                ring: `color-mix(in srgb, ${pink} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark9 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: pink,
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: mint,
+                foreground: colors.emerald[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.teal[950],
+                    foreground: colors.teal[50]
+                },
+                muted: {
+                    DEFAULT: colors.teal[900],
+                    foreground: colors.teal[400]
+                },
+                surface: {
+                    DEFAULT: colors.teal[800],
+                    foreground: colors.teal[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.teal[700],
+                    foreground: colors.teal[100]
+                }
+            },
+            single: {
+                foreground: colors.teal[50],
+                border: {
+                    DEFAULT: colors.teal[800]
+                },
+                input: {
+                    DEFAULT: colors.teal[950],
+                    hover: colors.teal[900]
+                },
+                ring: `color-mix(in srgb, ${pink} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme10 = {
+    light: light9,
+    dark: dark9
+};
+const light10 = {
     colors: {
         intent: {
             primary: {
@@ -1339,7 +1695,7 @@ const light7 = {
         }
     }
 };
-const dark7 = {
+const dark10 = {
     colors: {
         intent: {
             primary: {
@@ -1396,11 +1752,11 @@ const dark7 = {
         }
     }
 };
-const theme8 = {
-    light: light7,
-    dark: dark7
+const theme11 = {
+    light: light10,
+    dark: dark10
 };
-const light8 = {
+const light11 = {
     colors: {
         intent: {
             primary: {
@@ -1457,7 +1813,7 @@ const light8 = {
         }
     }
 };
-const dark8 = {
+const dark11 = {
     colors: {
         intent: {
             primary: {
@@ -1514,11 +1870,11 @@ const dark8 = {
         }
     }
 };
-const theme9 = {
-    light: light8,
-    dark: dark8
+const theme12 = {
+    light: light11,
+    dark: dark11
 };
-const theme10 = {
+const theme13 = {
     light: {
         colors: {
             intent: {
@@ -1634,7 +1990,7 @@ const theme10 = {
         }
     }
 };
-const light9 = {
+const light12 = {
     colors: {
         intent: {
             primary: {
@@ -1691,7 +2047,7 @@ const light9 = {
         }
     }
 };
-const dark9 = {
+const dark12 = {
     colors: {
         intent: {
             primary: {
@@ -1748,11 +2104,11 @@ const dark9 = {
         }
     }
 };
-const theme11 = {
-    light: light9,
-    dark: dark9
+const theme14 = {
+    light: light12,
+    dark: dark12
 };
-const light10 = {
+const light13 = {
     colors: {
         intent: {
             primary: {
@@ -1809,7 +2165,7 @@ const light10 = {
         }
     }
 };
-const dark10 = {
+const dark13 = {
     colors: {
         intent: {
             primary: {
@@ -1866,11 +2222,11 @@ const dark10 = {
         }
     }
 };
-const theme12 = {
-    light: light10,
-    dark: dark10
+const theme15 = {
+    light: light13,
+    dark: dark13
 };
-const theme13 = {
+const theme16 = {
     light: {
         colors: {
             intent: {
@@ -1986,7 +2342,7 @@ const theme13 = {
         }
     }
 };
-const light11 = {
+const light14 = {
     colors: {
         intent: {
             primary: {
@@ -2043,7 +2399,7 @@ const light11 = {
         }
     }
 };
-const dark11 = {
+const dark14 = {
     colors: {
         intent: {
             primary: {
@@ -2100,11 +2456,11 @@ const dark11 = {
         }
     }
 };
-const theme14 = {
-    light: light11,
-    dark: dark11
+const theme17 = {
+    light: light14,
+    dark: dark14
 };
-const light12 = {
+const light15 = {
     colors: {
         intent: {
             primary: {
@@ -2161,7 +2517,7 @@ const light12 = {
         }
     }
 };
-const dark12 = {
+const dark15 = {
     colors: {
         intent: {
             primary: {
@@ -2218,11 +2574,11 @@ const dark12 = {
         }
     }
 };
-const theme15 = {
-    light: light12,
-    dark: dark12
+const theme18 = {
+    light: light15,
+    dark: dark15
 };
-const light13 = {
+const light16 = {
     colors: {
         intent: {
             primary: {
@@ -2279,7 +2635,7 @@ const light13 = {
         }
     }
 };
-const dark13 = {
+const dark16 = {
     colors: {
         intent: {
             primary: {
@@ -2336,11 +2692,11 @@ const dark13 = {
         }
     }
 };
-const theme16 = {
-    light: light13,
-    dark: dark13
+const theme19 = {
+    light: light16,
+    dark: dark16
 };
-const light14 = {
+const light17 = {
     colors: {
         intent: {
             primary: {
@@ -2397,7 +2753,7 @@ const light14 = {
         }
     }
 };
-const dark14 = {
+const dark17 = {
     colors: {
         intent: {
             primary: {
@@ -2454,11 +2810,11 @@ const dark14 = {
         }
     }
 };
-const theme17 = {
-    light: light14,
-    dark: dark14
+const theme20 = {
+    light: light17,
+    dark: dark17
 };
-const light15 = {
+const light18 = {
     colors: {
         intent: {
             primary: {
@@ -2515,7 +2871,7 @@ const light15 = {
         }
     }
 };
-const dark15 = {
+const dark18 = {
     colors: {
         intent: {
             primary: {
@@ -2572,11 +2928,129 @@ const dark15 = {
         }
     }
 };
-const theme18 = {
-    light: light15,
-    dark: dark15
+const theme21 = {
+    light: light18,
+    dark: dark18
 };
-const theme19 = {
+const light19 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.fuchsia[600],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.cyan[400],
+                foreground: colors.cyan[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.violet[50],
+                    foreground: colors.violet[950]
+                },
+                muted: {
+                    DEFAULT: colors.violet[100],
+                    foreground: colors.violet[600]
+                },
+                surface: {
+                    DEFAULT: colors.violet[200],
+                    foreground: colors.violet[950]
+                },
+                "surface-1": {
+                    DEFAULT: colors.violet[300],
+                    foreground: colors.violet[950]
+                }
+            },
+            single: {
+                foreground: colors.violet[950],
+                border: {
+                    DEFAULT: colors.violet[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.violet[50]
+                },
+                ring: `color-mix(in srgb, ${colors.fuchsia[600]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark19 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.fuchsia[500],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.cyan[400],
+                foreground: colors.cyan[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.indigo[950],
+                    foreground: colors.indigo[50]
+                },
+                muted: {
+                    DEFAULT: colors.indigo[900],
+                    foreground: colors.indigo[300]
+                },
+                surface: {
+                    DEFAULT: colors.indigo[800],
+                    foreground: colors.indigo[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.indigo[700],
+                    foreground: colors.indigo[100]
+                }
+            },
+            single: {
+                foreground: colors.indigo[50],
+                border: {
+                    DEFAULT: colors.indigo[800]
+                },
+                input: {
+                    DEFAULT: colors.indigo[950],
+                    hover: colors.indigo[900]
+                },
+                ring: `color-mix(in srgb, ${colors.fuchsia[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme22 = {
+    light: light19,
+    dark: dark19
+};
+const theme23 = {
     light: {
         colors: {
             intent: {
@@ -2692,7 +3166,7 @@ const theme19 = {
         }
     }
 };
-const light16 = {
+const light20 = {
     colors: {
         intent: {
             primary: {
@@ -2749,7 +3223,7 @@ const light16 = {
         }
     }
 };
-const dark16 = {
+const dark20 = {
     colors: {
         intent: {
             primary: {
@@ -2806,11 +3280,11 @@ const dark16 = {
         }
     }
 };
-const theme20 = {
-    light: light16,
-    dark: dark16
+const theme24 = {
+    light: light20,
+    dark: dark20
 };
-const light17 = {
+const light21 = {
     colors: {
         intent: {
             primary: {
@@ -2867,7 +3341,7 @@ const light17 = {
         }
     }
 };
-const dark17 = {
+const dark21 = {
     colors: {
         intent: {
             primary: {
@@ -2924,11 +3398,129 @@ const dark17 = {
         }
     }
 };
-const theme21 = {
-    light: light17,
-    dark: dark17
+const theme25 = {
+    light: light21,
+    dark: dark21
 };
-const light18 = {
+const light22 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.teal[600],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.fuchsia[500],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.rose[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.teal[50],
+                    foreground: colors.teal[950]
+                },
+                muted: {
+                    DEFAULT: colors.teal[100],
+                    foreground: colors.teal[700]
+                },
+                surface: {
+                    DEFAULT: colors.teal[200],
+                    foreground: colors.teal[950]
+                },
+                "surface-1": {
+                    DEFAULT: colors.teal[300],
+                    foreground: colors.teal[950]
+                }
+            },
+            single: {
+                foreground: colors.teal[950],
+                border: {
+                    DEFAULT: colors.teal[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.teal[50]
+                },
+                ring: `color-mix(in srgb, ${colors.teal[600]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark22 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.teal[500],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.fuchsia[400],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.rose[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.teal[950],
+                    foreground: colors.teal[50]
+                },
+                muted: {
+                    DEFAULT: colors.teal[900],
+                    foreground: colors.teal[400]
+                },
+                surface: {
+                    DEFAULT: colors.teal[800],
+                    foreground: colors.teal[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.teal[700],
+                    foreground: colors.teal[100]
+                }
+            },
+            single: {
+                foreground: colors.teal[50],
+                border: {
+                    DEFAULT: colors.teal[800]
+                },
+                input: {
+                    DEFAULT: colors.teal[950],
+                    hover: colors.teal[900]
+                },
+                ring: `color-mix(in srgb, ${colors.teal[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme26 = {
+    light: light22,
+    dark: dark22
+};
+const light23 = {
     colors: {
         intent: {
             primary: {
@@ -2985,7 +3577,7 @@ const light18 = {
         }
     }
 };
-const dark18 = {
+const dark23 = {
     colors: {
         intent: {
             primary: {
@@ -3042,11 +3634,11 @@ const dark18 = {
         }
     }
 };
-const theme22 = {
-    light: light18,
-    dark: dark18
+const theme27 = {
+    light: light23,
+    dark: dark23
 };
-const light19 = {
+const light24 = {
     colors: {
         intent: {
             primary: {
@@ -3103,7 +3695,7 @@ const light19 = {
         }
     }
 };
-const dark19 = {
+const dark24 = {
     colors: {
         intent: {
             primary: {
@@ -3160,11 +3752,11 @@ const dark19 = {
         }
     }
 };
-const theme23 = {
-    light: light19,
-    dark: dark19
+const theme28 = {
+    light: light24,
+    dark: dark24
 };
-const light20 = {
+const light25 = {
     colors: {
         intent: {
             primary: {
@@ -3221,7 +3813,7 @@ const light20 = {
         }
     }
 };
-const dark20 = {
+const dark25 = {
     colors: {
         intent: {
             primary: {
@@ -3278,11 +3870,11 @@ const dark20 = {
         }
     }
 };
-const theme24 = {
-    light: light20,
-    dark: dark20
+const theme29 = {
+    light: light25,
+    dark: dark25
 };
-const light21 = {
+const light26 = {
     colors: {
         intent: {
             primary: {
@@ -3339,7 +3931,7 @@ const light21 = {
         }
     }
 };
-const dark21 = {
+const dark26 = {
     colors: {
         intent: {
             primary: {
@@ -3396,11 +3988,11 @@ const dark21 = {
         }
     }
 };
-const theme25 = {
-    light: light21,
-    dark: dark21
+const theme30 = {
+    light: light26,
+    dark: dark26
 };
-const light22 = {
+const light27 = {
     colors: {
         intent: {
             primary: {
@@ -3457,7 +4049,7 @@ const light22 = {
         }
     }
 };
-const dark22 = {
+const dark27 = {
     colors: {
         intent: {
             primary: {
@@ -3514,11 +4106,11 @@ const dark22 = {
         }
     }
 };
-const theme26 = {
-    light: light22,
-    dark: dark22
+const theme31 = {
+    light: light27,
+    dark: dark27
 };
-const light23 = {
+const light28 = {
     colors: {
         intent: {
             primary: {
@@ -3575,7 +4167,7 @@ const light23 = {
         }
     }
 };
-const dark23 = {
+const dark28 = {
     colors: {
         intent: {
             primary: {
@@ -3632,11 +4224,11 @@ const dark23 = {
         }
     }
 };
-const theme27 = {
-    light: light23,
-    dark: dark23
+const theme32 = {
+    light: light28,
+    dark: dark28
 };
-const light24 = {
+const light29 = {
     colors: {
         intent: {
             primary: {
@@ -3693,7 +4285,7 @@ const light24 = {
         }
     }
 };
-const dark24 = {
+const dark29 = {
     colors: {
         intent: {
             primary: {
@@ -3750,11 +4342,11 @@ const dark24 = {
         }
     }
 };
-const theme28 = {
-    light: light24,
-    dark: dark24
+const theme33 = {
+    light: light29,
+    dark: dark29
 };
-const light25 = {
+const light30 = {
     colors: {
         intent: {
             primary: {
@@ -3811,7 +4403,7 @@ const light25 = {
         }
     }
 };
-const dark25 = {
+const dark30 = {
     colors: {
         intent: {
             primary: {
@@ -3868,11 +4460,11 @@ const dark25 = {
         }
     }
 };
-const theme29 = {
-    light: light25,
-    dark: dark25
+const theme34 = {
+    light: light30,
+    dark: dark30
 };
-const light26 = {
+const light31 = {
     colors: {
         intent: {
             primary: {
@@ -3929,7 +4521,7 @@ const light26 = {
         }
     }
 };
-const dark26 = {
+const dark31 = {
     colors: {
         intent: {
             primary: {
@@ -3986,11 +4578,11 @@ const dark26 = {
         }
     }
 };
-const theme30 = {
-    light: light26,
-    dark: dark26
+const theme35 = {
+    light: light31,
+    dark: dark31
 };
-const light27 = {
+const light32 = {
     colors: {
         intent: {
             primary: {
@@ -4047,7 +4639,7 @@ const light27 = {
         }
     }
 };
-const dark27 = {
+const dark32 = {
     colors: {
         intent: {
             primary: {
@@ -4104,11 +4696,11 @@ const dark27 = {
         }
     }
 };
-const theme31 = {
-    light: light27,
-    dark: dark27
+const theme36 = {
+    light: light32,
+    dark: dark32
 };
-const light28 = {
+const light33 = {
     colors: {
         intent: {
             primary: {
@@ -4165,7 +4757,7 @@ const light28 = {
         }
     }
 };
-const dark28 = {
+const dark33 = {
     colors: {
         intent: {
             primary: {
@@ -4222,11 +4814,11 @@ const dark28 = {
         }
     }
 };
-const theme32 = {
-    light: light28,
-    dark: dark28
+const theme37 = {
+    light: light33,
+    dark: dark33
 };
-const light29 = {
+const light34 = {
     colors: {
         intent: {
             primary: {
@@ -4283,7 +4875,7 @@ const light29 = {
         }
     }
 };
-const dark29 = {
+const dark34 = {
     colors: {
         intent: {
             primary: {
@@ -4340,11 +4932,11 @@ const dark29 = {
         }
     }
 };
-const theme33 = {
-    light: light29,
-    dark: dark29
+const theme38 = {
+    light: light34,
+    dark: dark34
 };
-const theme34 = {
+const theme39 = {
     light: {
         colors: {
             intent: {
@@ -4460,7 +5052,7 @@ const theme34 = {
         }
     }
 };
-const light30 = {
+const light35 = {
     colors: {
         intent: {
             primary: {
@@ -4517,7 +5109,7 @@ const light30 = {
         }
     }
 };
-const dark30 = {
+const dark35 = {
     colors: {
         intent: {
             primary: {
@@ -4574,11 +5166,11 @@ const dark30 = {
         }
     }
 };
-const theme35 = {
-    light: light30,
-    dark: dark30
+const theme40 = {
+    light: light35,
+    dark: dark35
 };
-const theme36 = {
+const theme41 = {
     light: {
         colors: {
             intent: {
@@ -4694,7 +5286,7 @@ const theme36 = {
         }
     }
 };
-const light31 = {
+const light36 = {
     colors: {
         intent: {
             primary: {
@@ -4751,7 +5343,7 @@ const light31 = {
         }
     }
 };
-const dark31 = {
+const dark36 = {
     colors: {
         intent: {
             primary: {
@@ -4808,11 +5400,11 @@ const dark31 = {
         }
     }
 };
-const theme37 = {
-    light: light31,
-    dark: dark31
+const theme42 = {
+    light: light36,
+    dark: dark36
 };
-const light32 = {
+const light37 = {
     colors: {
         intent: {
             primary: {
@@ -4869,7 +5461,7 @@ const light32 = {
         }
     }
 };
-const dark32 = {
+const dark37 = {
     colors: {
         intent: {
             primary: {
@@ -4926,11 +5518,11 @@ const dark32 = {
         }
     }
 };
-const theme38 = {
-    light: light32,
-    dark: dark32
+const theme43 = {
+    light: light37,
+    dark: dark37
 };
-const light33 = {
+const light38 = {
     colors: {
         intent: {
             primary: {
@@ -4987,7 +5579,7 @@ const light33 = {
         }
     }
 };
-const dark33 = {
+const dark38 = {
     colors: {
         intent: {
             primary: {
@@ -5044,11 +5636,129 @@ const dark33 = {
         }
     }
 };
-const theme39 = {
-    light: light33,
-    dark: dark33
+const theme44 = {
+    light: light38,
+    dark: dark38
 };
-const light34 = {
+const light39 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.rose[900],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.rose[50],
+                    foreground: colors.rose[950]
+                },
+                muted: {
+                    DEFAULT: colors.rose[100],
+                    foreground: colors.rose[700]
+                },
+                surface: {
+                    DEFAULT: colors.rose[200],
+                    foreground: colors.rose[950]
+                },
+                "surface-1": {
+                    DEFAULT: colors.rose[300],
+                    foreground: colors.rose[950]
+                }
+            },
+            single: {
+                foreground: colors.rose[950],
+                border: {
+                    DEFAULT: colors.rose[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.rose[50]
+                },
+                ring: `color-mix(in srgb, ${colors.rose[900]} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark39 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.rose[400],
+                foreground: colors.black
+            },
+            accent: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.orange[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.rose[950],
+                    foreground: colors.rose[50]
+                },
+                muted: {
+                    DEFAULT: colors.rose[900],
+                    foreground: colors.rose[300]
+                },
+                surface: {
+                    DEFAULT: colors.rose[800],
+                    foreground: colors.rose[200]
+                },
+                "surface-1": {
+                    DEFAULT: colors.rose[700],
+                    foreground: colors.rose[100]
+                }
+            },
+            single: {
+                foreground: colors.rose[50],
+                border: {
+                    DEFAULT: colors.rose[800]
+                },
+                input: {
+                    DEFAULT: colors.rose[950],
+                    hover: colors.rose[900]
+                },
+                ring: `color-mix(in srgb, ${colors.rose[400]} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme45 = {
+    light: light39,
+    dark: dark39
+};
+const light40 = {
     colors: {
         intent: {
             primary: {
@@ -5105,7 +5815,7 @@ const light34 = {
         }
     }
 };
-const dark34 = {
+const dark40 = {
     colors: {
         intent: {
             primary: {
@@ -5162,11 +5872,11 @@ const dark34 = {
         }
     }
 };
-const theme40 = {
-    light: light34,
-    dark: dark34
+const theme46 = {
+    light: light40,
+    dark: dark40
 };
-const light35 = {
+const light41 = {
     colors: {
         intent: {
             primary: {
@@ -5223,7 +5933,7 @@ const light35 = {
         }
     }
 };
-const dark35 = {
+const dark41 = {
     colors: {
         intent: {
             primary: {
@@ -5280,11 +5990,149 @@ const dark35 = {
         }
     }
 };
-const theme41 = {
-    light: light35,
-    dark: dark35
+const theme47 = {
+    light: light41,
+    dark: dark41
 };
-const theme42 = {
+const pink1 = "#f6329b";
+const mint1 = "#5deab5";
+const rind = {
+    50: "#f2faf6",
+    100: "#e4f2ea",
+    200: "#d2e7dc",
+    300: "#bedacb",
+    500: "#5f7a6c",
+    900: "#14281e"
+};
+const flesh = {
+    50: "#fbf3f7",
+    200: "#e7d4dd",
+    300: "#d4bac7",
+    400: "#b394a4",
+    600: "#5a384c",
+    700: "#482b3d",
+    800: "#36202e",
+    900: "#251521"
+};
+const light42 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: pink1,
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: mint1,
+                foreground: colors.emerald[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.emerald[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: rind[50],
+                    foreground: rind[900]
+                },
+                muted: {
+                    DEFAULT: rind[100],
+                    foreground: rind[500]
+                },
+                surface: {
+                    DEFAULT: rind[200],
+                    foreground: rind[900]
+                },
+                "surface-1": {
+                    DEFAULT: rind[300],
+                    foreground: rind[900]
+                }
+            },
+            single: {
+                foreground: rind[900],
+                border: {
+                    DEFAULT: rind[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: rind[50]
+                },
+                ring: `color-mix(in srgb, ${pink1} 20%, transparent)`
+            }
+        }
+    }
+};
+const dark42 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: pink1,
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: mint1,
+                foreground: colors.emerald[950]
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.emerald[500],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: flesh[900],
+                    foreground: flesh[50]
+                },
+                muted: {
+                    DEFAULT: flesh[800],
+                    foreground: flesh[400]
+                },
+                surface: {
+                    DEFAULT: flesh[700],
+                    foreground: flesh[300]
+                },
+                "surface-1": {
+                    DEFAULT: flesh[600],
+                    foreground: flesh[200]
+                }
+            },
+            single: {
+                foreground: flesh[50],
+                border: {
+                    DEFAULT: flesh[700]
+                },
+                input: {
+                    DEFAULT: flesh[900],
+                    hover: flesh[800]
+                },
+                ring: `color-mix(in srgb, ${pink1} 25%, transparent)`
+            }
+        }
+    }
+};
+const theme48 = {
+    light: light42,
+    dark: dark42
+};
+const theme49 = {
     light: {
         colors: {
             intent: {
@@ -5405,10 +6253,13 @@ const themeNames = [
     "blue-orange",
     "cyan-red",
     "cyan-slate",
+    "disco",
+    "electric-lemonade",
     "emerald-amber-forest",
     "emerald-pink",
     "fuchsia-emerald",
     "gray",
+    "hummingbird",
     "indigo-amber",
     "lime-fuchsia-neon",
     "mauve",
@@ -5420,9 +6271,11 @@ const themeNames = [
     "monokai-cyan",
     "monokai-green",
     "monokai-pink",
+    "nebula",
     "olive",
     "olive-amber-safari",
     "orange-pink-sunset",
+    "peacock",
     "pink-emerald",
     "pink-teal",
     "purple-yellow",
@@ -5441,8 +6294,10 @@ const themeNames = [
     "taupe-olive-clay",
     "taupe-rose-blush",
     "teal-rose",
+    "velvet",
     "violet-lime",
     "violet-rose-dusk",
+    "watermelon",
     "zinc"
 ];
 const bundledThemes = {
@@ -5450,45 +6305,52 @@ const bundledThemes = {
     blueOrange: theme1,
     cyanRed: theme2,
     cyanSlate: theme3,
-    emeraldAmberForest: theme4,
-    emeraldPink: theme5,
-    fuchsiaEmerald: theme6,
-    gray: theme7,
-    indigoAmber: theme8,
-    limeFuchsiaNeon: theme9,
-    mauve: theme10,
-    mauveLimeElectric: theme11,
-    mauveTeal: theme12,
-    mist: theme13,
-    mistIndigoFjord: theme14,
-    mistVioletAurora: theme15,
-    monokaiCyan: theme16,
-    monokaiGreen: theme17,
-    monokaiPink: theme18,
-    olive: theme19,
-    oliveAmberSafari: theme20,
-    orangePinkSunset: theme21,
-    pinkEmerald: theme22,
-    pinkTeal: theme23,
-    purpleYellow: theme24,
-    rainbow: theme25,
-    redBlue: theme26,
-    redCyan: theme27,
-    redSky: theme28,
-    redSkySlate: theme29,
-    roseTeal: theme30,
-    skyAmber: theme31,
-    slateCyan: theme32,
-    slateTealOcean: theme33,
-    stone: theme34,
-    stoneOrangeEarth: theme35,
-    taupe: theme36,
-    taupeOliveClay: theme37,
-    taupeRoseBlush: theme38,
-    tealRose: theme39,
-    violetLime: theme40,
-    violetRoseDusk: theme41,
-    zinc: theme42
+    disco: theme4,
+    electricLemonade: theme5,
+    emeraldAmberForest: theme6,
+    emeraldPink: theme7,
+    fuchsiaEmerald: theme8,
+    gray: theme9,
+    hummingbird: theme10,
+    indigoAmber: theme11,
+    limeFuchsiaNeon: theme12,
+    mauve: theme13,
+    mauveLimeElectric: theme14,
+    mauveTeal: theme15,
+    mist: theme16,
+    mistIndigoFjord: theme17,
+    mistVioletAurora: theme18,
+    monokaiCyan: theme19,
+    monokaiGreen: theme20,
+    monokaiPink: theme21,
+    nebula: theme22,
+    olive: theme23,
+    oliveAmberSafari: theme24,
+    orangePinkSunset: theme25,
+    peacock: theme26,
+    pinkEmerald: theme27,
+    pinkTeal: theme28,
+    purpleYellow: theme29,
+    rainbow: theme30,
+    redBlue: theme31,
+    redCyan: theme32,
+    redSky: theme33,
+    redSkySlate: theme34,
+    roseTeal: theme35,
+    skyAmber: theme36,
+    slateCyan: theme37,
+    slateTealOcean: theme38,
+    stone: theme39,
+    stoneOrangeEarth: theme40,
+    taupe: theme41,
+    taupeOliveClay: theme42,
+    taupeRoseBlush: theme43,
+    tealRose: theme44,
+    velvet: theme45,
+    violetLime: theme46,
+    violetRoseDusk: theme47,
+    watermelon: theme48,
+    zinc: theme49
 };
 const bundledThemeNames = Object.keys(bundledThemes);
 function getBundledTheme(name) {
@@ -5499,45 +6361,52 @@ const mod = {
     blueOrange: theme1,
     cyanRed: theme2,
     cyanSlate: theme3,
-    emeraldAmberForest: theme4,
-    emeraldPink: theme5,
-    fuchsiaEmerald: theme6,
-    gray: theme7,
-    indigoAmber: theme8,
-    limeFuchsiaNeon: theme9,
-    mauve: theme10,
-    mauveLimeElectric: theme11,
-    mauveTeal: theme12,
-    mist: theme13,
-    mistIndigoFjord: theme14,
-    mistVioletAurora: theme15,
-    monokaiCyan: theme16,
-    monokaiGreen: theme17,
-    monokaiPink: theme18,
-    olive: theme19,
-    oliveAmberSafari: theme20,
-    orangePinkSunset: theme21,
-    pinkEmerald: theme22,
-    pinkTeal: theme23,
-    purpleYellow: theme24,
-    rainbow: theme25,
-    redBlue: theme26,
-    redCyan: theme27,
-    redSky: theme28,
-    redSkySlate: theme29,
-    roseTeal: theme30,
-    skyAmber: theme31,
-    slateCyan: theme32,
-    slateTealOcean: theme33,
-    stone: theme34,
-    stoneOrangeEarth: theme35,
-    taupe: theme36,
-    taupeOliveClay: theme37,
-    taupeRoseBlush: theme38,
-    tealRose: theme39,
-    violetLime: theme40,
-    violetRoseDusk: theme41,
-    zinc: theme42,
+    disco: theme4,
+    electricLemonade: theme5,
+    emeraldAmberForest: theme6,
+    emeraldPink: theme7,
+    fuchsiaEmerald: theme8,
+    gray: theme9,
+    hummingbird: theme10,
+    indigoAmber: theme11,
+    limeFuchsiaNeon: theme12,
+    mauve: theme13,
+    mauveLimeElectric: theme14,
+    mauveTeal: theme15,
+    mist: theme16,
+    mistIndigoFjord: theme17,
+    mistVioletAurora: theme18,
+    monokaiCyan: theme19,
+    monokaiGreen: theme20,
+    monokaiPink: theme21,
+    nebula: theme22,
+    olive: theme23,
+    oliveAmberSafari: theme24,
+    orangePinkSunset: theme25,
+    peacock: theme26,
+    pinkEmerald: theme27,
+    pinkTeal: theme28,
+    purpleYellow: theme29,
+    rainbow: theme30,
+    redBlue: theme31,
+    redCyan: theme32,
+    redSky: theme33,
+    redSkySlate: theme34,
+    roseTeal: theme35,
+    skyAmber: theme36,
+    slateCyan: theme37,
+    slateTealOcean: theme38,
+    stone: theme39,
+    stoneOrangeEarth: theme40,
+    taupe: theme41,
+    taupeOliveClay: theme42,
+    taupeRoseBlush: theme43,
+    tealRose: theme44,
+    velvet: theme45,
+    violetLime: theme46,
+    violetRoseDusk: theme47,
+    watermelon: theme48,
+    zinc: theme49,
     themeNames: themeNames,
     bundledThemes: bundledThemes,
     bundledThemeNames: bundledThemeNames,

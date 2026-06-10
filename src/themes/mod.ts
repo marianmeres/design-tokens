@@ -23,6 +23,10 @@ export { default as blueOrange } from "./blue-orange.ts";
 export { default as cyanRed } from "./cyan-red.ts";
 /** Cyan primary / slate accent theme. */
 export { default as cyanSlate } from "./cyan-slate.ts";
+/** Gold primary (black text) / pink accent — mirrorball mauve light, violet dance-floor dark. */
+export { default as disco } from "./disco.ts";
+/** Cobalt primary / lime accent — lemon-cream light surfaces, blue-curaçao navy dark. */
+export { default as electricLemonade } from "./electric-lemonade.ts";
 /** Emerald primary / amber accent forest theme. */
 export { default as emeraldAmberForest } from "./emerald-amber-forest.ts";
 /** Emerald primary / pink accent theme. */
@@ -31,6 +35,8 @@ export { default as emeraldPink } from "./emerald-pink.ts";
 export { default as fuchsiaEmerald } from "./fuchsia-emerald.ts";
 /** Neutral gray monochrome theme. */
 export { default as gray } from "./gray.ts";
+/** Hot pink primary / mint accent on peacock-teal surfaces — Anna's hummingbird: magenta gorget, iridescent plumage. */
+export { default as hummingbird } from "./hummingbird.ts";
 /** Indigo primary / amber accent theme. */
 export { default as indigoAmber } from "./indigo-amber.ts";
 /** Lime primary / fuchsia accent neon theme. */
@@ -53,12 +59,16 @@ export { default as monokaiCyan } from "./monokai-cyan.ts";
 export { default as monokaiGreen } from "./monokai-green.ts";
 /** Monokai-inspired theme with pink accent. */
 export { default as monokaiPink } from "./monokai-pink.ts";
+/** Fuchsia primary / cyan accent — lilac haze light surfaces, deep-space indigo dark. */
+export { default as nebula } from "./nebula.ts";
 /** Warm yellow-grey olive monochrome theme. */
 export { default as olive } from "./olive.ts";
 /** Olive primary / amber accent safari theme — earthy warmth with golden highlights. */
 export { default as oliveAmberSafari } from "./olive-amber-safari.ts";
 /** Orange primary / pink accent sunset theme. */
 export { default as orangePinkSunset } from "./orange-pink-sunset.ts";
+/** Teal primary / fuchsia accent on all-teal surfaces — iridescent peacock plumage, light and night. */
+export { default as peacock } from "./peacock.ts";
 /** Pink primary / emerald accent theme. */
 export { default as pinkEmerald } from "./pink-emerald.ts";
 /** Pink primary / teal accent theme. */
@@ -95,10 +105,14 @@ export { default as taupeOliveClay } from "./taupe-olive-clay.ts";
 export { default as taupeRoseBlush } from "./taupe-rose-blush.ts";
 /** Teal primary / rose accent theme. */
 export { default as tealRose } from "./teal-rose.ts";
+/** Burgundy primary / gold accent on rose-monochrome surfaces — blush velvet light, wine-black dark. */
+export { default as velvet } from "./velvet.ts";
 /** Violet primary / lime accent theme. */
 export { default as violetLime } from "./violet-lime.ts";
 /** Violet primary / rose accent dusk theme. */
 export { default as violetRoseDusk } from "./violet-rose-dusk.ts";
+/** Hot pink primary / mint accent (favicon-exact) — watermelon: mint rind light surfaces, plum flesh dark surfaces. */
+export { default as watermelon } from "./watermelon.ts";
 /** Neutral zinc monochrome theme. */
 export { default as zinc } from "./zinc.ts";
 
@@ -106,10 +120,13 @@ import amberOliveSafari_ from "./amber-olive-safari.ts";
 import blueOrange_ from "./blue-orange.ts";
 import cyanRed_ from "./cyan-red.ts";
 import cyanSlate_ from "./cyan-slate.ts";
+import disco_ from "./disco.ts";
+import electricLemonade_ from "./electric-lemonade.ts";
 import emeraldAmberForest_ from "./emerald-amber-forest.ts";
 import emeraldPink_ from "./emerald-pink.ts";
 import fuchsiaEmerald_ from "./fuchsia-emerald.ts";
 import gray_ from "./gray.ts";
+import hummingbird_ from "./hummingbird.ts";
 import indigoAmber_ from "./indigo-amber.ts";
 import limeFuchsiaNeon_ from "./lime-fuchsia-neon.ts";
 import mauve_ from "./mauve.ts";
@@ -121,9 +138,11 @@ import mistVioletAurora_ from "./mist-violet-aurora.ts";
 import monokaiCyan_ from "./monokai-cyan.ts";
 import monokaiGreen_ from "./monokai-green.ts";
 import monokaiPink_ from "./monokai-pink.ts";
+import nebula_ from "./nebula.ts";
 import olive_ from "./olive.ts";
 import oliveAmberSafari_ from "./olive-amber-safari.ts";
 import orangePinkSunset_ from "./orange-pink-sunset.ts";
+import peacock_ from "./peacock.ts";
 import pinkEmerald_ from "./pink-emerald.ts";
 import pinkTeal_ from "./pink-teal.ts";
 import purpleYellow_ from "./purple-yellow.ts";
@@ -142,8 +161,10 @@ import taupe_ from "./taupe.ts";
 import taupeOliveClay_ from "./taupe-olive-clay.ts";
 import taupeRoseBlush_ from "./taupe-rose-blush.ts";
 import tealRose_ from "./teal-rose.ts";
+import velvet_ from "./velvet.ts";
 import violetLime_ from "./violet-lime.ts";
 import violetRoseDusk_ from "./violet-rose-dusk.ts";
+import watermelon_ from "./watermelon.ts";
 import zinc_ from "./zinc.ts";
 
 /** Kebab-case theme names matching the generated CSS filenames (without extension). */
@@ -152,10 +173,13 @@ export const themeNames = [
 	"blue-orange",
 	"cyan-red",
 	"cyan-slate",
+	"disco",
+	"electric-lemonade",
 	"emerald-amber-forest",
 	"emerald-pink",
 	"fuchsia-emerald",
 	"gray",
+	"hummingbird",
 	"indigo-amber",
 	"lime-fuchsia-neon",
 	"mauve",
@@ -167,9 +191,11 @@ export const themeNames = [
 	"monokai-cyan",
 	"monokai-green",
 	"monokai-pink",
+	"nebula",
 	"olive",
 	"olive-amber-safari",
 	"orange-pink-sunset",
+	"peacock",
 	"pink-emerald",
 	"pink-teal",
 	"purple-yellow",
@@ -188,8 +214,10 @@ export const themeNames = [
 	"taupe-olive-clay",
 	"taupe-rose-blush",
 	"teal-rose",
+	"velvet",
 	"violet-lime",
 	"violet-rose-dusk",
+	"watermelon",
 	"zinc",
 ] as const;
 
@@ -199,10 +227,13 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	blueOrange: blueOrange_,
 	cyanRed: cyanRed_,
 	cyanSlate: cyanSlate_,
+	disco: disco_,
+	electricLemonade: electricLemonade_,
 	emeraldAmberForest: emeraldAmberForest_,
 	emeraldPink: emeraldPink_,
 	fuchsiaEmerald: fuchsiaEmerald_,
 	gray: gray_,
+	hummingbird: hummingbird_,
 	indigoAmber: indigoAmber_,
 	limeFuchsiaNeon: limeFuchsiaNeon_,
 	mauve: mauve_,
@@ -214,9 +245,11 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	monokaiCyan: monokaiCyan_,
 	monokaiGreen: monokaiGreen_,
 	monokaiPink: monokaiPink_,
+	nebula: nebula_,
 	olive: olive_,
 	oliveAmberSafari: oliveAmberSafari_,
 	orangePinkSunset: orangePinkSunset_,
+	peacock: peacock_,
 	pinkEmerald: pinkEmerald_,
 	pinkTeal: pinkTeal_,
 	purpleYellow: purpleYellow_,
@@ -235,8 +268,10 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	taupeOliveClay: taupeOliveClay_,
 	taupeRoseBlush: taupeRoseBlush_,
 	tealRose: tealRose_,
+	velvet: velvet_,
 	violetLime: violetLime_,
 	violetRoseDusk: violetRoseDusk_,
+	watermelon: watermelon_,
 	zinc: zinc_,
 };
 

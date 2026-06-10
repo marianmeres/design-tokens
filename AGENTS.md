@@ -21,7 +21,7 @@ Entry points:
 
 - `.` — core generation functions, types, color palette
 - `./reboot` — Bootstrap Reboot `--bs-*` variable bridge
-- `./themes` — 43 pre-built theme definitions + `themeNames` constant + `bundledThemes` / `bundledThemeNames` / `getBundledTheme` runtime helpers
+- `./themes` — 50 pre-built theme definitions + `themeNames` constant + `bundledThemes` / `bundledThemeNames` / `getBundledTheme` runtime helpers
 - `./css/*.css` — pre-built CSS files (**npm only** — JSR does not support directory exports)
 
 ## Project Structure

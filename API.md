@@ -428,9 +428,9 @@ themeNames; // → ["amber-olive-safari", "blue-orange", ..., "zinc"]
 
 _Import from `@marianmeres/design-tokens/themes`_
 
-43 pre-built `ThemeSchema` definitions, each with light + dark mode:
+50 pre-built `ThemeSchema` definitions, each with light + dark mode:
 
-`amberOliveSafari`, `blueOrange`, `cyanRed`, `cyanSlate`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `indigoAmber`, `limeFuchsiaNeon`, `mauve`, `mauveLimeElectric`, `mauveTeal`, `mist`, `mistIndigoFjord`, `mistVioletAurora`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `olive`, `oliveAmberSafari`, `orangePinkSunset`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `stoneOrangeEarth`, `taupe`, `taupeOliveClay`, `taupeRoseBlush`, `tealRose`, `violetLime`, `violetRoseDusk`, `zinc`
+`amberOliveSafari`, `blueOrange`, `cyanRed`, `cyanSlate`, `disco`, `electricLemonade`, `emeraldAmberForest`, `emeraldPink`, `fuchsiaEmerald`, `gray`, `hummingbird`, `indigoAmber`, `limeFuchsiaNeon`, `mauve`, `mauveLimeElectric`, `mauveTeal`, `mist`, `mistIndigoFjord`, `mistVioletAurora`, `monokaiCyan`, `monokaiGreen`, `monokaiPink`, `nebula`, `olive`, `oliveAmberSafari`, `orangePinkSunset`, `peacock`, `pinkEmerald`, `pinkTeal`, `purpleYellow`, `rainbow`, `redBlue`, `redCyan`, `redSky`, `redSkySlate`, `roseTeal`, `skyAmber`, `slateCyan`, `slateTealOcean`, `stone`, `stoneOrangeEarth`, `taupe`, `taupeOliveClay`, `taupeRoseBlush`, `tealRose`, `velvet`, `violetLime`, `violetRoseDusk`, `watermelon`, `zinc`
 
 All bundled themes include a `surface-1` paired role (on top of the required `background`, `muted`, `surface`) as a conventional extra elevation.
 
