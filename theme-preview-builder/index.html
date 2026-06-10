@@ -4,9 +4,17 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Theme Preview Builder</title>
+
+		<!-- Generated theme tokens, scoped per preview panel. Filled by the
+		     module script's render() effect (one <style> per mode). -->
 		<style id="style-light"></style>
 		<style id="style-dark"></style>
+
 		<style>
+			/* ============================================================
+			 * Builder chrome — the TOOL's own UI. Intentionally NOT themed;
+			 * it stays constant while the previewed theme changes.
+			 * ========================================================== */
 			*, *::before, *::after {
 				box-sizing: border-box;
 				margin: 0;
@@ -48,9 +56,19 @@
 				flex-wrap: wrap;
 			}
 
-			header select {
+			.theme-nav {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+			}
+			.theme-nav select {
 				font-size: 0.9rem;
 				padding: 0.35rem 0.5rem;
+			}
+			.theme-label {
+				font-size: 0.85rem;
+				font-weight: 600;
+				color: #374151;
 			}
 
 			button.export-btn, button.nav-btn {
@@ -70,6 +88,48 @@
 				padding: 0.4rem 0.6rem;
 				font-size: 0.8rem;
 			}
+			button.export-btn {
+				margin-left: auto;
+			}
+
+			/* Keyboard focus indicators for the builder chrome (the app-screen
+			   mockup carries its own token-driven focus rings). */
+			button.export-btn:focus-visible,
+			button.nav-btn:focus-visible,
+			.layout-switch button:focus-visible,
+			.controls-toggle:focus-visible,
+			.theme-nav select:focus-visible {
+				outline: 2px solid #2563eb;
+				outline-offset: 2px;
+			}
+
+			/* Layout switch (segmented control), sits next to the theme picker. */
+			.layout-switch {
+				display: inline-flex;
+				border: 1px solid #d1d5db;
+				border-radius: 6px;
+				overflow: hidden;
+			}
+			.layout-switch button {
+				font: inherit;
+				font-size: 0.8rem;
+				font-weight: 600;
+				padding: 0.4rem 0.75rem;
+				border: none;
+				background: white;
+				color: #555;
+				cursor: pointer;
+			}
+			.layout-switch button + button {
+				border-left: 1px solid #d1d5db;
+			}
+			.layout-switch button:hover {
+				background: #f3f4f6;
+			}
+			.layout-switch button[aria-pressed="true"] {
+				background: #2563eb;
+				color: white;
+			}
 
 			/* Preview panels */
 			#preview {
@@ -87,6 +147,17 @@
 
 			.preview-panel-inner {
 				padding: 1rem;
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+			}
+			/* In app layout the .appmock provides its own full-bleed surface, so
+			   drop the panel padding and let the panel supply the outer frame. */
+			.layout-app .preview-panel-inner {
+				padding: 0;
+			}
+			.layout-app .appmock {
+				border: none;
+				border-radius: 0;
 			}
 
 			.preview-panel h2 {
@@ -94,15 +165,6 @@
 				font-size: 0.8rem;
 				text-transform: uppercase;
 				letter-spacing: 0.08em;
-			}
-
-			.preview-light .preview-panel-inner {
-				background: var(--dt-color-background);
-				color: var(--dt-color-background-foreground);
-			}
-			.preview-dark .preview-panel-inner {
-				background: var(--dt-color-background);
-				color: var(--dt-color-background-foreground);
 			}
 
 			.preview-light h2 {
@@ -114,7 +176,9 @@
 				color: #e5e7eb;
 			}
 
-			/* Nested surface boxes */
+			/* ============================================================
+			 * Swatches preview layout (token reference grid)
+			 * ========================================================== */
 			.nested-surfaces .surface-box {
 				padding: 0.75rem;
 				border-radius: 6px;
@@ -375,7 +439,423 @@
 				background: var(--dt-color-input);
 			}
 
-			/* Controls */
+			/* ============================================================
+			 * App-screen preview layout (.appmock) — a realistic mockup so
+			 * the theme can be judged in context. Cloned into both panels;
+			 * every color comes from the --dt-color-* tokens, so the same
+			 * markup renders light on the left/top and dark on the right/bottom.
+			 * ========================================================== */
+			.appmock {
+				font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+				background: var(--dt-color-background);
+				color: var(--dt-color-background-foreground);
+				border: 1px solid var(--dt-color-border);
+				border-radius: 14px;
+				overflow: hidden;
+				line-height: 1.45;
+				font-size: 14px;
+				-webkit-font-smoothing: antialiased;
+			}
+			.appmock *,
+			.appmock *::before,
+			.appmock *::after { box-sizing: border-box; }
+
+			/* ---------- Top bar ---------- */
+			.appmock .topbar {
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				padding: 12px 18px;
+				background: var(--dt-color-surface);
+				color: var(--dt-color-surface-foreground);
+				border-bottom: 1px solid var(--dt-color-border);
+			}
+			.appmock .brand { display: flex; align-items: baseline; gap: 7px; }
+			.appmock .brand-mark {
+				color: var(--dt-color-primary);
+				font-size: 18px;
+				transform: translateY(1px);
+			}
+			.appmock .brand-name { font-weight: 700; letter-spacing: -0.01em; }
+			.appmock .brand-sub {
+				font-size: 11px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .search {
+				position: relative;
+				flex: 1;
+				max-width: 420px;
+				margin-inline: auto;
+			}
+			.appmock .search-icon {
+				position: absolute;
+				left: 11px;
+				top: 50%;
+				transform: translateY(-50%);
+				color: var(--dt-color-muted-foreground);
+				font-size: 15px;
+				pointer-events: none;
+			}
+			.appmock .search-input {
+				width: 100%;
+				font: inherit;
+				font-size: 13px;
+				padding: 8px 12px 8px 32px;
+				color: var(--dt-color-foreground);
+				background: var(--dt-color-input);
+				border: 1px solid var(--dt-color-border);
+				border-radius: 8px;
+				outline: none;
+			}
+			.appmock .search-input::placeholder { color: var(--dt-color-muted-foreground); }
+			.appmock .search-input:hover { border-color: var(--dt-color-border-hover); }
+			.appmock .search-input:focus-visible {
+				border-color: var(--dt-color-ring);
+				outline: 2px solid var(--dt-color-ring);
+				outline-offset: 1px;
+			}
+			.appmock .topbar-right { display: flex; align-items: center; gap: 10px; }
+			.appmock .icon-btn {
+				position: relative;
+				width: 34px;
+				height: 34px;
+				font: inherit;
+				font-size: 15px;
+				border-radius: 8px;
+				cursor: pointer;
+				background: var(--dt-color-muted);
+				color: var(--dt-color-muted-foreground);
+				border: 1px solid var(--dt-color-border);
+			}
+			.appmock .icon-btn:hover { background: var(--dt-color-muted-hover); }
+			.appmock .icon-btn:active { background: var(--dt-color-muted-active); }
+			.appmock .icon-btn .dot {
+				position: absolute;
+				top: 6px; right: 7px;
+				width: 7px; height: 7px;
+				border-radius: 50%;
+				background: var(--dt-color-destructive);
+			}
+			.appmock .avatar-chip {
+				display: flex;
+				align-items: center;
+				gap: 9px;
+				padding: 4px 9px 4px 4px;
+				font: inherit;
+				cursor: pointer;
+				background: var(--dt-color-muted);
+				color: var(--dt-color-muted-foreground);
+				border: 1px solid var(--dt-color-border);
+				border-radius: 999px;
+			}
+			.appmock .avatar-chip:hover { background: var(--dt-color-muted-hover); }
+			.appmock .avatar-chip:active { background: var(--dt-color-muted-active); }
+			.appmock .avatar {
+				display: grid;
+				place-items: center;
+				width: 28px; height: 28px;
+				border-radius: 50%;
+				font-size: 11px;
+				font-weight: 700;
+				background: var(--dt-color-primary);
+				color: var(--dt-color-primary-foreground);
+			}
+			.appmock .avatar-meta { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+			.appmock .avatar-name { font-size: 12px; font-weight: 600; color: var(--dt-color-foreground); }
+			.appmock .avatar-role { font-size: 10px; color: var(--dt-color-muted-foreground); }
+			.appmock .caret { font-size: 10px; }
+
+			/* ---------- Shell ---------- */
+			.appmock .shell { display: grid; grid-template-columns: 212px 1fr; }
+
+			/* ---------- Sidebar ---------- */
+			.appmock .sidebar {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				gap: 18px;
+				padding: 14px 12px;
+				min-height: 520px;
+				background: var(--dt-color-muted);
+				border-right: 1px solid var(--dt-color-border);
+			}
+			.appmock .nav { display: flex; flex-direction: column; gap: 3px; }
+			.appmock .nav-item {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 9px 11px;
+				border-radius: 8px;
+				font-size: 13px;
+				font-weight: 500;
+				text-decoration: none;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .nav-item:hover { background: var(--dt-color-muted-hover); color: var(--dt-color-foreground); }
+			.appmock .nav-item:active { background: var(--dt-color-muted-active); }
+			.appmock .nav-item.active {
+				background: var(--dt-color-primary);
+				color: var(--dt-color-primary-foreground);
+				font-weight: 600;
+			}
+			.appmock .nav-item.active:hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground-hover); }
+			.appmock .nav-ico { width: 18px; text-align: center; font-size: 14px; }
+			.appmock .nav-badge {
+				margin-left: auto;
+				font-size: 10px;
+				font-weight: 700;
+				padding: 1px 7px;
+				border-radius: 999px;
+				background: var(--dt-color-surface-accent);
+				color: var(--dt-color-surface-accent-foreground);
+				border: 1px solid var(--dt-color-surface-accent-border);
+			}
+			.appmock .sidebar-foot {
+				padding: 12px;
+				border-radius: 10px;
+				background: var(--dt-color-surface);
+				border: 1px solid var(--dt-color-border);
+			}
+			.appmock .usage-label { font-size: 11px; font-weight: 600; color: var(--dt-color-surface-foreground); }
+			.appmock .usage-bar {
+				margin: 8px 0 6px;
+				height: 7px;
+				border-radius: 999px;
+				background: var(--dt-color-muted);
+				overflow: hidden;
+			}
+			.appmock .usage-fill { display: block; height: 100%; width: 68%; background: var(--dt-color-accent); }
+			.appmock .usage-meta { font-size: 11px; color: var(--dt-color-muted-foreground); }
+
+			/* ---------- Content ---------- */
+			.appmock .content { display: flex; flex-direction: column; gap: 18px; padding: 20px; min-width: 0; }
+
+			/* ---------- Hero (the gradient element) ---------- */
+			.appmock .hero {
+				position: relative;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				padding: 24px 26px;
+				border-radius: 14px;
+				overflow: hidden;
+				background: linear-gradient(118deg, var(--dt-color-primary) 0%, var(--dt-color-accent) 100%);
+				color: var(--dt-color-primary-foreground);
+			}
+			.appmock .hero-text { flex: 1; }
+			.appmock .hero-eyebrow {
+				font-size: 12px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.07em;
+				opacity: 0.85;
+			}
+			.appmock .hero-title { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; margin: 4px 0 6px; }
+			.appmock .hero-body { font-size: 13.5px; max-width: 52ch; opacity: 0.92; }
+			.appmock .hero-actions { display: flex; gap: 10px; margin-top: 16px; }
+			.appmock .hero-cta {
+				background: var(--dt-color-primary-foreground);
+				color: var(--dt-color-primary);
+				border: none;
+			}
+			.appmock .hero-cta:hover { background: rgb(255 255 255 / 0.88); }
+			.appmock .hero-cta:active { background: rgb(255 255 255 / 0.78); }
+			.appmock .hero-ghost {
+				background: rgb(255 255 255 / 0.14);
+				color: var(--dt-color-primary-foreground);
+				border: 1px solid rgb(255 255 255 / 0.45);
+			}
+			.appmock .hero-ghost:hover { background: rgb(255 255 255 / 0.24); }
+			.appmock .hero-ghost:active { background: rgb(255 255 255 / 0.32); }
+			.appmock .hero-badge {
+				align-self: flex-start;
+				padding: 6px 12px;
+				border-radius: 999px;
+				font-size: 13px;
+				font-weight: 700;
+				background: rgb(255 255 255 / 0.18);
+				border: 1px solid rgb(255 255 255 / 0.4);
+			}
+
+			/* ---------- Stat cards ---------- */
+			.appmock .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+			.appmock .stat-card {
+				padding: 16px;
+				border-radius: 12px;
+				background: var(--dt-color-surface);
+				color: var(--dt-color-surface-foreground);
+				border: 1px solid var(--dt-color-border);
+				box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+			}
+			.appmock .stat-label {
+				font-size: 11px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin: 6px 0 4px; }
+			.appmock .stat-trend { font-size: 12px; color: var(--dt-color-muted-foreground); }
+			.appmock .stat-trend.up { color: var(--dt-color-success); }
+			.appmock .stat-trend.down { color: var(--dt-color-destructive); }
+
+			/* ---------- Callout (intent surface) ---------- */
+			.appmock .callout {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 12px 14px;
+				border-radius: 11px;
+				font-size: 13px;
+				background: var(--dt-color-surface-success);
+				color: var(--dt-color-surface-success-foreground);
+				border: 1px solid var(--dt-color-surface-success-border);
+			}
+			.appmock .callout-ico {
+				display: grid;
+				place-items: center;
+				width: 22px; height: 22px;
+				border-radius: 50%;
+				font-size: 12px;
+				font-weight: 700;
+				background: var(--dt-color-success);
+				color: var(--dt-color-success-foreground);
+				flex: none;
+			}
+			.appmock .callout-text { flex: 1; }
+			.appmock .callout-text strong { font-weight: 700; }
+			.appmock .callout-dismiss {
+				font: inherit;
+				font-size: 13px;
+				line-height: 1;
+				padding: 4px 7px;
+				cursor: pointer;
+				border-radius: 6px;
+				color: inherit;
+				background: transparent;
+				border: 1px solid var(--dt-color-surface-success-border);
+			}
+			.appmock .callout-dismiss:hover { background: rgb(0 0 0 / 0.06); }
+
+			/* ---------- Panel / table ---------- */
+			.appmock .panel {
+				border-radius: 14px;
+				background: var(--dt-color-surface);
+				color: var(--dt-color-surface-foreground);
+				border: 1px solid var(--dt-color-border);
+				overflow: hidden;
+				box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+			}
+			.appmock .panel-head {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+				gap: 14px;
+				padding: 16px 18px;
+				border-bottom: 1px solid var(--dt-color-border);
+			}
+			.appmock .panel-title { font-size: 15px; font-weight: 700; }
+			.appmock .panel-sub { font-size: 12.5px; color: var(--dt-color-muted-foreground); margin-top: 2px; }
+			.appmock .panel-actions { display: flex; gap: 8px; flex: none; }
+
+			.appmock .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+			.appmock .table th {
+				text-align: left;
+				font-size: 11px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: var(--dt-color-muted-foreground);
+				padding: 10px 18px;
+				background: var(--dt-color-surface-1);
+				border-bottom: 1px solid var(--dt-color-border);
+			}
+			.appmock .table td { padding: 12px 18px; border-bottom: 1px solid var(--dt-color-border); }
+			.appmock .table tbody tr:last-child td { border-bottom: none; }
+			.appmock .table tbody tr:hover { background: var(--dt-color-muted); }
+			.appmock .cell-main { font-weight: 600; color: var(--dt-color-surface-foreground); }
+			.appmock .cell-muted { color: var(--dt-color-muted-foreground); }
+
+			.appmock .badge {
+				display: inline-block;
+				font-size: 11px;
+				font-weight: 600;
+				padding: 3px 10px;
+				border-radius: 999px;
+				border: 1px solid transparent;
+			}
+			.appmock .badge-success {
+				background: var(--dt-color-surface-success);
+				color: var(--dt-color-surface-success-foreground);
+				border-color: var(--dt-color-surface-success-border);
+			}
+			.appmock .badge-warning {
+				background: var(--dt-color-surface-warning);
+				color: var(--dt-color-surface-warning-foreground);
+				border-color: var(--dt-color-surface-warning-border);
+			}
+			.appmock .badge-destructive {
+				background: var(--dt-color-surface-destructive);
+				color: var(--dt-color-surface-destructive-foreground);
+				border-color: var(--dt-color-surface-destructive-border);
+			}
+
+			.appmock .panel-foot {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 12px;
+				padding: 14px 18px;
+				background: var(--dt-color-surface-1);
+				border-top: 1px solid var(--dt-color-border);
+			}
+			.appmock .foot-note { font-size: 12px; color: var(--dt-color-muted-foreground); }
+			.appmock .foot-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+			/* ---------- Buttons ---------- */
+			.appmock .btn {
+				font: inherit;
+				font-size: 13px;
+				font-weight: 600;
+				padding: 8px 15px;
+				border-radius: 8px;
+				cursor: pointer;
+				border: 1px solid transparent;
+				outline: none;
+			}
+			.appmock .btn:focus-visible { outline: 2px solid var(--dt-color-ring); outline-offset: 2px; }
+			.appmock .btn-primary {
+				background: var(--dt-color-primary);
+				color: var(--dt-color-primary-foreground);
+			}
+			.appmock .btn-primary:hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground-hover); }
+			.appmock .btn-primary:active { background: var(--dt-color-primary-active); color: var(--dt-color-primary-foreground-active); }
+			.appmock .btn-accent {
+				background: var(--dt-color-accent);
+				color: var(--dt-color-accent-foreground);
+			}
+			.appmock .btn-accent:hover { background: var(--dt-color-accent-hover); color: var(--dt-color-accent-foreground-hover); }
+			.appmock .btn-accent:active { background: var(--dt-color-accent-active); color: var(--dt-color-accent-foreground-active); }
+			.appmock .btn-neutral {
+				background: var(--dt-color-muted);
+				color: var(--dt-color-muted-foreground);
+				border-color: var(--dt-color-border);
+			}
+			.appmock .btn-neutral:hover { background: var(--dt-color-muted-hover); color: var(--dt-color-foreground); }
+			.appmock .btn-neutral:active { background: var(--dt-color-muted-active); }
+			.appmock .btn-destructive {
+				background: var(--dt-color-destructive);
+				color: var(--dt-color-destructive-foreground);
+			}
+			.appmock .btn-destructive:hover { background: var(--dt-color-destructive-hover); color: var(--dt-color-destructive-foreground-hover); }
+			.appmock .btn-destructive:active { background: var(--dt-color-destructive-active); color: var(--dt-color-destructive-foreground-active); }
+
+			/* ============================================================
+			 * Controls (editor)
+			 * ========================================================== */
 			.controls-toggle {
 				display: flex;
 				align-items: center;
@@ -468,6 +948,20 @@
 				flex-shrink: 0;
 			}
 
+			.role-base-row {
+				margin-bottom: 0.5rem;
+			}
+			.role-base-row .role-base-label {
+				font-weight: 600;
+			}
+			.role-base-row .role-base-select {
+				width: auto;
+			}
+			.role-base-row .role-base-hint {
+				font-size: 0.65rem;
+				color: #6b7280;
+			}
+
 			.ring-row {
 				display: flex;
 				align-items: center;
@@ -482,6 +976,19 @@
 				text-align: right;
 				padding-right: 0.35rem;
 				color: #555;
+			}
+			.ring-row select {
+				font-size: 0.7rem;
+				padding: 0.15rem 0.25rem;
+				border: 1px solid #d1d5db;
+				border-radius: 3px;
+				background: white;
+			}
+			.ring-row .family-select {
+				width: 6rem;
+			}
+			.ring-row .shade-select {
+				width: 4rem;
 			}
 			.ring-row input[type="range"] {
 				width: 4rem;
@@ -515,168 +1022,379 @@
 				#preview, #controls {
 					grid-template-columns: 1fr;
 				}
+				/* Stack the header so the export button doesn't orphan-wrap. */
+				header {
+					align-items: stretch;
+				}
+				button.export-btn {
+					margin-left: 0;
+				}
 			}
 		</style>
 	</head>
 	<body>
-		<header>
-			<h1>Theme Preview Builder</h1>
-			<button class="nav-btn" id="prev-btn" title="Previous theme">&larr;</button>
-			<select id="theme-select"></select>
-			<button class="nav-btn" id="next-btn" title="Next theme">&rarr;</button>
-			<button class="export-btn" id="export-btn">Export to clipboard</button>
-		</header>
+		<!-- =====================================================================
+		     TEMPLATES — all markup lives in HTML (the @marianmeres/vanilla way).
+		     The module script clones these with fromTemplate() and wires them.
+		     ===================================================================== -->
 
-		<section id="preview">
-			<div class="preview-panel preview-light">
-				<h2>Light</h2>
-				<div class="preview-panel-inner">
-					<div class="nested-surfaces">
-						<div class="surface-box bg-background">
-							<div class="surface-label">background / foreground</div>
-							<div class="surface-box bg-muted">
-								<div class="surface-label">muted / muted-foreground</div>
-								<div class="surface-box bg-surface">
-									<div class="surface-label">
-										surface / surface-foreground
-									</div>
-									<div class="surface-box bg-surface-1">
-										<div class="surface-label">
-											surface-1 / surface-1-foreground
-										</div>
-									</div>
+		<!-- The builder shell. Cloned once into #app. -->
+		<template id="tpl-app">
+			<div class="builder">
+				<header>
+					<h1>Theme Preview Builder</h1>
+					<div class="theme-nav">
+						<label class="theme-label" for="theme-select">Theme</label>
+						<button
+							class="nav-btn"
+							type="button"
+							data-on="click:prev"
+							title="Previous theme"
+							aria-label="Previous theme"
+						>&larr;</button>
+						<select
+							id="theme-select"
+							data-ref="themeSelect"
+							data-on="change:pickTheme"
+						></select>
+						<button
+							class="nav-btn"
+							type="button"
+							data-on="click:next"
+							title="Next theme"
+							aria-label="Next theme"
+						>&rarr;</button>
+					</div>
+					<div class="layout-switch" role="group" aria-label="Preview layout">
+						<button type="button" data-on="click:setLayout" data-arg="swatches" aria-pressed="true">Swatches</button>
+						<button type="button" data-on="click:setLayout" data-arg="app" aria-pressed="false">App screen</button>
+					</div>
+					<button class="export-btn" type="button" data-on="click:export">
+						Export to clipboard
+					</button>
+				</header>
+
+				<section id="preview" data-ref="preview">
+					<div class="preview-panel preview-light">
+						<h2>Light</h2>
+						<div class="preview-panel-inner" data-ref="lightInner"></div>
+					</div>
+					<div class="preview-panel preview-dark">
+						<h2>Dark</h2>
+						<div class="preview-panel-inner" data-ref="darkInner"></div>
+					</div>
+				</section>
+
+				<button class="controls-toggle" type="button" data-on="click:toggleControls">
+					<span class="arrow" data-ref="controlsArrow">&#9654;</span>
+					Color Settings
+				</button>
+				<section id="controls" class="collapsed" data-ref="controls">
+					<div class="controls-panel">
+						<h2>Light Mode</h2>
+						<div data-ref="controlsLight"></div>
+					</div>
+					<div class="controls-panel">
+						<h2>Dark Mode</h2>
+						<div data-ref="controlsDark"></div>
+					</div>
+				</section>
+
+				<div class="toast" data-ref="toast">Copied to clipboard!</div>
+			</div>
+		</template>
+
+		<!-- Preview layout 1: the swatch/token reference grid. Cloned into both
+		     panels; colors resolve from the per-panel token scope. -->
+		<template id="tpl-preview-swatches">
+			<div class="swatches">
+				<div class="nested-surfaces">
+					<div class="surface-box bg-background">
+						<div class="surface-label">background / foreground</div>
+						<div class="surface-box bg-muted">
+							<div class="surface-label">muted / muted-foreground</div>
+							<div class="surface-box bg-surface">
+								<div class="surface-label">surface / surface-foreground</div>
+								<div class="surface-box bg-surface-1">
+									<div class="surface-label">surface-1 / surface-1-foreground</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="role-buttons">
-						<button class="role-button btn-background">background</button>
-						<button class="role-button btn-muted">muted</button>
-						<button class="role-button btn-surface">surface</button>
-						<button class="role-button btn-surface-1">surface-1</button>
+				</div>
+				<div class="role-buttons">
+					<button class="role-button btn-background">background</button>
+					<button class="role-button btn-muted">muted</button>
+					<button class="role-button btn-surface">surface</button>
+					<button class="role-button btn-surface-1">surface-1</button>
+				</div>
+				<div class="intent-hero">
+					<div class="intent-hero-swatch swatch-primary">primary</div>
+					<div class="intent-hero-swatch swatch-accent">accent</div>
+				</div>
+				<div class="intent-swatches">
+					<div class="intent-swatch swatch-destructive">destructive</div>
+					<div class="intent-swatch swatch-warning">warning</div>
+					<div class="intent-swatch swatch-success">success</div>
+				</div>
+				<div class="link-demo">
+					<a href="javascript:void(0)">Hover &amp; click me</a>
+					<span class="state-chip state-default">default</span>
+					<span class="state-chip state-hover">hover</span>
+					<span class="state-chip state-active">active</span>
+				</div>
+				<div class="bordered-demo">
+					<span>input + border</span>
+					<span class="ring-demo">ring</span>
+				</div>
+				<div class="role-singles">
+					<div class="role-single-swatch">
+						<div class="role-single-chip chip-foreground"></div>foreground
 					</div>
-					<div class="intent-hero">
-						<div class="intent-hero-swatch swatch-primary">primary</div>
-						<div class="intent-hero-swatch swatch-accent">accent</div>
+					<div class="role-single-swatch">
+						<div class="role-single-chip chip-border"></div>border
 					</div>
-					<div class="intent-swatches">
-						<div class="intent-swatch swatch-destructive">destructive</div>
-						<div class="intent-swatch swatch-warning">warning</div>
-						<div class="intent-swatch swatch-success">success</div>
+					<div class="role-single-swatch">
+						<div class="role-single-chip chip-input"></div>input
 					</div>
-					<div class="link-demo">
-						<a href="javascript:void(0)">Hover &amp; click me</a>
-						<span class="state-chip state-default">default</span>
-						<span class="state-chip state-hover">hover</span>
-						<span class="state-chip state-active">active</span>
-					</div>
-					<div class="bordered-demo">
-						<span>input + border</span>
-						<span class="ring-demo">ring</span>
-					</div>
-					<div class="role-singles">
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-foreground"></div>foreground
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-border"></div>border
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-input"></div>input
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-ring"></div>ring
-						</div>
+					<div class="role-single-swatch">
+						<div class="role-single-chip chip-ring"></div>ring
 					</div>
 				</div>
 			</div>
-			<div class="preview-panel preview-dark">
-				<h2>Dark</h2>
-				<div class="preview-panel-inner">
-					<div class="nested-surfaces">
-						<div class="surface-box bg-background">
-							<div class="surface-label">background / foreground</div>
-							<div class="surface-box bg-muted">
-								<div class="surface-label">muted / muted-foreground</div>
-								<div class="surface-box bg-surface">
-									<div class="surface-label">
-										surface / surface-foreground
-									</div>
-									<div class="surface-box bg-surface-1">
-										<div class="surface-label">
-											surface-1 / surface-1-foreground
-										</div>
-									</div>
+		</template>
+
+		<!-- Preview layout 2: a realistic app-screen mockup. Cloned into both
+		     panels; every color comes from the --dt-color-* tokens. -->
+		<template id="tpl-preview-app">
+			<div class="appmock">
+				<header class="topbar" aria-label="Application header">
+					<div class="brand">
+						<span class="brand-mark" aria-hidden="true">&#9670;</span>
+						<span class="brand-name">Northwind</span>
+						<span class="brand-sub">Admin</span>
+					</div>
+					<div class="search">
+						<span class="search-icon" aria-hidden="true">&#9099;</span>
+						<input
+							class="search-input"
+							type="search"
+							placeholder="Search projects, people, settings&hellip;"
+							aria-label="Search"
+						/>
+					</div>
+					<div class="topbar-right">
+						<button class="icon-btn" type="button" aria-label="Notifications">
+							<span aria-hidden="true">&#9217;</span>
+							<span class="dot" aria-hidden="true"></span>
+						</button>
+						<button class="avatar-chip" type="button" aria-label="Account menu for Dana Holt">
+							<span class="avatar" aria-hidden="true">DH</span>
+							<span class="avatar-meta">
+								<span class="avatar-name">Dana Holt</span>
+								<span class="avatar-role">Workspace owner</span>
+							</span>
+							<span class="caret" aria-hidden="true">&#9662;</span>
+						</button>
+					</div>
+				</header>
+
+				<div class="shell">
+					<aside class="sidebar" aria-label="Primary navigation">
+						<nav class="nav">
+							<a class="nav-item active" href="javascript:void(0)" aria-current="page">
+								<span class="nav-ico" aria-hidden="true">&#9638;</span> Overview
+							</a>
+							<a class="nav-item" href="javascript:void(0)">
+								<span class="nav-ico" aria-hidden="true">&#9684;</span> Projects
+							</a>
+							<a class="nav-item" href="javascript:void(0)">
+								<span class="nav-ico" aria-hidden="true">&#9783;</span> Members
+								<span class="nav-badge">12</span>
+							</a>
+							<a class="nav-item" href="javascript:void(0)">
+								<span class="nav-ico" aria-hidden="true">&#9678;</span> Billing
+							</a>
+							<a class="nav-item" href="javascript:void(0)">
+								<span class="nav-ico" aria-hidden="true">&#9881;</span> Settings
+							</a>
+						</nav>
+						<div class="sidebar-foot">
+							<p class="usage-label">Storage used</p>
+							<div class="usage-bar" role="img" aria-label="68 percent of storage used">
+								<span class="usage-fill"></span>
+							</div>
+							<p class="usage-meta">6.8 GB of 10 GB</p>
+						</div>
+					</aside>
+
+					<main class="content" aria-label="Dashboard">
+						<section class="hero" aria-label="Welcome">
+							<div class="hero-text">
+								<p class="hero-eyebrow">Good morning, Dana</p>
+								<h1 class="hero-title">Your workspace is running smoothly</h1>
+								<p class="hero-body">
+									3 deployments shipped this week and no incidents reported.
+									Review what changed and plan the next sprint.
+								</p>
+								<div class="hero-actions">
+									<button class="btn hero-cta" type="button">Create project</button>
+									<button class="btn hero-ghost" type="button">View changelog</button>
 								</div>
 							</div>
-						</div>
-					</div>
-					<div class="role-buttons">
-						<button class="role-button btn-background">background</button>
-						<button class="role-button btn-muted">muted</button>
-						<button class="role-button btn-surface">surface</button>
-						<button class="role-button btn-surface-1">surface-1</button>
-					</div>
-					<div class="intent-hero">
-						<div class="intent-hero-swatch swatch-primary">primary</div>
-						<div class="intent-hero-swatch swatch-accent">accent</div>
-					</div>
-					<div class="intent-swatches">
-						<div class="intent-swatch swatch-destructive">destructive</div>
-						<div class="intent-swatch swatch-warning">warning</div>
-						<div class="intent-swatch swatch-success">success</div>
-					</div>
-					<div class="link-demo">
-						<a href="javascript:void(0)">Hover &amp; click me</a>
-						<span class="state-chip state-default">default</span>
-						<span class="state-chip state-hover">hover</span>
-						<span class="state-chip state-active">active</span>
-					</div>
-					<div class="bordered-demo">
-						<span>input + border</span>
-						<span class="ring-demo">ring</span>
-					</div>
-					<div class="role-singles">
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-foreground"></div>foreground
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-border"></div>border
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-input"></div>input
-						</div>
-						<div class="role-single-swatch">
-							<div class="role-single-chip chip-ring"></div>ring
-						</div>
-					</div>
+							<div class="hero-badge" aria-hidden="true">&#8599; 18%</div>
+						</section>
+
+						<section class="stats" aria-label="Key metrics">
+							<article class="stat-card">
+								<p class="stat-label">Active projects</p>
+								<p class="stat-value">24</p>
+								<p class="stat-trend up">&#9650; 3 this week</p>
+							</article>
+							<article class="stat-card">
+								<p class="stat-label">Open tasks</p>
+								<p class="stat-value">137</p>
+								<p class="stat-trend">&mdash; steady</p>
+							</article>
+							<article class="stat-card">
+								<p class="stat-label">Monthly spend</p>
+								<p class="stat-value">$4,820</p>
+								<p class="stat-trend down">&#9660; 6% vs last</p>
+							</article>
+						</section>
+
+						<section class="callout" role="status" aria-label="System status">
+							<span class="callout-ico" aria-hidden="true">&#10003;</span>
+							<div class="callout-text">
+								<strong>All systems operational.</strong>
+								Backups completed at 04:00 UTC and your last invoice was paid.
+							</div>
+							<button class="callout-dismiss" type="button" aria-label="Dismiss notice">&#10005;</button>
+						</section>
+
+						<section class="panel" aria-label="Recent activity">
+							<div class="panel-head">
+								<div>
+									<h2 class="panel-title">Recent activity</h2>
+									<p class="panel-sub">
+										Latest deployments and member events across your workspace.
+									</p>
+								</div>
+								<div class="panel-actions">
+									<button class="btn btn-neutral" type="button">Export</button>
+									<button class="btn btn-primary" type="button">New deploy</button>
+								</div>
+							</div>
+
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">Item</th>
+										<th scope="col">Owner</th>
+										<th scope="col">Updated</th>
+										<th scope="col">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="cell-main">api-gateway &middot; v2.4.1</td>
+										<td>M. Rivera</td>
+										<td class="cell-muted">2 min ago</td>
+										<td><span class="badge badge-success">Deployed</span></td>
+									</tr>
+									<tr>
+										<td class="cell-main">billing-worker &middot; migration</td>
+										<td>S. Park</td>
+										<td class="cell-muted">26 min ago</td>
+										<td><span class="badge badge-warning">Pending</span></td>
+									</tr>
+									<tr>
+										<td class="cell-main">web-app &middot; hotfix</td>
+										<td>D. Holt</td>
+										<td class="cell-muted">1 hr ago</td>
+										<td><span class="badge badge-destructive">Failed</span></td>
+									</tr>
+									<tr>
+										<td class="cell-main">design-tokens &middot; sync</td>
+										<td>L. Chen</td>
+										<td class="cell-muted">3 hr ago</td>
+										<td><span class="badge badge-success">Deployed</span></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<div class="panel-foot">
+								<p class="foot-note">Showing 4 of 128 events</p>
+								<div class="foot-buttons">
+									<button class="btn btn-neutral" type="button">Mark all read</button>
+									<button class="btn btn-accent" type="button">Invite member</button>
+									<button class="btn btn-destructive" type="button">Delete log</button>
+								</div>
+							</div>
+						</section>
+					</main>
 				</div>
 			</div>
-		</section>
+		</template>
 
-		<button class="controls-toggle" id="controls-toggle">
-			<span class="arrow" id="controls-arrow">&#9654;</span>
-			Color Settings
-		</button>
-		<section id="controls" class="collapsed">
-			<div class="controls-panel" id="controls-light">
-				<h2>Light Mode</h2>
-			</div>
-			<div class="controls-panel" id="controls-dark">
-				<h2>Dark Mode</h2>
-			</div>
-		</section>
+		<!-- A control fieldset (legend + a slot the rows mount into). -->
+		<template id="tpl-fieldset">
+			<fieldset>
+				<legend data-ref="legend"></legend>
+				<div data-ref="rows"></div>
+			</fieldset>
+		</template>
 
-		<div class="toast" id="toast">Copied to clipboard!</div>
+		<!-- A single color control row: family + shade selects + a swatch chip. -->
+		<template id="tpl-color-row">
+			<div class="color-row">
+				<label data-ref="label"></label>
+				<select class="family-select" data-ref="family" data-on="change:familyChange"></select>
+				<select class="shade-select" data-ref="shade" data-on="change:shadeChange"></select>
+				<span class="color-chip" data-ref="chip"></span>
+			</div>
+		</template>
+
+		<!-- The "role base" quick-pick: set every role color from one family. -->
+		<template id="tpl-role-base">
+			<div class="color-row role-base-row">
+				<label class="role-base-label">Role base</label>
+				<select class="family-select role-base-select" data-ref="family" data-on="change:pickRoleBase">
+					<option value="" disabled selected>pick family&hellip;</option>
+				</select>
+				<span class="role-base-hint">sets all role colors at once</span>
+			</div>
+		</template>
+
+		<!-- The ring row: family + shade + an opacity range (ring is a color-mix). -->
+		<template id="tpl-ring-row">
+			<div class="ring-row">
+				<label>ring</label>
+				<select class="family-select" data-ref="family" data-on="change:ringChange"></select>
+				<select class="shade-select" data-ref="shade" data-on="change:ringChange"></select>
+				<input type="range" min="5" max="50" value="20" data-ref="range" data-on="input:ringChange">
+				<span class="percent-label" data-ref="percent">20%</span>
+				<span class="color-chip" data-ref="chip"></span>
+			</div>
+		</template>
+
+		<div id="app"></div>
 
 		<script type="module">
 			import {
 				buildHexToNameMap,
 				buildRingValue,
 				colors,
+				createView,
+				delegate,
+				fromTemplate,
 				generateCssTokens,
 				hexForSelection,
+				mount,
+				observable,
 				parseRingValue,
+				reactTo,
+				refs,
 				selectionForHex,
 				themes,
 				themeToTypeScript,
@@ -686,34 +1404,10 @@
 			// ── constants ──────────────────────────────────────────────
 
 			const COLOR_FAMILIES = [
-				"black",
-				"white",
-				"slate",
-				"gray",
-				"zinc",
-				"neutral",
-				"stone",
-				"mauve",
-				"mist",
-				"olive",
-				"taupe",
-				"red",
-				"orange",
-				"amber",
-				"yellow",
-				"lime",
-				"green",
-				"emerald",
-				"teal",
-				"cyan",
-				"sky",
-				"blue",
-				"indigo",
-				"violet",
-				"purple",
-				"fuchsia",
-				"pink",
-				"rose",
+				"black", "white", "slate", "gray", "zinc", "neutral", "stone",
+				"mauve", "mist", "olive", "taupe", "red", "orange", "amber",
+				"yellow", "lime", "green", "emerald", "teal", "cyan", "sky",
+				"blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose",
 			];
 			const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 			const INTENTS = ["primary", "accent", "destructive", "warning", "success"];
@@ -722,249 +1416,16 @@
 
 			const hexToName = buildHexToNameMap(colors);
 
-			// ── state ──────────────────────────────────────────────────
-
-			const state = {
-				selectedThemeName: null,
-				schema: null,
-			};
-
-			// ── refs map: mode → path → { familySel, shadeSel, chip, rangeSel?, percentLabel? } ──
-			const refs = { light: {}, dark: {} };
-
-			// ── render ──────────────────────────────────────────────────
-
-			function render() {
-				const lightTokens = generateCssTokens(
-					state.schema.light,
-					PREFIX,
-					"light",
-				);
-				const darkTokens = state.schema.dark
-					? generateCssTokens(state.schema.dark, PREFIX, "dark")
-					: null;
-
-				document.getElementById("style-light").textContent = toCssString(
-					lightTokens,
-					".preview-light .preview-panel-inner",
-				);
-				if (darkTokens) {
-					document.getElementById("style-dark").textContent = toCssString(
-						darkTokens,
-						".preview-dark .preview-panel-inner",
-					);
-				}
-			}
-
-			// ── helpers ─────────────────────────────────────────────────
-
-			function getNestedValue(obj, path) {
-				return path.split(".").reduce((o, k) => o?.[k], obj);
-			}
-
-			function setNestedValue(obj, path, value) {
-				const parts = path.split(".");
-				const last = parts.pop();
-				const parent = parts.reduce((o, k) => o[k], obj);
-				parent[last] = value;
-			}
-
-			function populateFamilySelect(sel) {
-				sel.innerHTML = "";
-				for (const f of COLOR_FAMILIES) {
-					const opt = document.createElement("option");
-					opt.value = f;
-					opt.textContent = f;
-					sel.appendChild(opt);
-				}
-			}
-
-			function populateShadeSelect(sel) {
-				sel.innerHTML = "";
-				for (const s of SHADES) {
-					const opt = document.createElement("option");
-					opt.value = s;
-					opt.textContent = s;
-					sel.appendChild(opt);
-				}
-			}
-
-			function syncSelectsFromHex(hex, ref) {
-				const sel = selectionForHex(hex, hexToName);
-				if (sel) {
-					ref.familySel.value = sel.family;
-					if (sel.shade !== null) {
-						ref.shadeSel.style.display = "";
-						ref.shadeSel.value = sel.shade;
-					} else {
-						ref.shadeSel.style.display = "none";
-					}
-				} else {
-					// Unknown hex — reset to black
-					ref.familySel.value = "black";
-					ref.shadeSel.style.display = "none";
-				}
-				ref.chip.style.background = hex;
-			}
-
-			function currentHexFromRef(ref) {
-				const family = ref.familySel.value;
-				if (family === "black" || family === "white") {
-					return family === "black" ? colors.black : colors.white;
-				}
-				const shade = parseInt(ref.shadeSel.value);
-				return hexForSelection(colors, family, shade);
-			}
-
-			// ── control row factory ─────────────────────────────────────
-
-			function createColorRow(container, label, mode, schemaPath) {
-				const row = document.createElement("div");
-				row.className = "color-row";
-
-				const lbl = document.createElement("label");
-				lbl.textContent = label;
-				row.appendChild(lbl);
-
-				const familySel = document.createElement("select");
-				familySel.className = "family-select";
-				populateFamilySelect(familySel);
-				row.appendChild(familySel);
-
-				const shadeSel = document.createElement("select");
-				shadeSel.className = "shade-select";
-				populateShadeSelect(shadeSel);
-				row.appendChild(shadeSel);
-
-				const chip = document.createElement("div");
-				chip.className = "color-chip";
-				row.appendChild(chip);
-
-				container.appendChild(row);
-
-				const ref = { familySel, shadeSel, chip };
-				refs[mode][schemaPath] = ref;
-
-				function onChange() {
-					const family = familySel.value;
-					if (family === "black" || family === "white") {
-						shadeSel.style.display = "none";
-					} else {
-						shadeSel.style.display = "";
-					}
-					const hex = currentHexFromRef(ref);
-					if (hex) {
-						chip.style.background = hex;
-						setNestedValue(state.schema[mode], schemaPath, hex);
-						render();
-					}
-				}
-
-				familySel.addEventListener("change", () => {
-					const family = familySel.value;
-					if (family !== "black" && family !== "white") {
-						shadeSel.style.display = "";
-						// Default to 500
-						shadeSel.value = "500";
-					}
-					onChange();
-				});
-				shadeSel.addEventListener("change", onChange);
-
-				return ref;
-			}
-
-			function createRingRow(container, mode) {
-				const row = document.createElement("div");
-				row.className = "ring-row";
-
-				const lbl = document.createElement("label");
-				lbl.textContent = "ring";
-				row.appendChild(lbl);
-
-				const familySel = document.createElement("select");
-				familySel.className = "family-select";
-				populateFamilySelect(familySel);
-				row.appendChild(familySel);
-
-				const shadeSel = document.createElement("select");
-				shadeSel.className = "shade-select";
-				populateShadeSelect(shadeSel);
-				row.appendChild(shadeSel);
-
-				const rangeInput = document.createElement("input");
-				rangeInput.type = "range";
-				rangeInput.min = "5";
-				rangeInput.max = "50";
-				rangeInput.value = "20";
-				row.appendChild(rangeInput);
-
-				const percentLabel = document.createElement("span");
-				percentLabel.className = "percent-label";
-				percentLabel.textContent = "20%";
-				row.appendChild(percentLabel);
-
-				const chip = document.createElement("div");
-				chip.className = "color-chip";
-				row.appendChild(chip);
-
-				container.appendChild(row);
-
-				const ref = { familySel, shadeSel, chip, rangeInput, percentLabel };
-				refs[mode]["colors.role.single.ring"] = ref;
-
-				function onChange() {
-					const family = familySel.value;
-					if (family === "black" || family === "white") {
-						shadeSel.style.display = "none";
-					} else {
-						shadeSel.style.display = "";
-					}
-					const hex = currentHexFromRef(ref);
-					const percent = parseInt(rangeInput.value);
-					percentLabel.textContent = percent + "%";
-					if (hex) {
-						chip.style.background = hex;
-						const val = buildRingValue(hex, percent);
-						state.schema[mode].colors.role.single.ring = val;
-						render();
-					}
-				}
-
-				familySel.addEventListener("change", () => {
-					const family = familySel.value;
-					if (family !== "black" && family !== "white") {
-						shadeSel.style.display = "";
-						shadeSel.value = "500";
-					}
-					onChange();
-				});
-				shadeSel.addEventListener("change", onChange);
-				rangeInput.addEventListener("input", onChange);
-
-				return ref;
-			}
-
-			// ── role base presets ────────────────────────────────────────
-
-			// Neutral families that support the full 50-950 shade range
-			const NEUTRAL_FAMILIES = ["slate", "gray", "zinc", "neutral", "stone"];
-
+			// Role-base presets: one family expands into a full set of role colors.
 			const ROLE_PRESETS = {
 				light: {
-					// background: uses white or family-50
 					paired: {
 						background: { DEFAULT: 50, foreground: 900 },
 						muted: { DEFAULT: 100, foreground: 500 },
 						surface: { DEFAULT: 200, foreground: 900 },
 						"surface-1": { DEFAULT: 300, foreground: 900 },
 					},
-					single: {
-						foreground: 900,
-						border: 300,
-						input: 50,
-						inputHover: 100,
-					},
+					single: { foreground: 900, border: 300, input: 50, inputHover: 100 },
 				},
 				dark: {
 					paired: {
@@ -973,363 +1434,396 @@
 						surface: { DEFAULT: 700, foreground: 300 },
 						"surface-1": { DEFAULT: 600, foreground: 200 },
 					},
-					single: {
-						foreground: 50,
-						border: 700,
-						input: 900,
-						inputHover: 800,
-					},
+					single: { foreground: 50, border: 700, input: 900, inputHover: 800 },
 				},
 			};
 
-			function applyRoleBase(family, mode) {
-				const preset = ROLE_PRESETS[mode];
-				const s = state.schema[mode];
-				const c = colors[family];
+			// ── state (page-lifetime observables) ───────────────────────
 
-				// Paired
-				for (const [role, shades] of Object.entries(preset.paired)) {
-					const bgHex = (mode === "light" && role === "background")
-						? (colors.white || c[shades.DEFAULT])
-						: c[shades.DEFAULT];
-					s.colors.role.paired[role].DEFAULT = bgHex;
-					s.colors.role.paired[role].foreground = c[shades.foreground];
-					syncSelectsFromHex(
-						bgHex,
-						refs[mode][`colors.role.paired.${role}.DEFAULT`],
-					);
-					syncSelectsFromHex(
-						c[shades.foreground],
-						refs[mode][`colors.role.paired.${role}.foreground`],
-					);
-				}
+			const themeNames = Object.keys(themes.bundledThemes).sort();
 
-				// Single (except ring — that stays as-is, it's typically based on intent/accent)
-				s.colors.role.single.foreground = c[preset.single.foreground];
-				syncSelectsFromHex(
-					c[preset.single.foreground],
-					refs[mode]["colors.role.single.foreground"],
-				);
-
-				s.colors.role.single.border = { DEFAULT: c[preset.single.border] };
-				syncSelectsFromHex(
-					c[preset.single.border],
-					refs[mode]["colors.role.single.border.DEFAULT"],
-				);
-
-				const inputObj = typeof s.colors.role.single.input === "object"
-					? s.colors.role.single.input
-					: { DEFAULT: s.colors.role.single.input };
-				inputObj.DEFAULT = (mode === "light")
-					? (colors.white || c[preset.single.input])
-					: c[preset.single.input];
-				inputObj.hover = c[preset.single.inputHover];
-				s.colors.role.single.input = inputObj;
-				syncSelectsFromHex(
-					inputObj.DEFAULT,
-					refs[mode]["colors.role.single.input.DEFAULT"],
-				);
-				syncSelectsFromHex(
-					inputObj.hover,
-					refs[mode]["colors.role.single.input.hover"],
-				);
-
-				render();
+			/** Build a normalized, editable clone of a bundled theme. */
+			function buildSchema(name) {
+				const raw = structuredClone(themes.bundledThemes[name]);
+				if (!raw.dark) raw.dark = structuredClone(raw.light);
+				return normalizeSchema(raw);
 			}
 
-			// ── build controls ──────────────────────────────────────────
-
-			function buildControlsForMode(containerId, mode) {
-				const container = document.getElementById(containerId);
-
-				// Intent colors
-				const intentFs = document.createElement("fieldset");
-				const intentLeg = document.createElement("legend");
-				intentLeg.textContent = "Intent Colors";
-				intentFs.appendChild(intentLeg);
-
-				for (const intent of INTENTS) {
-					createColorRow(
-						intentFs,
-						intent,
-						mode,
-						`colors.intent.${intent}.DEFAULT`,
-					);
-					createColorRow(
-						intentFs,
-						intent + "-fg",
-						mode,
-						`colors.intent.${intent}.foreground`,
-					);
+			/**
+			 * Normalize single-color shapes so the fixed control paths
+			 * (e.g. colors.role.single.input.DEFAULT) always resolve to a string.
+			 * foreground stays a plain string; border/input become objects.
+			 */
+			function normalizeSchema(schema) {
+				for (const mode of ["light", "dark"]) {
+					const single = schema[mode].colors.role.single;
+					if (single.foreground && typeof single.foreground === "object") {
+						single.foreground = single.foreground.DEFAULT;
+					}
+					if (typeof single.border === "string") {
+						single.border = { DEFAULT: single.border };
+					}
+					if (typeof single.input === "string") {
+						single.input = { DEFAULT: single.input };
+					}
 				}
-				container.appendChild(intentFs);
-
-				// Role base quick-pick
-				const roleBaseRow = document.createElement("div");
-				roleBaseRow.className = "color-row";
-				roleBaseRow.style.marginBottom = "0.5rem";
-
-				const roleBaseLbl = document.createElement("label");
-				roleBaseLbl.textContent = "Role base";
-				roleBaseLbl.style.fontWeight = "600";
-				roleBaseRow.appendChild(roleBaseLbl);
-
-				const roleBaseSel = document.createElement("select");
-				roleBaseSel.className = "family-select";
-				roleBaseSel.style.width = "auto";
-				const placeholder = document.createElement("option");
-				placeholder.value = "";
-				placeholder.textContent = "pick family...";
-				placeholder.disabled = true;
-				placeholder.selected = true;
-				roleBaseSel.appendChild(placeholder);
-				// All families that have shade ranges (exclude black/white)
-				for (
-					const f of COLOR_FAMILIES.filter((f) =>
-						f !== "black" && f !== "white"
-					)
-				) {
-					const opt = document.createElement("option");
-					opt.value = f;
-					opt.textContent = f;
-					roleBaseSel.appendChild(opt);
-				}
-				roleBaseRow.appendChild(roleBaseSel);
-
-				const roleBaseHint = document.createElement("span");
-				roleBaseHint.style.cssText = "font-size:0.65rem;color:#999;";
-				roleBaseHint.textContent = "sets all role colors at once";
-				roleBaseRow.appendChild(roleBaseHint);
-
-				roleBaseSel.addEventListener("change", () => {
-					if (roleBaseSel.value) applyRoleBase(roleBaseSel.value, mode);
-				});
-
-				// Paired role colors
-				const pairedFs = document.createElement("fieldset");
-				const pairedLeg = document.createElement("legend");
-				pairedLeg.textContent = "Role Colors (Paired)";
-				pairedFs.appendChild(pairedLeg);
-
-				pairedFs.appendChild(roleBaseRow);
-
-				for (const role of PAIRED_ROLES) {
-					createColorRow(
-						pairedFs,
-						role,
-						mode,
-						`colors.role.paired.${role}.DEFAULT`,
-					);
-					createColorRow(
-						pairedFs,
-						role + "-fg",
-						mode,
-						`colors.role.paired.${role}.foreground`,
-					);
-				}
-				container.appendChild(pairedFs);
-
-				// Single role colors
-				const singleFs = document.createElement("fieldset");
-				const singleLeg = document.createElement("legend");
-				singleLeg.textContent = "Role Colors (Single)";
-				singleFs.appendChild(singleLeg);
-
-				createColorRow(
-					singleFs,
-					"foreground",
-					mode,
-					"colors.role.single.foreground",
-				);
-				createColorRow(
-					singleFs,
-					"border",
-					mode,
-					"colors.role.single.border.DEFAULT",
-				);
-				createColorRow(
-					singleFs,
-					"input",
-					mode,
-					"colors.role.single.input.DEFAULT",
-				);
-				createColorRow(
-					singleFs,
-					"input-hover",
-					mode,
-					"colors.role.single.input.hover",
-				);
-				createRingRow(singleFs, mode);
-
-				container.appendChild(singleFs);
+				return schema;
 			}
 
-			buildControlsForMode("controls-light", "light");
-			buildControlsForMode("controls-dark", "dark");
-
-			// ── theme loading ───────────────────────────────────────────
+			const themeName = observable(themeNames[0]);
+			const schema = observable(buildSchema(themeNames[0]));
+			const layout = observable("swatches"); // "swatches" | "app"
+			const controlsOpen = observable(false);
 
 			function loadTheme(name) {
-				state.selectedThemeName = name;
-				state.schema = structuredClone(themes.bundledThemes[name]);
+				themeName.set(name);
+				schema.set(buildSchema(name));
+			}
 
-				// Ensure dark mode exists (all bundled themes have it, but just in case)
-				if (!state.schema.dark) {
-					state.schema.dark = structuredClone(state.schema.light);
+			// ── schema read/write helpers ───────────────────────────────
+
+			function getNested(obj, path) {
+				return path.split(".").reduce((o, k) => o?.[k], obj);
+			}
+
+			function setNested(obj, path, value) {
+				const parts = path.split(".");
+				const last = parts.pop();
+				const parent = parts.reduce((o, k) => o[k], obj);
+				parent[last] = value;
+			}
+
+			/** Immutably set one leaf in the current schema (fans out reactively). */
+			function setColor(mode, path, value) {
+				schema.update((s) => {
+					const next = structuredClone(s);
+					setNested(next[mode], path, value);
+					return next;
+				});
+			}
+
+			/** Expand a single family into a full role-color set, in one update. */
+			function applyRoleBase(family, mode) {
+				const preset = ROLE_PRESETS[mode];
+				const c = colors[family];
+				schema.update((s) => {
+					const next = structuredClone(s);
+					const m = next[mode];
+					for (const [role, shades] of Object.entries(preset.paired)) {
+						const bgHex = (mode === "light" && role === "background")
+							? (colors.white || c[shades.DEFAULT])
+							: c[shades.DEFAULT];
+						m.colors.role.paired[role].DEFAULT = bgHex;
+						m.colors.role.paired[role].foreground = c[shades.foreground];
+					}
+					m.colors.role.single.foreground = c[preset.single.foreground];
+					m.colors.role.single.border = { DEFAULT: c[preset.single.border] };
+					const input = (m.colors.role.single.input
+							&& typeof m.colors.role.single.input === "object")
+						? m.colors.role.single.input
+						: { DEFAULT: m.colors.role.single.input };
+					input.DEFAULT = (mode === "light")
+						? (colors.white || c[preset.single.input])
+						: c[preset.single.input];
+					input.hover = c[preset.single.inputHover];
+					m.colors.role.single.input = input;
+					return next;
+				});
+			}
+
+			// ── select helpers ──────────────────────────────────────────
+
+			function addOption(sel, value, text) {
+				const o = document.createElement("option");
+				o.value = value;
+				o.textContent = text;
+				sel.appendChild(o);
+			}
+			const populateFamily = (sel) =>
+				COLOR_FAMILIES.forEach((f) => addOption(sel, f, f));
+			const populateShade = (sel) =>
+				SHADES.forEach((s) => addOption(sel, String(s), String(s)));
+
+			/** Reflect a hex value onto a row's family/shade selects + chip. */
+			function applySelection(r, hex) {
+				const sel = hex ? selectionForHex(hex, hexToName) : null;
+				if (sel) {
+					r.family.value = sel.family;
+					if (sel.shade !== null) {
+						r.shade.style.display = "";
+						r.shade.value = String(sel.shade);
+					} else {
+						r.shade.style.display = "none";
+					}
+				} else {
+					r.family.value = "black";
+					r.shade.style.display = "none";
 				}
+				r.chip.style.background = hex || "transparent";
+			}
 
-				// Sync all control selects
-				for (const mode of ["light", "dark"]) {
-					const modeSchema = state.schema[mode];
+			/** The hex currently selected in a row (defaulting shade to 500). */
+			function hexFromRow(r) {
+				const family = r.family.value;
+				if (family === "black" || family === "white") return colors[family];
+				return hexForSelection(colors, family, parseInt(r.shade.value || "500"));
+			}
 
-					// Intent
+			// ── components (factories returning views) ───────────────────
+
+			/** A color control row. Data DOWN via `schema`; events UP via `onSet`. */
+			function createColorRow({ schema, onSet, mode, label, path }) {
+				return createView((track) => {
+					const el = fromTemplate("tpl-color-row");
+					const r = refs(el);
+					r.label.textContent = label;
+					populateFamily(r.family);
+					populateShade(r.shade);
+
+					const commit = () => {
+						const hex = hexFromRow(r);
+						if (hex) onSet(mode, path, hex);
+					};
+
+					track(delegate(el, {
+						familyChange: () => {
+							const fam = r.family.value;
+							if (fam !== "black" && fam !== "white") {
+								r.shade.style.display = "";
+								r.shade.value = "500";
+							} else {
+								r.shade.style.display = "none";
+							}
+							commit();
+						},
+						shadeChange: commit,
+					}));
+
+					// Re-sync selects whenever the schema changes (theme load,
+					// role-base, or a sibling edit). Read-only — never writes back.
+					track(schema.subscribe(() => {
+						applySelection(r, getNested(schema.get()[mode], path));
+					}));
+
+					return { el };
+				});
+			}
+
+			/** The ring row — ring is a `color-mix(... transparent)`, so it adds an
+			 *  opacity slider on top of the family/shade pick. */
+			function createRingRow({ schema, onSet, mode }) {
+				const path = "colors.role.single.ring";
+				return createView((track) => {
+					const el = fromTemplate("tpl-ring-row");
+					const r = refs(el);
+					populateFamily(r.family);
+					populateShade(r.shade);
+
+					const commit = () => {
+						const fam = r.family.value;
+						r.shade.style.display = (fam === "black" || fam === "white")
+							? "none"
+							: "";
+						const hex = hexFromRow(r);
+						const percent = parseInt(r.range.value);
+						r.percent.textContent = percent + "%";
+						if (hex) onSet(mode, path, buildRingValue(hex, percent));
+					};
+
+					track(delegate(el, { ringChange: commit }));
+
+					track(schema.subscribe(() => {
+						const raw = getNested(schema.get()[mode], path);
+						const str = typeof raw === "string" ? raw : raw?.DEFAULT ?? "";
+						const parsed = parseRingValue(str);
+						if (parsed) {
+							applySelection(r, parsed.hex);
+							r.range.value = String(parsed.percent);
+							r.percent.textContent = parsed.percent + "%";
+						} else {
+							applySelection(r, str || null);
+						}
+					}));
+
+					return { el };
+				});
+			}
+
+			/** The role-base quick-pick row. */
+			function createRoleBase({ mode }) {
+				return createView((track) => {
+					const el = fromTemplate("tpl-role-base");
+					const r = refs(el);
+					COLOR_FAMILIES
+						.filter((f) => f !== "black" && f !== "white")
+						.forEach((f) => addOption(r.family, f, f));
+					track(delegate(el, {
+						pickRoleBase: () => {
+							if (r.family.value) applyRoleBase(r.family.value, mode);
+						},
+					}));
+					return { el };
+				});
+			}
+
+			/** Mount a fieldset (from a template) into `slot` and fill its rows. */
+			function mountFieldset(track, slot, legendText, fill) {
+				mount(track, slot, createView((fsTrack) => {
+					const el = fromTemplate("tpl-fieldset");
+					const r = refs(el);
+					r.legend.textContent = legendText;
+					fill(fsTrack, r.rows);
+					return { el };
+				}));
+			}
+
+			/** Build the full control column for one mode into `slot`. */
+			function buildControls(track, slot, mode) {
+				const row = (fsTrack, rowsSlot, label, path) =>
+					mount(fsTrack, rowsSlot, createColorRow, {
+						schema, onSet: setColor, mode, label, path,
+					});
+
+				mountFieldset(track, slot, "Intent Colors", (fsTrack, rows) => {
 					for (const intent of INTENTS) {
-						const pair = modeSchema.colors.intent[intent];
-						syncSelectsFromHex(
-							pair.DEFAULT,
-							refs[mode][`colors.intent.${intent}.DEFAULT`],
-						);
-						syncSelectsFromHex(
-							pair.foreground,
-							refs[mode][`colors.intent.${intent}.foreground`],
-						);
+						row(fsTrack, rows, intent, `colors.intent.${intent}.DEFAULT`);
+						row(fsTrack, rows, intent + "-fg", `colors.intent.${intent}.foreground`);
 					}
+				});
 
-					// Paired roles
+				mountFieldset(track, slot, "Role Colors (Paired)", (fsTrack, rows) => {
+					mount(fsTrack, rows, createRoleBase, { mode });
 					for (const role of PAIRED_ROLES) {
-						const pair = modeSchema.colors.role.paired[role];
-						syncSelectsFromHex(
-							pair.DEFAULT,
-							refs[mode][`colors.role.paired.${role}.DEFAULT`],
-						);
-						syncSelectsFromHex(
-							pair.foreground,
-							refs[mode][`colors.role.paired.${role}.foreground`],
-						);
+						row(fsTrack, rows, role, `colors.role.paired.${role}.DEFAULT`);
+						row(fsTrack, rows, role + "-fg", `colors.role.paired.${role}.foreground`);
 					}
+				});
 
-					// Single roles
-					const single = modeSchema.colors.role.single;
+				mountFieldset(track, slot, "Role Colors (Single)", (fsTrack, rows) => {
+					row(fsTrack, rows, "foreground", "colors.role.single.foreground");
+					row(fsTrack, rows, "border", "colors.role.single.border.DEFAULT");
+					row(fsTrack, rows, "input", "colors.role.single.input.DEFAULT");
+					row(fsTrack, rows, "input-hover", "colors.role.single.input.hover");
+					mount(fsTrack, rows, createRingRow, { schema, onSet: setColor, mode });
+				});
+			}
 
-					// foreground (plain string)
-					syncSelectsFromHex(
-						typeof single.foreground === "string"
-							? single.foreground
-							: single.foreground.DEFAULT,
-						refs[mode]["colors.role.single.foreground"],
+			// ── the app view ────────────────────────────────────────────
+
+			// The token <style> targets live in <head> (page-lifetime).
+			const styleLight = document.getElementById("style-light");
+			const styleDark = document.getElementById("style-dark");
+
+			const app = createView((track) => {
+				const el = fromTemplate("tpl-app");
+				const r = refs(el);
+
+				// Populate the theme picker (camelCase → kebab-case display).
+				for (const name of themeNames) {
+					addOption(
+						r.themeSelect,
+						name,
+						name.replace(/([A-Z])/g, "-$1").toLowerCase(),
 					);
-
-					// border
-					syncSelectsFromHex(
-						typeof single.border === "string"
-							? single.border
-							: single.border.DEFAULT,
-						refs[mode]["colors.role.single.border.DEFAULT"],
-					);
-
-					// input
-					const input = typeof single.input === "string"
-						? { DEFAULT: single.input }
-						: single.input;
-					syncSelectsFromHex(
-						input.DEFAULT,
-						refs[mode]["colors.role.single.input.DEFAULT"],
-					);
-					if (input.hover) {
-						syncSelectsFromHex(
-							input.hover,
-							refs[mode]["colors.role.single.input.hover"],
-						);
-					}
-
-					// ring
-					const ringRef = refs[mode]["colors.role.single.ring"];
-					const ringVal = typeof single.ring === "string"
-						? single.ring
-						: single.ring?.DEFAULT ?? "";
-					const parsed = parseRingValue(ringVal);
-					if (parsed) {
-						syncSelectsFromHex(parsed.hex, ringRef);
-						ringRef.rangeInput.value = parsed.percent;
-						ringRef.percentLabel.textContent = parsed.percent + "%";
-					}
 				}
 
-				render();
-			}
+				// Build both control columns.
+				buildControls(track, r.controlsLight, "light");
+				buildControls(track, r.controlsDark, "dark");
 
-			// ── populate theme select ───────────────────────────────────
+				let toastTimer;
+				const showToast = (msg) => {
+					r.toast.textContent = msg;
+					r.toast.classList.add("show");
+					clearTimeout(toastTimer);
+					toastTimer = setTimeout(() => r.toast.classList.remove("show"), 2000);
+				};
 
-			const themeSelect = document.getElementById("theme-select");
-			// Use the registry map so non-theme exports (bundledThemes,
-			// bundledThemeNames, getBundledTheme, themeNames) are excluded.
-			const themeNames = Object.keys(themes.bundledThemes).sort();
-			for (const name of themeNames) {
-				const opt = document.createElement("option");
-				opt.value = name;
-				// camelCase → kebab-case for display
-				opt.textContent = name.replace(/([A-Z])/g, "-$1").toLowerCase();
-				themeSelect.appendChild(opt);
-			}
-			themeSelect.addEventListener("change", () => loadTheme(themeSelect.value));
+				const cycle = (delta) => {
+					const i = themeNames.indexOf(themeName.get());
+					const n = (i + delta + themeNames.length) % themeNames.length;
+					loadTheme(themeNames[n]);
+				};
 
-			// ── prev/next ───────────────────────────────────────────────
+				// One delegated listener set for the whole shell. (Control-row
+				// actions live in distinct namespaces, so they never collide.)
+				track(delegate(el, {
+					prev: () => cycle(-1),
+					next: () => cycle(1),
+					pickTheme: (_e, t) => loadTheme(t.value),
+					setLayout: (_e, t) => layout.set(t.dataset.arg),
+					toggleControls: () => controlsOpen.update((v) => !v),
+					export: async () => {
+						let ts;
+						try {
+							ts = themeToTypeScript(schema.get(), hexToName);
+						} catch {
+							showToast("Export failed");
+							return;
+						}
+						try {
+							await navigator.clipboard.writeText(ts);
+							showToast("Copied to clipboard!");
+						} catch {
+							// Fallback: dump into a click-to-dismiss textarea.
+							const ta = document.createElement("textarea");
+							ta.value = ts;
+							ta.style.cssText =
+								"position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
+							ta.addEventListener("click", () => ta.remove());
+							document.body.appendChild(ta);
+							ta.select();
+						}
+					},
+				}));
 
-			function cycleTheme(delta) {
-				const idx = themeNames.indexOf(state.selectedThemeName);
-				const next = (idx + delta + themeNames.length) % themeNames.length;
-				themeSelect.value = themeNames[next];
-				loadTheme(themeNames[next]);
-			}
+				// RENDER: regenerate the per-panel token CSS when the schema changes.
+				track(reactTo([schema], () => {
+					const s = schema.get();
+					styleLight.textContent = toCssString(
+						generateCssTokens(s.light, PREFIX, "light"),
+						".preview-light .preview-panel-inner",
+					);
+					if (s.dark) {
+						styleDark.textContent = toCssString(
+							generateCssTokens(s.dark, PREFIX, "dark"),
+							".preview-dark .preview-panel-inner",
+						);
+					}
+				}));
 
-			document.getElementById("prev-btn").addEventListener(
-				"click",
-				() => cycleTheme(-1),
-			);
-			document.getElementById("next-btn").addEventListener(
-				"click",
-				() => cycleTheme(1),
-			);
+				// LAYOUT: swap the preview content (both panels) + reflect the
+				// segmented control. Rebuilt only when the layout actually changes.
+				track(reactTo([layout], () => {
+					const tplId = layout.get() === "app"
+						? "tpl-preview-app"
+						: "tpl-preview-swatches";
+					r.lightInner.replaceChildren(fromTemplate(tplId));
+					r.darkInner.replaceChildren(fromTemplate(tplId));
+					r.preview.classList.toggle("layout-app", layout.get() === "app");
+					el.querySelectorAll("[data-on='click:setLayout']").forEach((b) =>
+						b.setAttribute("aria-pressed", String(b.dataset.arg === layout.get()))
+					);
+				}));
 
-			// ── collapsible controls ────────────────────────────────────
+				// Reflect the current theme name in the picker.
+				track(themeName.subscribe((name) => {
+					r.themeSelect.value = name;
+				}));
 
-			document.getElementById("controls-toggle").addEventListener("click", () => {
-				const controls = document.getElementById("controls");
-				const arrow = document.getElementById("controls-arrow");
-				const collapsed = controls.classList.toggle("collapsed");
-				arrow.classList.toggle("open", !collapsed);
+				// Collapsible controls.
+				track(controlsOpen.subscribe((open) => {
+					r.controls.classList.toggle("collapsed", !open);
+					r.controlsArrow.classList.toggle("open", open);
+				}));
+
+				return { el };
 			});
 
-			// ── export ──────────────────────────────────────────────────
+			document.getElementById("app").appendChild(app.el);
 
-			document.getElementById("export-btn").addEventListener("click", async () => {
-				const ts = themeToTypeScript(state.schema, hexToName);
-				try {
-					await navigator.clipboard.writeText(ts);
-					showToast("Copied to clipboard!");
-				} catch {
-					// Fallback: show in a textarea
-					const ta = document.createElement("textarea");
-					ta.value = ts;
-					ta.style.cssText =
-						"position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
-					const close = () => ta.remove();
-					ta.addEventListener("click", close);
-					document.body.appendChild(ta);
-					ta.select();
-				}
-			});
-
-			function showToast(msg) {
-				const toast = document.getElementById("toast");
-				toast.textContent = msg;
-				toast.classList.add("show");
-				setTimeout(() => toast.classList.remove("show"), 2000);
-			}
-
-			// ── init ────────────────────────────────────────────────────
-
-			loadTheme(themeNames[0]);
+			// Expose for console poking.
+			Object.assign(globalThis, { app, schema, themeName, layout, loadTheme });
 		</script>
 	</body>
 </html>

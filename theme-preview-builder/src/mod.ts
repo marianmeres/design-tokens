@@ -1,3 +1,7 @@
+// Re-export the @marianmeres/vanilla reactive-DOM toolkit so the single
+// preview bundle carries both libraries — the builder UI is authored with it.
+export * from "@marianmeres/vanilla";
+
 export { colors } from "../../src/colors.ts";
 export * as themes from "../../src/themes/mod.ts";
 export { generateCssTokens, toCssString } from "../../src/generate.ts";
