@@ -333,7 +333,7 @@ Required paired role keys.
 type RolePairedOptionalKey = "surface-1";
 ```
 
-Optional paired role keys. Conventional but not required — all bundled themes define `surface-1` as an additional elevation layer. Additional arbitrary string keys are also allowed.
+Optional paired role keys. Conventional but not required — all bundled themes define `surface-1` as an additional elevation layer. It also serves as the correct **hairline/divider color for content drawn _on_ a `surface`**: it sits one curated step from `surface` in both light and dark, so it always contrasts — unlike `border`, which is calibrated against the page background and can equal a surface step in dark mode. Additional arbitrary string keys are also allowed.
 
 ---
 
@@ -342,6 +342,10 @@ Optional paired role keys. Conventional but not required — all bundled themes 
 ```typescript
 type RoleSingleKey = "foreground" | "border" | "input" | "ring";
 ```
+
+Required single-value role keys.
+
+> **`border` is calibrated against the page background / muted layer** (≈ background + one step) and is hand-tuned per theme. It may deliberately coincide with a `surface` step — in several dark themes `border` and `surface` are the same neutral — so it is **not** a reliable divider when drawn _on top of_ a `surface`. Use `border` to outline a card _against_ the page; use [`surface-1`](#rolepairedoptionalkey) for a hairline/divider _on_ a surface. (Note: `surface-{intent}-border` is a separate generated token — the _outer_ edge of an intent-tinted surface seen against the background, not an on-surface divider.)
 
 ---
 

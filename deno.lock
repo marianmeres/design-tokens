@@ -6,6 +6,7 @@
     "jsr:@deno/cache-dir@0.22.2": "0.22.2",
     "jsr:@marianmeres/mcp-server@*": "1.2.1",
     "jsr:@marianmeres/npmbuild@^1.16.0": "1.16.0",
+    "jsr:@marianmeres/vanilla@^1.8.0": "1.8.0",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/async@1": "1.3.0",
     "jsr:@std/bytes@^1.0.2": "1.0.6",
@@ -71,6 +72,9 @@
         "jsr:@std/fs@^1.0.23",
         "jsr:@std/path@^1.1.4"
       ]
+    },
+    "@marianmeres/vanilla@1.8.0": {
+      "integrity": "433df0c48f939742b5f8ec41071d9a2cede7757dc09279872171b5c5c615fa44"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",

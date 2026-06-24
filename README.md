@@ -37,11 +37,19 @@ const theme: ThemeSchema = {
 					background: { DEFAULT: "#ffffff", foreground: "#171717" },
 					muted: { DEFAULT: "#f5f5f5", foreground: "#737373" },
 					surface: { DEFAULT: "#e5e5e5", foreground: "#171717" },
-					// Optional extra elevation (all bundled themes include it):
+					// Optional extra elevation (all bundled themes include it).
+					// Also the correct hairline/divider color for content drawn
+					// *on* a surface — it sits one step from `surface` in both
+					// light and dark, so it always contrasts (unlike `border`).
 					"surface-1": { DEFAULT: "#d4d4d4", foreground: "#171717" },
 				},
 				single: {
 					foreground: "#171717",
+					// Hairline calibrated against the page background / muted
+					// layer. It may deliberately coincide with a `surface` step
+					// (in several dark themes `border` == `surface`), so use it to
+					// outline a card *against* the page — not as a divider drawn
+					// *on* a surface. Use `surface-1` for on-surface dividers.
 					border: { DEFAULT: "#d4d4d4" },
 					input: { DEFAULT: "#ffffff" },
 					ring: "color-mix(in srgb, #2563eb 25%, transparent)",

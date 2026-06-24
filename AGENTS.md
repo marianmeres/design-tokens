@@ -102,10 +102,11 @@ Entry points:
 2. Token naming: `--{prefix}color-{key}`, `--{prefix}color-{key}-hover`, etc.
 3. Prefix is auto-normalized — `"my"` and `"my-"` both produce `--my-color-*`. Empty string produces unprefixed.
 4. Hover/active auto-derived via `color-mix(in oklab, ...)` with a per-bucket strategy: **intent** colors (saturated brand) mix toward `black` / `white` 10%/20% (mode-aware); **role** colors (paired + single) mix toward `var(--{prefix}color-foreground)` 10%/20% for a softer, theme-tinted shift. `oklab` (rectangular) is used rather than `oklch` (polar) because polar hue interpolation collapses to a powerless hue on low-chroma colors mixed toward black/white, painting as a red/mauve shift on near-neutral themes. Disable with `deriveStates: false`.
-5. Surface-intent tokens derived via `color-mix(in srgb, ...)` from intent + background. Foreground contrast defaults to 50% — tune via `surfaceForegroundContrast`.
+5. Surface-intent tokens derived via `color-mix(in srgb, ...)` from intent + background. Foreground contrast defaults to 50% — tune via `surfaceForegroundContrast`. Note `surface-{intent}-border` mixes the intent color 30% **toward `background`** — it is the *outer* edge of an intent-tinted surface seen against the page, **not** an inner divider drawn on top of a surface.
 6. Theme files use `export default` with `ThemeSchema` type annotation. All bundled themes include an optional `surface-1` paired role (extra elevation).
 7. Formatting: tabs, 90-char line width, 4-space indent width (`deno fmt`)
 8. MCP handlers must return `Promise<string>` — framework contract from `jsr:@marianmeres/mcp-server/types`.
+9. **Layering semantics for dividers/hairlines**: `border` is calibrated against the **page background / muted** layer (≈ background + one step) and is hand-authored per theme — it may deliberately equal a `surface` step (e.g. dark themes where `border` == `surface` == the same neutral), so it is **not** a safe divider drawn *on top of* a `surface`. For an on-surface hairline/divider use `surface-1` (one curated step from `surface` in both modes). There is intentionally no dedicated `surface-border` token — `surface-1` covers the case, and the name would collide with the outer-edge meaning of `surface-{intent}-border` (see #5).
 
 ## Adding a New Theme
 
