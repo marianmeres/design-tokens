@@ -4632,7 +4632,7 @@ const light30 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.sky[400],
+                DEFAULT: colors.sky[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4689,7 +4689,7 @@ const dark30 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.sky[400],
+                DEFAULT: colors.sky[600],
                 foreground: colors.white
             },
             destructive: {
