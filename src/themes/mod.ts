@@ -61,6 +61,8 @@ export { default as monokaiGreen } from "./monokai-green.ts";
 export { default as monokaiPink } from "./monokai-pink.ts";
 /** Fuchsia primary / cyan accent — lilac haze light surfaces, deep-space indigo dark. */
 export { default as nebula } from "./nebula.ts";
+/** Red primary / navy accent / slate base — American flag (Old Glory red, white & blue). */
+export { default as oldGlory } from "./old-glory.ts";
 /** Warm yellow-grey olive monochrome theme. */
 export { default as olive } from "./olive.ts";
 /** Olive primary / amber accent safari theme — earthy warmth with golden highlights. */
@@ -139,6 +141,7 @@ import monokaiCyan_ from "./monokai-cyan.ts";
 import monokaiGreen_ from "./monokai-green.ts";
 import monokaiPink_ from "./monokai-pink.ts";
 import nebula_ from "./nebula.ts";
+import oldGlory_ from "./old-glory.ts";
 import olive_ from "./olive.ts";
 import oliveAmberSafari_ from "./olive-amber-safari.ts";
 import orangePinkSunset_ from "./orange-pink-sunset.ts";
@@ -192,6 +195,7 @@ export const themeNames = [
 	"monokai-green",
 	"monokai-pink",
 	"nebula",
+	"old-glory",
 	"olive",
 	"olive-amber-safari",
 	"orange-pink-sunset",
@@ -246,6 +250,7 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	monokaiGreen: monokaiGreen_,
 	monokaiPink: monokaiPink_,
 	nebula: nebula_,
+	oldGlory: oldGlory_,
 	olive: olive_,
 	oliveAmberSafari: oliveAmberSafari_,
 	orangePinkSunset: orangePinkSunset_,
