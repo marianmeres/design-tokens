@@ -83,7 +83,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

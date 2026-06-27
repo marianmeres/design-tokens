@@ -67,7 +67,7 @@ const dark = {
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.emerald[400],
+				DEFAULT: colors.emerald[500],
 				foreground: colors.white,
 			},
 			destructive: {
@@ -79,7 +79,7 @@ const dark = {
 				foreground: colors.black,
 			},
 			success: {
-				DEFAULT: colors.emerald[500],
+				DEFAULT: colors.emerald[600],
 				foreground: colors.white,
 			},
 		},

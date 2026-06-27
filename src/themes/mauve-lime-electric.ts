@@ -6,7 +6,7 @@ const light = {
 		intent: {
 			primary: {
 				DEFAULT: colors.lime[600],
-				foreground: colors.black,
+				foreground: colors.white,
 			},
 			accent: {
 				DEFAULT: colors.fuchsia[500],
@@ -67,7 +67,7 @@ const dark = {
 				foreground: colors.black,
 			},
 			accent: {
-				DEFAULT: colors.fuchsia[400],
+				DEFAULT: colors.fuchsia[500],
 				foreground: colors.white,
 			},
 			destructive: {

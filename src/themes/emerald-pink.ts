@@ -63,15 +63,15 @@ const dark = {
 	colors: {
 		intent: {
 			primary: {
-				DEFAULT: colors.emerald[500],
+				DEFAULT: colors.emerald[600],
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.pink[400],
+				DEFAULT: colors.pink[500],
 				foreground: colors.white,
 			},
 			destructive: {
-				DEFAULT: colors.pink[500],
+				DEFAULT: colors.pink[600],
 				foreground: colors.white,
 			},
 			warning: {
@@ -80,7 +80,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

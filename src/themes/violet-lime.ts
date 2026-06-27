@@ -10,7 +10,7 @@ const light = {
 			},
 			accent: {
 				DEFAULT: colors.lime[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			destructive: {
 				DEFAULT: colors.rose[600],
@@ -18,7 +18,7 @@ const light = {
 			},
 			warning: {
 				DEFAULT: colors.lime[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			success: {
 				DEFAULT: colors.lime[600],

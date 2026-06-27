@@ -67,7 +67,7 @@ const dark = {
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.cyan[400],
+				DEFAULT: colors.cyan[600],
 				foreground: colors.white,
 			},
 			destructive: {
@@ -76,10 +76,10 @@ const dark = {
 			},
 			warning: {
 				DEFAULT: colors.orange[400],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			success: {
-				DEFAULT: colors.teal[500],
+				DEFAULT: colors.teal[600],
 				foreground: colors.white,
 			},
 		},

@@ -80,7 +80,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.teal[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

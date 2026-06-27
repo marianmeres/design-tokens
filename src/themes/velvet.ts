@@ -26,7 +26,7 @@ const light = {
 			},
 			success: {
 				DEFAULT: colors.emerald[600],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

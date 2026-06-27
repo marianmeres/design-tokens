@@ -73,7 +73,7 @@ const dark = {
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.violet[400],
+				DEFAULT: colors.violet[500],
 				foreground: colors.white,
 			},
 			destructive: {
@@ -85,7 +85,7 @@ const dark = {
 				foreground: colors.black,
 			},
 			success: {
-				DEFAULT: colors.green[500],
+				DEFAULT: colors.green[600],
 				foreground: colors.white,
 			},
 		},

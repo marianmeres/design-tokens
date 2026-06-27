@@ -63,12 +63,12 @@ const dark = {
 	colors: {
 		intent: {
 			primary: {
-				DEFAULT: colors.violet[400],
+				DEFAULT: colors.violet[500],
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.cyan[400],
-				foreground: colors.white,
+				DEFAULT: colors.cyan[500],
+				foreground: colors.black,
 			},
 			destructive: {
 				DEFAULT: colors.rose[500],
@@ -80,7 +80,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

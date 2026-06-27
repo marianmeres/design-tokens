@@ -3,9 +3,9 @@
 	--stuic-color-primary:                        #65a30d;
 	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), black 10%);
 	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), black 20%);
-	--stuic-color-primary-foreground:             #000000;
-	--stuic-color-primary-foreground-hover:       #000000;
-	--stuic-color-primary-foreground-active:      #000000;
+	--stuic-color-primary-foreground:             #ffffff;
+	--stuic-color-primary-foreground-hover:       #ffffff;
+	--stuic-color-primary-foreground-active:      #ffffff;
 
 	--stuic-color-accent:                         #d946ef;
 	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), black 10%);
@@ -103,7 +103,7 @@
 	--stuic-color-primary-foreground-hover:       #000000;
 	--stuic-color-primary-foreground-active:      #000000;
 
-	--stuic-color-accent:                         #e879f9;
+	--stuic-color-accent:                         #d946ef;
 	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), white 10%);
 	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), white 20%);
 	--stuic-color-accent-foreground:              #ffffff;

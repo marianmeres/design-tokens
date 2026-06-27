@@ -10,9 +10,9 @@
 	--stuic-color-accent:                         #84cc16;
 	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), black 10%);
 	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), black 20%);
-	--stuic-color-accent-foreground:              #ffffff;
-	--stuic-color-accent-foreground-hover:        #ffffff;
-	--stuic-color-accent-foreground-active:       #ffffff;
+	--stuic-color-accent-foreground:              #000000;
+	--stuic-color-accent-foreground-hover:        #000000;
+	--stuic-color-accent-foreground-active:       #000000;
 
 	--stuic-color-destructive:                    #e11d48;
 	--stuic-color-destructive-hover:              color-mix(in oklab, var(--stuic-color-destructive), black 10%);
@@ -24,9 +24,9 @@
 	--stuic-color-warning:                        #84cc16;
 	--stuic-color-warning-hover:                  color-mix(in oklab, var(--stuic-color-warning), black 10%);
 	--stuic-color-warning-active:                 color-mix(in oklab, var(--stuic-color-warning), black 20%);
-	--stuic-color-warning-foreground:             #ffffff;
-	--stuic-color-warning-foreground-hover:       #ffffff;
-	--stuic-color-warning-foreground-active:      #ffffff;
+	--stuic-color-warning-foreground:             #000000;
+	--stuic-color-warning-foreground-hover:       #000000;
+	--stuic-color-warning-foreground-active:      #000000;
 
 	--stuic-color-success:                        #65a30d;
 	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), black 10%);

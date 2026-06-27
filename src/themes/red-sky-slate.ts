@@ -76,11 +76,11 @@ const dark = {
 			},
 			warning: {
 				DEFAULT: colors.amber[400],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

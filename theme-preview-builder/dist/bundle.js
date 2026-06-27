@@ -696,7 +696,7 @@ const dark = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -801,7 +801,7 @@ const dark1 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.orange[400],
+                DEFAULT: colors.orange[500],
                 foreground: colors.white
             },
             destructive: {
@@ -809,12 +809,12 @@ const dark1 = {
                 foreground: colors.white
             },
             warning: {
-                DEFAULT: colors.orange[400],
+                DEFAULT: colors.orange[500],
                 foreground: colors.white
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -915,11 +915,11 @@ const dark2 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.cyan[500],
+                DEFAULT: colors.cyan[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.red[400],
+                DEFAULT: colors.red[500],
                 foreground: colors.white
             },
             destructive: {
@@ -927,12 +927,12 @@ const dark2 = {
                 foreground: colors.white
             },
             warning: {
-                DEFAULT: colors.orange[400],
+                DEFAULT: colors.orange[500],
                 foreground: colors.white
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1033,11 +1033,11 @@ const dark3 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.cyan[500],
+                DEFAULT: colors.cyan[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.slate[400],
+                DEFAULT: colors.slate[600],
                 foreground: colors.white
             },
             destructive: {
@@ -1050,7 +1050,7 @@ const dark3 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1155,7 +1155,7 @@ const dark4 = {
                 foreground: colors.black
             },
             accent: {
-                DEFAULT: colors.pink[400],
+                DEFAULT: colors.pink[500],
                 foreground: colors.white
             },
             destructive: {
@@ -1168,7 +1168,7 @@ const dark4 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1286,7 +1286,7 @@ const dark5 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1387,7 +1387,7 @@ const dark6 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.emerald[500],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             },
             accent: {
@@ -1404,7 +1404,7 @@ const dark6 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1505,15 +1505,15 @@ const dark7 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.emerald[500],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.pink[400],
+                DEFAULT: colors.pink[500],
                 foreground: colors.white
             },
             destructive: {
-                DEFAULT: colors.pink[500],
+                DEFAULT: colors.pink[600],
                 foreground: colors.white
             },
             warning: {
@@ -1522,7 +1522,7 @@ const dark7 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1627,7 +1627,7 @@ const dark8 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.emerald[400],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             },
             destructive: {
@@ -1640,7 +1640,7 @@ const dark8 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1815,7 +1815,7 @@ const light9 = {
             },
             warning: {
                 DEFAULT: colors.amber[500],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
                 DEFAULT: colors.emerald[600],
@@ -1876,7 +1876,7 @@ const dark9 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -1925,7 +1925,7 @@ const light10 = {
             },
             accent: {
                 DEFAULT: colors.amber[500],
-                foreground: colors.white
+                foreground: colors.black
             },
             destructive: {
                 DEFAULT: colors.rose[600],
@@ -1994,7 +1994,7 @@ const dark10 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -2096,10 +2096,10 @@ const dark11 = {
         intent: {
             primary: {
                 DEFAULT: colors.lime[400],
-                foreground: colors.black
+                foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.fuchsia[400],
+                DEFAULT: colors.fuchsia[500],
                 foreground: colors.white
             },
             destructive: {
@@ -2112,7 +2112,7 @@ const dark11 = {
             },
             success: {
                 DEFAULT: colors.lime[400],
-                foreground: colors.black
+                foreground: colors.white
             }
         },
         role: {
@@ -2273,7 +2273,7 @@ const light12 = {
         intent: {
             primary: {
                 DEFAULT: colors.lime[600],
-                foreground: colors.black
+                foreground: colors.white
             },
             accent: {
                 DEFAULT: colors.fuchsia[500],
@@ -2333,7 +2333,7 @@ const dark12 = {
                 foreground: colors.black
             },
             accent: {
-                DEFAULT: colors.fuchsia[400],
+                DEFAULT: colors.fuchsia[500],
                 foreground: colors.white
             },
             destructive: {
@@ -2448,11 +2448,11 @@ const dark13 = {
         intent: {
             primary: {
                 DEFAULT: colors.mauve[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             accent: {
-                DEFAULT: colors.teal[400],
-                foreground: colors.white
+                DEFAULT: colors.teal[600],
+                foreground: colors.black
             },
             destructive: {
                 DEFAULT: colors.rose[500],
@@ -2464,7 +2464,7 @@ const dark13 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -2681,11 +2681,11 @@ const dark14 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.indigo[400],
+                DEFAULT: colors.indigo[500],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.sky[400],
+                DEFAULT: colors.sky[500],
                 foreground: colors.white
             },
             destructive: {
@@ -2698,7 +2698,7 @@ const dark14 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -2799,12 +2799,12 @@ const dark15 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.violet[400],
+                DEFAULT: colors.violet[500],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.cyan[400],
-                foreground: colors.white
+                DEFAULT: colors.cyan[500],
+                foreground: colors.black
             },
             destructive: {
                 DEFAULT: colors.rose[500],
@@ -2816,7 +2816,7 @@ const dark15 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -2921,7 +2921,7 @@ const dark16 = {
                 foreground: colors.black
             },
             accent: {
-                DEFAULT: colors.violet[400],
+                DEFAULT: colors.violet[500],
                 foreground: colors.white
             },
             destructive: {
@@ -2934,7 +2934,7 @@ const dark16 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -2995,7 +2995,7 @@ const light17 = {
             },
             success: {
                 DEFAULT: colors.emerald[600],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3052,7 +3052,7 @@ const dark17 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3157,7 +3157,7 @@ const dark18 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.violet[400],
+                DEFAULT: colors.violet[500],
                 foreground: colors.white
             },
             destructive: {
@@ -3170,7 +3170,7 @@ const dark18 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3288,7 +3288,7 @@ const dark19 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3522,7 +3522,7 @@ const dark20 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3627,7 +3627,7 @@ const dark21 = {
                 foreground: colors.black
             },
             accent: {
-                DEFAULT: colors.pink[400],
+                DEFAULT: colors.pink[500],
                 foreground: colors.white
             },
             destructive: {
@@ -3640,7 +3640,7 @@ const dark21 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3741,11 +3741,11 @@ const dark22 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.fuchsia[400],
+                DEFAULT: colors.fuchsia[500],
                 foreground: colors.white
             },
             destructive: {
@@ -3758,7 +3758,7 @@ const dark22 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -3863,7 +3863,7 @@ const dark23 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.emerald[400],
+                DEFAULT: colors.emerald[500],
                 foreground: colors.white
             },
             destructive: {
@@ -3875,7 +3875,7 @@ const dark23 = {
                 foreground: colors.black
             },
             success: {
-                DEFAULT: colors.emerald[500],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             }
         },
@@ -3924,7 +3924,7 @@ const light24 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             },
             destructive: {
@@ -3981,7 +3981,7 @@ const dark24 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.teal[400],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             },
             destructive: {
@@ -3993,7 +3993,7 @@ const dark24 = {
                 foreground: colors.black
             },
             success: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             }
         },
@@ -4111,7 +4111,7 @@ const dark25 = {
                 foreground: colors.black
             },
             success: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             }
         },
@@ -4217,7 +4217,7 @@ const dark26 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.violet[400],
+                DEFAULT: colors.violet[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4229,7 +4229,7 @@ const dark26 = {
                 foreground: colors.black
             },
             success: {
-                DEFAULT: colors.green[500],
+                DEFAULT: colors.green[600],
                 foreground: colors.white
             }
         },
@@ -4278,7 +4278,7 @@ const light27 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.blue[400],
+                DEFAULT: colors.blue[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4335,7 +4335,7 @@ const dark27 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.blue[400],
+                DEFAULT: colors.blue[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4347,7 +4347,7 @@ const dark27 = {
                 foreground: colors.white
             },
             success: {
-                DEFAULT: colors.emerald[500],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             }
         },
@@ -4453,7 +4453,7 @@ const dark28 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.cyan[400],
+                DEFAULT: colors.cyan[600],
                 foreground: colors.white
             },
             destructive: {
@@ -4462,10 +4462,10 @@ const dark28 = {
             },
             warning: {
                 DEFAULT: colors.orange[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             }
         },
@@ -4514,7 +4514,7 @@ const light29 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.sky[400],
+                DEFAULT: colors.sky[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4571,7 +4571,7 @@ const dark29 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.sky[400],
+                DEFAULT: colors.sky[500],
                 foreground: colors.white
             },
             destructive: {
@@ -4580,10 +4580,10 @@ const dark29 = {
             },
             warning: {
                 DEFAULT: colors.amber[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
-                DEFAULT: colors.emerald[500],
+                DEFAULT: colors.emerald[600],
                 foreground: colors.white
             }
         },
@@ -4698,11 +4698,11 @@ const dark30 = {
             },
             warning: {
                 DEFAULT: colors.amber[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -4803,11 +4803,11 @@ const dark31 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.rose[500],
+                DEFAULT: colors.rose[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.teal[400],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             },
             destructive: {
@@ -4816,11 +4816,11 @@ const dark31 = {
             },
             warning: {
                 DEFAULT: colors.orange[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -4938,7 +4938,7 @@ const dark32 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -5043,7 +5043,7 @@ const dark33 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.cyan[400],
+                DEFAULT: colors.cyan[600],
                 foreground: colors.white
             },
             destructive: {
@@ -5056,7 +5056,7 @@ const dark33 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -5161,7 +5161,7 @@ const dark34 = {
                 foreground: colors.slate[950]
             },
             accent: {
-                DEFAULT: colors.teal[400],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             },
             destructive: {
@@ -5174,7 +5174,7 @@ const dark34 = {
             },
             success: {
                 DEFAULT: colors.teal[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -5408,7 +5408,7 @@ const dark35 = {
             },
             success: {
                 DEFAULT: colors.green[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -5743,11 +5743,11 @@ const dark37 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.rose[400],
+                DEFAULT: colors.rose[600],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.pink[400],
+                DEFAULT: colors.pink[600],
                 foreground: colors.white
             },
             destructive: {
@@ -5760,7 +5760,7 @@ const dark37 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -5865,7 +5865,7 @@ const dark38 = {
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.rose[400],
+                DEFAULT: colors.rose[500],
                 foreground: colors.white
             },
             destructive: {
@@ -5874,10 +5874,10 @@ const dark38 = {
             },
             warning: {
                 DEFAULT: colors.orange[400],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
-                DEFAULT: colors.teal[500],
+                DEFAULT: colors.teal[600],
                 foreground: colors.white
             }
         },
@@ -5939,7 +5939,7 @@ const light39 = {
             },
             success: {
                 DEFAULT: colors.emerald[600],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -6045,7 +6045,7 @@ const light40 = {
             },
             accent: {
                 DEFAULT: colors.lime[500],
-                foreground: colors.white
+                foreground: colors.black
             },
             destructive: {
                 DEFAULT: colors.rose[600],
@@ -6053,7 +6053,7 @@ const light40 = {
             },
             warning: {
                 DEFAULT: colors.lime[500],
-                foreground: colors.white
+                foreground: colors.black
             },
             success: {
                 DEFAULT: colors.lime[600],
@@ -6215,11 +6215,11 @@ const dark41 = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.violet[400],
+                DEFAULT: colors.violet[500],
                 foreground: colors.white
             },
             accent: {
-                DEFAULT: colors.rose[400],
+                DEFAULT: colors.rose[500],
                 foreground: colors.white
             },
             destructive: {
@@ -6232,7 +6232,7 @@ const dark41 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {
@@ -6370,7 +6370,7 @@ const dark42 = {
             },
             success: {
                 DEFAULT: colors.emerald[500],
-                foreground: colors.white
+                foreground: colors.black
             }
         },
         role: {

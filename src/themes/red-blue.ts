@@ -9,7 +9,7 @@ const light = {
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.blue[400],
+				DEFAULT: colors.blue[500],
 				foreground: colors.white,
 			},
 			destructive: {
@@ -67,7 +67,7 @@ const dark = {
 				foreground: colors.white,
 			},
 			accent: {
-				DEFAULT: colors.blue[400],
+				DEFAULT: colors.blue[500],
 				foreground: colors.white,
 			},
 			destructive: {
@@ -79,7 +79,7 @@ const dark = {
 				foreground: colors.white,
 			},
 			success: {
-				DEFAULT: colors.emerald[500],
+				DEFAULT: colors.emerald[600],
 				foreground: colors.white,
 			},
 		},

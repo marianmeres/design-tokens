@@ -26,7 +26,7 @@ const light = {
 			},
 			warning: {
 				DEFAULT: colors.amber[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			success: {
 				DEFAULT: colors.emerald[600],
@@ -88,7 +88,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

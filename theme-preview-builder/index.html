@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Theme Preview Builder</title>
 
 		<!-- Generated theme tokens, scoped per preview panel. Filled by the
@@ -15,7 +15,9 @@
 			 * Builder chrome — the TOOL's own UI. Intentionally NOT themed;
 			 * it stays constant while the previewed theme changes.
 			 * ========================================================== */
-			*, *::before, *::after {
+			*,
+			*::before,
+			*::after {
 				box-sizing: border-box;
 				margin: 0;
 				padding: 0;
@@ -23,7 +25,8 @@
 
 			body {
 				font-family:
-					-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+					-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					sans-serif;
 				background: #f5f5f5;
 				color: #1a1a1a;
 				padding: 1.5rem;
@@ -71,7 +74,8 @@
 				color: #374151;
 			}
 
-			button.export-btn, button.nav-btn {
+			button.export-btn,
+			button.nav-btn {
 				padding: 0.4rem 1rem;
 				font-size: 0.85rem;
 				font-weight: 600;
@@ -81,7 +85,8 @@
 				border-radius: 4px;
 				cursor: pointer;
 			}
-			button.export-btn:hover, button.nav-btn:hover {
+			button.export-btn:hover,
+			button.nav-btn:hover {
 				background: #1d4ed8;
 			}
 			button.nav-btn {
@@ -160,18 +165,18 @@
 				border-radius: 0;
 			}
 
-			.preview-panel h2 {
+			.preview-panel > h2 {
 				padding: 0.5rem 1rem;
 				font-size: 0.8rem;
 				text-transform: uppercase;
 				letter-spacing: 0.08em;
 			}
 
-			.preview-light h2 {
+			.preview-light > h2 {
 				background: #e5e7eb;
 				color: #374151;
 			}
-			.preview-dark h2 {
+			.preview-dark > h2 {
 				background: #374151;
 				color: #e5e7eb;
 			}
@@ -219,13 +224,16 @@
 				flex: 1;
 				min-width: 6rem;
 				padding: 0.5rem 0.75rem;
-				border: 1px solid var(--dt-color-border, rgba(128, 128, 128, 0.3));
+				border: 1px solid
+					var(--dt-color-border, rgba(128, 128, 128, 0.3));
 				border-radius: 6px;
 				font-size: 0.75rem;
 				font-family: ui-monospace, "SF Mono", Monaco, monospace;
 				font-weight: 500;
 				cursor: pointer;
-				transition: background 0.15s, color 0.15s;
+				transition:
+					background 0.15s,
+					color 0.15s;
 			}
 			.role-button.btn-background {
 				background: var(--dt-color-background);
@@ -276,7 +284,9 @@
 				font-size: 0.9rem;
 				text-align: center;
 				cursor: pointer;
-				transition: background 0.15s, color 0.15s;
+				transition:
+					background 0.15s,
+					color 0.15s;
 			}
 
 			/* Secondary intent swatches */
@@ -296,7 +306,9 @@
 				flex: 1;
 				text-align: center;
 				cursor: pointer;
-				transition: background 0.15s, color 0.15s;
+				transition:
+					background 0.15s,
+					color 0.15s;
 			}
 
 			.swatch-primary {
@@ -446,7 +458,12 @@
 			 * markup renders light on the left/top and dark on the right/bottom.
 			 * ========================================================== */
 			.appmock {
-				font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+				font-family:
+					system-ui,
+					-apple-system,
+					"Segoe UI",
+					Roboto,
+					sans-serif;
 				background: var(--dt-color-background);
 				color: var(--dt-color-background-foreground);
 				border: 1px solid var(--dt-color-border);
@@ -458,7 +475,9 @@
 			}
 			.appmock *,
 			.appmock *::before,
-			.appmock *::after { box-sizing: border-box; }
+			.appmock *::after {
+				box-sizing: border-box;
+			}
 
 			/* ---------- Top bar ---------- */
 			.appmock .topbar {
@@ -470,13 +489,20 @@
 				color: var(--dt-color-surface-foreground);
 				border-bottom: 1px solid var(--dt-color-border);
 			}
-			.appmock .brand { display: flex; align-items: baseline; gap: 7px; }
+			.appmock .brand {
+				display: flex;
+				align-items: baseline;
+				gap: 7px;
+			}
 			.appmock .brand-mark {
 				color: var(--dt-color-primary);
 				font-size: 18px;
 				transform: translateY(1px);
 			}
-			.appmock .brand-name { font-weight: 700; letter-spacing: -0.01em; }
+			.appmock .brand-name {
+				font-weight: 700;
+				letter-spacing: -0.01em;
+			}
 			.appmock .brand-sub {
 				font-size: 11px;
 				font-weight: 600;
@@ -510,14 +536,22 @@
 				border-radius: 8px;
 				outline: none;
 			}
-			.appmock .search-input::placeholder { color: var(--dt-color-muted-foreground); }
-			.appmock .search-input:hover { border-color: var(--dt-color-border-hover); }
+			.appmock .search-input::placeholder {
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .search-input:hover {
+				border-color: var(--dt-color-border-hover);
+			}
 			.appmock .search-input:focus-visible {
 				border-color: var(--dt-color-ring);
 				outline: 2px solid var(--dt-color-ring);
 				outline-offset: 1px;
 			}
-			.appmock .topbar-right { display: flex; align-items: center; gap: 10px; }
+			.appmock .topbar-right {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
 			.appmock .icon-btn {
 				position: relative;
 				width: 34px;
@@ -530,12 +564,18 @@
 				color: var(--dt-color-muted-foreground);
 				border: 1px solid var(--dt-color-border);
 			}
-			.appmock .icon-btn:hover { background: var(--dt-color-muted-hover); }
-			.appmock .icon-btn:active { background: var(--dt-color-muted-active); }
+			.appmock .icon-btn:hover {
+				background: var(--dt-color-muted-hover);
+			}
+			.appmock .icon-btn:active {
+				background: var(--dt-color-muted-active);
+			}
 			.appmock .icon-btn .dot {
 				position: absolute;
-				top: 6px; right: 7px;
-				width: 7px; height: 7px;
+				top: 6px;
+				right: 7px;
+				width: 7px;
+				height: 7px;
 				border-radius: 50%;
 				background: var(--dt-color-destructive);
 			}
@@ -551,25 +591,47 @@
 				border: 1px solid var(--dt-color-border);
 				border-radius: 999px;
 			}
-			.appmock .avatar-chip:hover { background: var(--dt-color-muted-hover); }
-			.appmock .avatar-chip:active { background: var(--dt-color-muted-active); }
+			.appmock .avatar-chip:hover {
+				background: var(--dt-color-muted-hover);
+			}
+			.appmock .avatar-chip:active {
+				background: var(--dt-color-muted-active);
+			}
 			.appmock .avatar {
 				display: grid;
 				place-items: center;
-				width: 28px; height: 28px;
+				width: 28px;
+				height: 28px;
 				border-radius: 50%;
 				font-size: 11px;
 				font-weight: 700;
 				background: var(--dt-color-primary);
 				color: var(--dt-color-primary-foreground);
 			}
-			.appmock .avatar-meta { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
-			.appmock .avatar-name { font-size: 12px; font-weight: 600; color: var(--dt-color-foreground); }
-			.appmock .avatar-role { font-size: 10px; color: var(--dt-color-muted-foreground); }
-			.appmock .caret { font-size: 10px; }
+			.appmock .avatar-meta {
+				display: flex;
+				flex-direction: column;
+				line-height: 1.15;
+				text-align: left;
+			}
+			.appmock .avatar-name {
+				font-size: 12px;
+				font-weight: 600;
+				color: var(--dt-color-foreground);
+			}
+			.appmock .avatar-role {
+				font-size: 10px;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .caret {
+				font-size: 10px;
+			}
 
 			/* ---------- Shell ---------- */
-			.appmock .shell { display: grid; grid-template-columns: 212px 1fr; }
+			.appmock .shell {
+				display: grid;
+				grid-template-columns: 212px 1fr;
+			}
 
 			/* ---------- Sidebar ---------- */
 			.appmock .sidebar {
@@ -582,7 +644,11 @@
 				background: var(--dt-color-muted);
 				border-right: 1px solid var(--dt-color-border);
 			}
-			.appmock .nav { display: flex; flex-direction: column; gap: 3px; }
+			.appmock .nav {
+				display: flex;
+				flex-direction: column;
+				gap: 3px;
+			}
 			.appmock .nav-item {
 				display: flex;
 				align-items: center;
@@ -594,15 +660,27 @@
 				text-decoration: none;
 				color: var(--dt-color-muted-foreground);
 			}
-			.appmock .nav-item:hover { background: var(--dt-color-muted-hover); color: var(--dt-color-foreground); }
-			.appmock .nav-item:active { background: var(--dt-color-muted-active); }
+			.appmock .nav-item:hover {
+				background: var(--dt-color-muted-hover);
+				color: var(--dt-color-foreground);
+			}
+			.appmock .nav-item:active {
+				background: var(--dt-color-muted-active);
+			}
 			.appmock .nav-item.active {
 				background: var(--dt-color-primary);
 				color: var(--dt-color-primary-foreground);
 				font-weight: 600;
 			}
-			.appmock .nav-item.active:hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground-hover); }
-			.appmock .nav-ico { width: 18px; text-align: center; font-size: 14px; }
+			.appmock .nav-item.active:hover {
+				background: var(--dt-color-primary-hover);
+				color: var(--dt-color-primary-foreground-hover);
+			}
+			.appmock .nav-ico {
+				width: 18px;
+				text-align: center;
+				font-size: 14px;
+			}
 			.appmock .nav-badge {
 				margin-left: auto;
 				font-size: 10px;
@@ -619,7 +697,11 @@
 				background: var(--dt-color-surface);
 				border: 1px solid var(--dt-color-border);
 			}
-			.appmock .usage-label { font-size: 11px; font-weight: 600; color: var(--dt-color-surface-foreground); }
+			.appmock .usage-label {
+				font-size: 11px;
+				font-weight: 600;
+				color: var(--dt-color-surface-foreground);
+			}
 			.appmock .usage-bar {
 				margin: 8px 0 6px;
 				height: 7px;
@@ -627,11 +709,25 @@
 				background: var(--dt-color-muted);
 				overflow: hidden;
 			}
-			.appmock .usage-fill { display: block; height: 100%; width: 68%; background: var(--dt-color-accent); }
-			.appmock .usage-meta { font-size: 11px; color: var(--dt-color-muted-foreground); }
+			.appmock .usage-fill {
+				display: block;
+				height: 100%;
+				width: 68%;
+				background: var(--dt-color-accent);
+			}
+			.appmock .usage-meta {
+				font-size: 11px;
+				color: var(--dt-color-muted-foreground);
+			}
 
 			/* ---------- Content ---------- */
-			.appmock .content { display: flex; flex-direction: column; gap: 18px; padding: 20px; min-width: 0; }
+			.appmock .content {
+				display: flex;
+				flex-direction: column;
+				gap: 18px;
+				padding: 20px;
+				min-width: 0;
+			}
 
 			/* ---------- Hero (the gradient element) ---------- */
 			.appmock .hero {
@@ -642,10 +738,16 @@
 				padding: 24px 26px;
 				border-radius: 14px;
 				overflow: hidden;
-				background: linear-gradient(118deg, var(--dt-color-primary) 0%, var(--dt-color-accent) 100%);
+				background: linear-gradient(
+					118deg,
+					var(--dt-color-primary) 0%,
+					var(--dt-color-accent) 100%
+				);
 				color: var(--dt-color-primary-foreground);
 			}
-			.appmock .hero-text { flex: 1; }
+			.appmock .hero-text {
+				flex: 1;
+			}
 			.appmock .hero-eyebrow {
 				font-size: 12px;
 				font-weight: 600;
@@ -653,23 +755,44 @@
 				letter-spacing: 0.07em;
 				opacity: 0.85;
 			}
-			.appmock .hero-title { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; margin: 4px 0 6px; }
-			.appmock .hero-body { font-size: 13.5px; max-width: 52ch; opacity: 0.92; }
-			.appmock .hero-actions { display: flex; gap: 10px; margin-top: 16px; }
+			.appmock .hero-title {
+				font-size: 22px;
+				font-weight: 700;
+				letter-spacing: -0.015em;
+				margin: 4px 0 6px;
+			}
+			.appmock .hero-body {
+				font-size: 13.5px;
+				max-width: 52ch;
+				opacity: 0.92;
+			}
+			.appmock .hero-actions {
+				display: flex;
+				gap: 10px;
+				margin-top: 16px;
+			}
 			.appmock .hero-cta {
 				background: var(--dt-color-primary-foreground);
 				color: var(--dt-color-primary);
 				border: none;
 			}
-			.appmock .hero-cta:hover { background: rgb(255 255 255 / 0.88); }
-			.appmock .hero-cta:active { background: rgb(255 255 255 / 0.78); }
+			.appmock .hero-cta:hover {
+				background: rgb(255 255 255 / 0.88);
+			}
+			.appmock .hero-cta:active {
+				background: rgb(255 255 255 / 0.78);
+			}
 			.appmock .hero-ghost {
 				background: rgb(255 255 255 / 0.14);
 				color: var(--dt-color-primary-foreground);
 				border: 1px solid rgb(255 255 255 / 0.45);
 			}
-			.appmock .hero-ghost:hover { background: rgb(255 255 255 / 0.24); }
-			.appmock .hero-ghost:active { background: rgb(255 255 255 / 0.32); }
+			.appmock .hero-ghost:hover {
+				background: rgb(255 255 255 / 0.24);
+			}
+			.appmock .hero-ghost:active {
+				background: rgb(255 255 255 / 0.32);
+			}
 			.appmock .hero-badge {
 				align-self: flex-start;
 				padding: 6px 12px;
@@ -681,7 +804,11 @@
 			}
 
 			/* ---------- Stat cards ---------- */
-			.appmock .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+			.appmock .stats {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 14px;
+			}
 			.appmock .stat-card {
 				padding: 16px;
 				border-radius: 12px;
@@ -697,10 +824,22 @@
 				letter-spacing: 0.05em;
 				color: var(--dt-color-muted-foreground);
 			}
-			.appmock .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin: 6px 0 4px; }
-			.appmock .stat-trend { font-size: 12px; color: var(--dt-color-muted-foreground); }
-			.appmock .stat-trend.up { color: var(--dt-color-success); }
-			.appmock .stat-trend.down { color: var(--dt-color-destructive); }
+			.appmock .stat-value {
+				font-size: 26px;
+				font-weight: 700;
+				letter-spacing: -0.02em;
+				margin: 6px 0 4px;
+			}
+			.appmock .stat-trend {
+				font-size: 12px;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .stat-trend.up {
+				color: var(--dt-color-success);
+			}
+			.appmock .stat-trend.down {
+				color: var(--dt-color-destructive);
+			}
 
 			/* ---------- Callout (intent surface) ---------- */
 			.appmock .callout {
@@ -717,7 +856,8 @@
 			.appmock .callout-ico {
 				display: grid;
 				place-items: center;
-				width: 22px; height: 22px;
+				width: 22px;
+				height: 22px;
 				border-radius: 50%;
 				font-size: 12px;
 				font-weight: 700;
@@ -725,8 +865,12 @@
 				color: var(--dt-color-success-foreground);
 				flex: none;
 			}
-			.appmock .callout-text { flex: 1; }
-			.appmock .callout-text strong { font-weight: 700; }
+			.appmock .callout-text {
+				flex: 1;
+			}
+			.appmock .callout-text strong {
+				font-weight: 700;
+			}
 			.appmock .callout-dismiss {
 				font: inherit;
 				font-size: 13px;
@@ -738,7 +882,9 @@
 				background: transparent;
 				border: 1px solid var(--dt-color-surface-success-border);
 			}
-			.appmock .callout-dismiss:hover { background: rgb(0 0 0 / 0.06); }
+			.appmock .callout-dismiss:hover {
+				background: rgb(0 0 0 / 0.06);
+			}
 
 			/* ---------- Panel / table ---------- */
 			.appmock .panel {
@@ -757,11 +903,26 @@
 				padding: 16px 18px;
 				border-bottom: 1px solid var(--dt-color-border);
 			}
-			.appmock .panel-title { font-size: 15px; font-weight: 700; }
-			.appmock .panel-sub { font-size: 12.5px; color: var(--dt-color-muted-foreground); margin-top: 2px; }
-			.appmock .panel-actions { display: flex; gap: 8px; flex: none; }
+			.appmock .panel-title {
+				font-size: 15px;
+				font-weight: 700;
+			}
+			.appmock .panel-sub {
+				font-size: 12.5px;
+				color: var(--dt-color-muted-foreground);
+				margin-top: 2px;
+			}
+			.appmock .panel-actions {
+				display: flex;
+				gap: 8px;
+				flex: none;
+			}
 
-			.appmock .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+			.appmock .table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 13px;
+			}
 			.appmock .table th {
 				text-align: left;
 				font-size: 11px;
@@ -773,11 +934,23 @@
 				background: var(--dt-color-surface-1);
 				border-bottom: 1px solid var(--dt-color-border);
 			}
-			.appmock .table td { padding: 12px 18px; border-bottom: 1px solid var(--dt-color-border); }
-			.appmock .table tbody tr:last-child td { border-bottom: none; }
-			.appmock .table tbody tr:hover { background: var(--dt-color-muted); }
-			.appmock .cell-main { font-weight: 600; color: var(--dt-color-surface-foreground); }
-			.appmock .cell-muted { color: var(--dt-color-muted-foreground); }
+			.appmock .table td {
+				padding: 12px 18px;
+				border-bottom: 1px solid var(--dt-color-border);
+			}
+			.appmock .table tbody tr:last-child td {
+				border-bottom: none;
+			}
+			.appmock .table tbody tr:hover {
+				background: var(--dt-color-muted);
+			}
+			.appmock .cell-main {
+				font-weight: 600;
+				color: var(--dt-color-surface-foreground);
+			}
+			.appmock .cell-muted {
+				color: var(--dt-color-muted-foreground);
+			}
 
 			.appmock .badge {
 				display: inline-block;
@@ -812,8 +985,15 @@
 				background: var(--dt-color-surface-1);
 				border-top: 1px solid var(--dt-color-border);
 			}
-			.appmock .foot-note { font-size: 12px; color: var(--dt-color-muted-foreground); }
-			.appmock .foot-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+			.appmock .foot-note {
+				font-size: 12px;
+				color: var(--dt-color-muted-foreground);
+			}
+			.appmock .foot-buttons {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+			}
 
 			/* ---------- Buttons ---------- */
 			.appmock .btn {
@@ -826,32 +1006,58 @@
 				border: 1px solid transparent;
 				outline: none;
 			}
-			.appmock .btn:focus-visible { outline: 2px solid var(--dt-color-ring); outline-offset: 2px; }
+			.appmock .btn:focus-visible {
+				outline: 2px solid var(--dt-color-ring);
+				outline-offset: 2px;
+			}
 			.appmock .btn-primary {
 				background: var(--dt-color-primary);
 				color: var(--dt-color-primary-foreground);
 			}
-			.appmock .btn-primary:hover { background: var(--dt-color-primary-hover); color: var(--dt-color-primary-foreground-hover); }
-			.appmock .btn-primary:active { background: var(--dt-color-primary-active); color: var(--dt-color-primary-foreground-active); }
+			.appmock .btn-primary:hover {
+				background: var(--dt-color-primary-hover);
+				color: var(--dt-color-primary-foreground-hover);
+			}
+			.appmock .btn-primary:active {
+				background: var(--dt-color-primary-active);
+				color: var(--dt-color-primary-foreground-active);
+			}
 			.appmock .btn-accent {
 				background: var(--dt-color-accent);
 				color: var(--dt-color-accent-foreground);
 			}
-			.appmock .btn-accent:hover { background: var(--dt-color-accent-hover); color: var(--dt-color-accent-foreground-hover); }
-			.appmock .btn-accent:active { background: var(--dt-color-accent-active); color: var(--dt-color-accent-foreground-active); }
+			.appmock .btn-accent:hover {
+				background: var(--dt-color-accent-hover);
+				color: var(--dt-color-accent-foreground-hover);
+			}
+			.appmock .btn-accent:active {
+				background: var(--dt-color-accent-active);
+				color: var(--dt-color-accent-foreground-active);
+			}
 			.appmock .btn-neutral {
 				background: var(--dt-color-muted);
 				color: var(--dt-color-muted-foreground);
 				border-color: var(--dt-color-border);
 			}
-			.appmock .btn-neutral:hover { background: var(--dt-color-muted-hover); color: var(--dt-color-foreground); }
-			.appmock .btn-neutral:active { background: var(--dt-color-muted-active); }
+			.appmock .btn-neutral:hover {
+				background: var(--dt-color-muted-hover);
+				color: var(--dt-color-foreground);
+			}
+			.appmock .btn-neutral:active {
+				background: var(--dt-color-muted-active);
+			}
 			.appmock .btn-destructive {
 				background: var(--dt-color-destructive);
 				color: var(--dt-color-destructive-foreground);
 			}
-			.appmock .btn-destructive:hover { background: var(--dt-color-destructive-hover); color: var(--dt-color-destructive-foreground-hover); }
-			.appmock .btn-destructive:active { background: var(--dt-color-destructive-active); color: var(--dt-color-destructive-foreground-active); }
+			.appmock .btn-destructive:hover {
+				background: var(--dt-color-destructive-hover);
+				color: var(--dt-color-destructive-foreground-hover);
+			}
+			.appmock .btn-destructive:active {
+				background: var(--dt-color-destructive-active);
+				color: var(--dt-color-destructive-foreground-active);
+			}
 
 			/* ============================================================
 			 * Controls (editor)
@@ -1019,7 +1225,8 @@
 			}
 
 			@media (max-width: 900px) {
-				#preview, #controls {
+				#preview,
+				#controls {
 					grid-template-columns: 1fr;
 				}
 				/* Stack the header so the export button doesn't orphan-wrap. */
@@ -1044,14 +1251,18 @@
 				<header>
 					<h1>Theme Preview Builder</h1>
 					<div class="theme-nav">
-						<label class="theme-label" for="theme-select">Theme</label>
+						<label class="theme-label" for="theme-select"
+							>Theme</label
+						>
 						<button
 							class="nav-btn"
 							type="button"
 							data-on="click:prev"
 							title="Previous theme"
 							aria-label="Previous theme"
-						>&larr;</button>
+						>
+							&larr;
+						</button>
 						<select
 							id="theme-select"
 							data-ref="themeSelect"
@@ -1063,13 +1274,37 @@
 							data-on="click:next"
 							title="Next theme"
 							aria-label="Next theme"
-						>&rarr;</button>
+						>
+							&rarr;
+						</button>
 					</div>
-					<div class="layout-switch" role="group" aria-label="Preview layout">
-						<button type="button" data-on="click:setLayout" data-arg="swatches" aria-pressed="true">Swatches</button>
-						<button type="button" data-on="click:setLayout" data-arg="app" aria-pressed="false">App screen</button>
+					<div
+						class="layout-switch"
+						role="group"
+						aria-label="Preview layout"
+					>
+						<button
+							type="button"
+							data-on="click:setLayout"
+							data-arg="swatches"
+							aria-pressed="true"
+						>
+							Swatches
+						</button>
+						<button
+							type="button"
+							data-on="click:setLayout"
+							data-arg="app"
+							aria-pressed="false"
+						>
+							App screen
+						</button>
 					</div>
-					<button class="export-btn" type="button" data-on="click:export">
+					<button
+						class="export-btn"
+						type="button"
+						data-on="click:export"
+					>
 						Export to clipboard
 					</button>
 				</header>
@@ -1077,15 +1312,25 @@
 				<section id="preview" data-ref="preview">
 					<div class="preview-panel preview-light">
 						<h2>Light</h2>
-						<div class="preview-panel-inner" data-ref="lightInner"></div>
+						<div
+							class="preview-panel-inner"
+							data-ref="lightInner"
+						></div>
 					</div>
 					<div class="preview-panel preview-dark">
 						<h2>Dark</h2>
-						<div class="preview-panel-inner" data-ref="darkInner"></div>
+						<div
+							class="preview-panel-inner"
+							data-ref="darkInner"
+						></div>
 					</div>
 				</section>
 
-				<button class="controls-toggle" type="button" data-on="click:toggleControls">
+				<button
+					class="controls-toggle"
+					type="button"
+					data-on="click:toggleControls"
+				>
 					<span class="arrow" data-ref="controlsArrow">&#9654;</span>
 					Color Settings
 				</button>
@@ -1112,18 +1357,26 @@
 					<div class="surface-box bg-background">
 						<div class="surface-label">background / foreground</div>
 						<div class="surface-box bg-muted">
-							<div class="surface-label">muted / muted-foreground</div>
+							<div class="surface-label">
+								muted / muted-foreground
+							</div>
 							<div class="surface-box bg-surface">
-								<div class="surface-label">surface / surface-foreground</div>
+								<div class="surface-label">
+									surface / surface-foreground
+								</div>
 								<div class="surface-box bg-surface-1">
-									<div class="surface-label">surface-1 / surface-1-foreground</div>
+									<div class="surface-label">
+										surface-1 / surface-1-foreground
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="role-buttons">
-					<button class="role-button btn-background">background</button>
+					<button class="role-button btn-background">
+						background
+					</button>
 					<button class="role-button btn-muted">muted</button>
 					<button class="role-button btn-surface">surface</button>
 					<button class="role-button btn-surface-1">surface-1</button>
@@ -1133,7 +1386,9 @@
 					<div class="intent-hero-swatch swatch-accent">accent</div>
 				</div>
 				<div class="intent-swatches">
-					<div class="intent-swatch swatch-destructive">destructive</div>
+					<div class="intent-swatch swatch-destructive">
+						destructive
+					</div>
 					<div class="intent-swatch swatch-warning">warning</div>
 					<div class="intent-swatch swatch-success">success</div>
 				</div>
@@ -1149,16 +1404,20 @@
 				</div>
 				<div class="role-singles">
 					<div class="role-single-swatch">
-						<div class="role-single-chip chip-foreground"></div>foreground
+						<div class="role-single-chip chip-foreground"></div>
+						foreground
 					</div>
 					<div class="role-single-swatch">
-						<div class="role-single-chip chip-border"></div>border
+						<div class="role-single-chip chip-border"></div>
+						border
 					</div>
 					<div class="role-single-swatch">
-						<div class="role-single-chip chip-input"></div>input
+						<div class="role-single-chip chip-input"></div>
+						input
 					</div>
 					<div class="role-single-swatch">
-						<div class="role-single-chip chip-ring"></div>ring
+						<div class="role-single-chip chip-ring"></div>
+						ring
 					</div>
 				</div>
 			</div>
@@ -1170,12 +1429,16 @@
 			<div class="appmock">
 				<header class="topbar" aria-label="Application header">
 					<div class="brand">
-						<span class="brand-mark" aria-hidden="true">&#9670;</span>
+						<span class="brand-mark" aria-hidden="true"
+							>&#9670;</span
+						>
 						<span class="brand-name">Northwind</span>
 						<span class="brand-sub">Admin</span>
 					</div>
 					<div class="search">
-						<span class="search-icon" aria-hidden="true">&#9099;</span>
+						<span class="search-icon" aria-hidden="true"
+							>&#9099;</span
+						>
 						<input
 							class="search-input"
 							type="search"
@@ -1184,17 +1447,27 @@
 						/>
 					</div>
 					<div class="topbar-right">
-						<button class="icon-btn" type="button" aria-label="Notifications">
+						<button
+							class="icon-btn"
+							type="button"
+							aria-label="Notifications"
+						>
 							<span aria-hidden="true">&#9217;</span>
 							<span class="dot" aria-hidden="true"></span>
 						</button>
-						<button class="avatar-chip" type="button" aria-label="Account menu for Dana Holt">
+						<button
+							class="avatar-chip"
+							type="button"
+							aria-label="Account menu for Dana Holt"
+						>
 							<span class="avatar" aria-hidden="true">DH</span>
 							<span class="avatar-meta">
 								<span class="avatar-name">Dana Holt</span>
 								<span class="avatar-role">Workspace owner</span>
 							</span>
-							<span class="caret" aria-hidden="true">&#9662;</span>
+							<span class="caret" aria-hidden="true"
+								>&#9662;</span
+							>
 						</button>
 					</div>
 				</header>
@@ -1202,26 +1475,49 @@
 				<div class="shell">
 					<aside class="sidebar" aria-label="Primary navigation">
 						<nav class="nav">
-							<a class="nav-item active" href="javascript:void(0)" aria-current="page">
-								<span class="nav-ico" aria-hidden="true">&#9638;</span> Overview
+							<a
+								class="nav-item active"
+								href="javascript:void(0)"
+								aria-current="page"
+							>
+								<span class="nav-ico" aria-hidden="true"
+									>&#9638;</span
+								>
+								Overview
 							</a>
 							<a class="nav-item" href="javascript:void(0)">
-								<span class="nav-ico" aria-hidden="true">&#9684;</span> Projects
+								<span class="nav-ico" aria-hidden="true"
+									>&#9684;</span
+								>
+								Projects
 							</a>
 							<a class="nav-item" href="javascript:void(0)">
-								<span class="nav-ico" aria-hidden="true">&#9783;</span> Members
+								<span class="nav-ico" aria-hidden="true"
+									>&#9783;</span
+								>
+								Members
 								<span class="nav-badge">12</span>
 							</a>
 							<a class="nav-item" href="javascript:void(0)">
-								<span class="nav-ico" aria-hidden="true">&#9678;</span> Billing
+								<span class="nav-ico" aria-hidden="true"
+									>&#9678;</span
+								>
+								Billing
 							</a>
 							<a class="nav-item" href="javascript:void(0)">
-								<span class="nav-ico" aria-hidden="true">&#9881;</span> Settings
+								<span class="nav-ico" aria-hidden="true"
+									>&#9881;</span
+								>
+								Settings
 							</a>
 						</nav>
 						<div class="sidebar-foot">
 							<p class="usage-label">Storage used</p>
-							<div class="usage-bar" role="img" aria-label="68 percent of storage used">
+							<div
+								class="usage-bar"
+								role="img"
+								aria-label="68 percent of storage used"
+							>
 								<span class="usage-fill"></span>
 							</div>
 							<p class="usage-meta">6.8 GB of 10 GB</p>
@@ -1232,17 +1528,29 @@
 						<section class="hero" aria-label="Welcome">
 							<div class="hero-text">
 								<p class="hero-eyebrow">Good morning, Dana</p>
-								<h1 class="hero-title">Your workspace is running smoothly</h1>
+								<h1 class="hero-title">
+									Your workspace is running smoothly
+								</h1>
 								<p class="hero-body">
-									3 deployments shipped this week and no incidents reported.
-									Review what changed and plan the next sprint.
+									3 deployments shipped this week and no
+									incidents reported. Review what changed and
+									plan the next sprint.
 								</p>
 								<div class="hero-actions">
-									<button class="btn hero-cta" type="button">Create project</button>
-									<button class="btn hero-ghost" type="button">View changelog</button>
+									<button class="btn hero-cta" type="button">
+										Create project
+									</button>
+									<button
+										class="btn hero-ghost"
+										type="button"
+									>
+										View changelog
+									</button>
 								</div>
 							</div>
-							<div class="hero-badge" aria-hidden="true">&#8599; 18%</div>
+							<div class="hero-badge" aria-hidden="true">
+								&#8599; 18%
+							</div>
 						</section>
 
 						<section class="stats" aria-label="Key metrics">
@@ -1259,17 +1567,32 @@
 							<article class="stat-card">
 								<p class="stat-label">Monthly spend</p>
 								<p class="stat-value">$4,820</p>
-								<p class="stat-trend down">&#9660; 6% vs last</p>
+								<p class="stat-trend down">
+									&#9660; 6% vs last
+								</p>
 							</article>
 						</section>
 
-						<section class="callout" role="status" aria-label="System status">
-							<span class="callout-ico" aria-hidden="true">&#10003;</span>
+						<section
+							class="callout"
+							role="status"
+							aria-label="System status"
+						>
+							<span class="callout-ico" aria-hidden="true"
+								>&#10003;</span
+							>
 							<div class="callout-text">
 								<strong>All systems operational.</strong>
-								Backups completed at 04:00 UTC and your last invoice was paid.
+								Backups completed at 04:00 UTC and your last
+								invoice was paid.
 							</div>
-							<button class="callout-dismiss" type="button" aria-label="Dismiss notice">&#10005;</button>
+							<button
+								class="callout-dismiss"
+								type="button"
+								aria-label="Dismiss notice"
+							>
+								&#10005;
+							</button>
 						</section>
 
 						<section class="panel" aria-label="Recent activity">
@@ -1277,12 +1600,23 @@
 								<div>
 									<h2 class="panel-title">Recent activity</h2>
 									<p class="panel-sub">
-										Latest deployments and member events across your workspace.
+										Latest deployments and member events
+										across your workspace.
 									</p>
 								</div>
 								<div class="panel-actions">
-									<button class="btn btn-neutral" type="button">Export</button>
-									<button class="btn btn-primary" type="button">New deploy</button>
+									<button
+										class="btn btn-neutral"
+										type="button"
+									>
+										Export
+									</button>
+									<button
+										class="btn btn-primary"
+										type="button"
+									>
+										New deploy
+									</button>
 								</div>
 							</div>
 
@@ -1297,28 +1631,53 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td class="cell-main">api-gateway &middot; v2.4.1</td>
+										<td class="cell-main">
+											api-gateway &middot; v2.4.1
+										</td>
 										<td>M. Rivera</td>
 										<td class="cell-muted">2 min ago</td>
-										<td><span class="badge badge-success">Deployed</span></td>
+										<td>
+											<span class="badge badge-success"
+												>Deployed</span
+											>
+										</td>
 									</tr>
 									<tr>
-										<td class="cell-main">billing-worker &middot; migration</td>
+										<td class="cell-main">
+											billing-worker &middot; migration
+										</td>
 										<td>S. Park</td>
 										<td class="cell-muted">26 min ago</td>
-										<td><span class="badge badge-warning">Pending</span></td>
+										<td>
+											<span class="badge badge-warning"
+												>Pending</span
+											>
+										</td>
 									</tr>
 									<tr>
-										<td class="cell-main">web-app &middot; hotfix</td>
+										<td class="cell-main">
+											web-app &middot; hotfix
+										</td>
 										<td>D. Holt</td>
 										<td class="cell-muted">1 hr ago</td>
-										<td><span class="badge badge-destructive">Failed</span></td>
+										<td>
+											<span
+												class="badge badge-destructive"
+												>Failed</span
+											>
+										</td>
 									</tr>
 									<tr>
-										<td class="cell-main">design-tokens &middot; sync</td>
+										<td class="cell-main">
+											design-tokens &middot; sync
+										</td>
 										<td>L. Chen</td>
 										<td class="cell-muted">3 hr ago</td>
-										<td><span class="badge badge-success">Deployed</span></td>
+										<td>
+											<span class="badge badge-success"
+												>Deployed</span
+											>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -1326,9 +1685,24 @@
 							<div class="panel-foot">
 								<p class="foot-note">Showing 4 of 128 events</p>
 								<div class="foot-buttons">
-									<button class="btn btn-neutral" type="button">Mark all read</button>
-									<button class="btn btn-accent" type="button">Invite member</button>
-									<button class="btn btn-destructive" type="button">Delete log</button>
+									<button
+										class="btn btn-neutral"
+										type="button"
+									>
+										Mark all read
+									</button>
+									<button
+										class="btn btn-accent"
+										type="button"
+									>
+										Invite member
+									</button>
+									<button
+										class="btn btn-destructive"
+										type="button"
+									>
+										Delete log
+									</button>
 								</div>
 							</div>
 						</section>
@@ -1349,8 +1723,16 @@
 		<template id="tpl-color-row">
 			<div class="color-row">
 				<label data-ref="label"></label>
-				<select class="family-select" data-ref="family" data-on="change:familyChange"></select>
-				<select class="shade-select" data-ref="shade" data-on="change:shadeChange"></select>
+				<select
+					class="family-select"
+					data-ref="family"
+					data-on="change:familyChange"
+				></select>
+				<select
+					class="shade-select"
+					data-ref="shade"
+					data-on="change:shadeChange"
+				></select>
 				<span class="color-chip" data-ref="chip"></span>
 			</div>
 		</template>
@@ -1359,8 +1741,14 @@
 		<template id="tpl-role-base">
 			<div class="color-row role-base-row">
 				<label class="role-base-label">Role base</label>
-				<select class="family-select role-base-select" data-ref="family" data-on="change:pickRoleBase">
-					<option value="" disabled selected>pick family&hellip;</option>
+				<select
+					class="family-select role-base-select"
+					data-ref="family"
+					data-on="change:pickRoleBase"
+				>
+					<option value="" disabled selected>
+						pick family&hellip;
+					</option>
 				</select>
 				<span class="role-base-hint">sets all role colors at once</span>
 			</div>
@@ -1370,9 +1758,24 @@
 		<template id="tpl-ring-row">
 			<div class="ring-row">
 				<label>ring</label>
-				<select class="family-select" data-ref="family" data-on="change:ringChange"></select>
-				<select class="shade-select" data-ref="shade" data-on="change:ringChange"></select>
-				<input type="range" min="5" max="50" value="20" data-ref="range" data-on="input:ringChange">
+				<select
+					class="family-select"
+					data-ref="family"
+					data-on="change:ringChange"
+				></select>
+				<select
+					class="shade-select"
+					data-ref="shade"
+					data-on="change:ringChange"
+				></select>
+				<input
+					type="range"
+					min="5"
+					max="50"
+					value="20"
+					data-ref="range"
+					data-on="input:ringChange"
+				/>
 				<span class="percent-label" data-ref="percent">20%</span>
 				<span class="color-chip" data-ref="chip"></span>
 			</div>
@@ -1404,14 +1807,51 @@
 			// ── constants ──────────────────────────────────────────────
 
 			const COLOR_FAMILIES = [
-				"black", "white", "slate", "gray", "zinc", "neutral", "stone",
-				"mauve", "mist", "olive", "taupe", "red", "orange", "amber",
-				"yellow", "lime", "green", "emerald", "teal", "cyan", "sky",
-				"blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose",
+				"black",
+				"white",
+				"slate",
+				"gray",
+				"zinc",
+				"neutral",
+				"stone",
+				"mauve",
+				"mist",
+				"olive",
+				"taupe",
+				"red",
+				"orange",
+				"amber",
+				"yellow",
+				"lime",
+				"green",
+				"emerald",
+				"teal",
+				"cyan",
+				"sky",
+				"blue",
+				"indigo",
+				"violet",
+				"purple",
+				"fuchsia",
+				"pink",
+				"rose",
 			];
-			const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
-			const INTENTS = ["primary", "accent", "destructive", "warning", "success"];
-			const PAIRED_ROLES = ["background", "muted", "surface", "surface-1"];
+			const SHADES = [
+				50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+			];
+			const INTENTS = [
+				"primary",
+				"accent",
+				"destructive",
+				"warning",
+				"success",
+			];
+			const PAIRED_ROLES = [
+				"background",
+				"muted",
+				"surface",
+				"surface-1",
+			];
 			const PREFIX = "dt-";
 
 			const hexToName = buildHexToNameMap(colors);
@@ -1425,7 +1865,12 @@
 						surface: { DEFAULT: 200, foreground: 900 },
 						"surface-1": { DEFAULT: 300, foreground: 900 },
 					},
-					single: { foreground: 900, border: 300, input: 50, inputHover: 100 },
+					single: {
+						foreground: 900,
+						border: 300,
+						input: 50,
+						inputHover: 100,
+					},
 				},
 				dark: {
 					paired: {
@@ -1434,7 +1879,12 @@
 						surface: { DEFAULT: 700, foreground: 300 },
 						"surface-1": { DEFAULT: 600, foreground: 200 },
 					},
-					single: { foreground: 50, border: 700, input: 900, inputHover: 800 },
+					single: {
+						foreground: 50,
+						border: 700,
+						input: 900,
+						inputHover: 800,
+					},
 				},
 			};
 
@@ -1457,7 +1907,10 @@
 			function normalizeSchema(schema) {
 				for (const mode of ["light", "dark"]) {
 					const single = schema[mode].colors.role.single;
-					if (single.foreground && typeof single.foreground === "object") {
+					if (
+						single.foreground &&
+						typeof single.foreground === "object"
+					) {
 						single.foreground = single.foreground.DEFAULT;
 					}
 					if (typeof single.border === "string") {
@@ -1509,22 +1962,31 @@
 				schema.update((s) => {
 					const next = structuredClone(s);
 					const m = next[mode];
-					for (const [role, shades] of Object.entries(preset.paired)) {
-						const bgHex = (mode === "light" && role === "background")
-							? (colors.white || c[shades.DEFAULT])
-							: c[shades.DEFAULT];
+					for (const [role, shades] of Object.entries(
+						preset.paired,
+					)) {
+						const bgHex =
+							mode === "light" && role === "background"
+								? colors.white || c[shades.DEFAULT]
+								: c[shades.DEFAULT];
 						m.colors.role.paired[role].DEFAULT = bgHex;
-						m.colors.role.paired[role].foreground = c[shades.foreground];
+						m.colors.role.paired[role].foreground =
+							c[shades.foreground];
 					}
-					m.colors.role.single.foreground = c[preset.single.foreground];
-					m.colors.role.single.border = { DEFAULT: c[preset.single.border] };
-					const input = (m.colors.role.single.input
-							&& typeof m.colors.role.single.input === "object")
-						? m.colors.role.single.input
-						: { DEFAULT: m.colors.role.single.input };
-					input.DEFAULT = (mode === "light")
-						? (colors.white || c[preset.single.input])
-						: c[preset.single.input];
+					m.colors.role.single.foreground =
+						c[preset.single.foreground];
+					m.colors.role.single.border = {
+						DEFAULT: c[preset.single.border],
+					};
+					const input =
+						m.colors.role.single.input &&
+						typeof m.colors.role.single.input === "object"
+							? m.colors.role.single.input
+							: { DEFAULT: m.colors.role.single.input };
+					input.DEFAULT =
+						mode === "light"
+							? colors.white || c[preset.single.input]
+							: c[preset.single.input];
 					input.hover = c[preset.single.inputHover];
 					m.colors.role.single.input = input;
 					return next;
@@ -1565,8 +2027,13 @@
 			/** The hex currently selected in a row (defaulting shade to 500). */
 			function hexFromRow(r) {
 				const family = r.family.value;
-				if (family === "black" || family === "white") return colors[family];
-				return hexForSelection(colors, family, parseInt(r.shade.value || "500"));
+				if (family === "black" || family === "white")
+					return colors[family];
+				return hexForSelection(
+					colors,
+					family,
+					parseInt(r.shade.value || "500"),
+				);
 			}
 
 			// ── components (factories returning views) ───────────────────
@@ -1585,25 +2052,32 @@
 						if (hex) onSet(mode, path, hex);
 					};
 
-					track(delegate(el, {
-						familyChange: () => {
-							const fam = r.family.value;
-							if (fam !== "black" && fam !== "white") {
-								r.shade.style.display = "";
-								r.shade.value = "500";
-							} else {
-								r.shade.style.display = "none";
-							}
-							commit();
-						},
-						shadeChange: commit,
-					}));
+					track(
+						delegate(el, {
+							familyChange: () => {
+								const fam = r.family.value;
+								if (fam !== "black" && fam !== "white") {
+									r.shade.style.display = "";
+									r.shade.value = "500";
+								} else {
+									r.shade.style.display = "none";
+								}
+								commit();
+							},
+							shadeChange: commit,
+						}),
+					);
 
 					// Re-sync selects whenever the schema changes (theme load,
 					// role-base, or a sibling edit). Read-only — never writes back.
-					track(schema.subscribe(() => {
-						applySelection(r, getNested(schema.get()[mode], path));
-					}));
+					track(
+						schema.subscribe(() => {
+							applySelection(
+								r,
+								getNested(schema.get()[mode], path),
+							);
+						}),
+					);
 
 					return { el };
 				});
@@ -1621,29 +2095,34 @@
 
 					const commit = () => {
 						const fam = r.family.value;
-						r.shade.style.display = (fam === "black" || fam === "white")
-							? "none"
-							: "";
+						r.shade.style.display =
+							fam === "black" || fam === "white" ? "none" : "";
 						const hex = hexFromRow(r);
 						const percent = parseInt(r.range.value);
 						r.percent.textContent = percent + "%";
-						if (hex) onSet(mode, path, buildRingValue(hex, percent));
+						if (hex)
+							onSet(mode, path, buildRingValue(hex, percent));
 					};
 
 					track(delegate(el, { ringChange: commit }));
 
-					track(schema.subscribe(() => {
-						const raw = getNested(schema.get()[mode], path);
-						const str = typeof raw === "string" ? raw : raw?.DEFAULT ?? "";
-						const parsed = parseRingValue(str);
-						if (parsed) {
-							applySelection(r, parsed.hex);
-							r.range.value = String(parsed.percent);
-							r.percent.textContent = parsed.percent + "%";
-						} else {
-							applySelection(r, str || null);
-						}
-					}));
+					track(
+						schema.subscribe(() => {
+							const raw = getNested(schema.get()[mode], path);
+							const str =
+								typeof raw === "string"
+									? raw
+									: (raw?.DEFAULT ?? "");
+							const parsed = parseRingValue(str);
+							if (parsed) {
+								applySelection(r, parsed.hex);
+								r.range.value = String(parsed.percent);
+								r.percent.textContent = parsed.percent + "%";
+							} else {
+								applySelection(r, str || null);
+							}
+						}),
+					);
 
 					return { el };
 				});
@@ -1654,58 +2133,123 @@
 				return createView((track) => {
 					const el = fromTemplate("tpl-role-base");
 					const r = refs(el);
-					COLOR_FAMILIES
-						.filter((f) => f !== "black" && f !== "white")
-						.forEach((f) => addOption(r.family, f, f));
-					track(delegate(el, {
-						pickRoleBase: () => {
-							if (r.family.value) applyRoleBase(r.family.value, mode);
-						},
-					}));
+					COLOR_FAMILIES.filter(
+						(f) => f !== "black" && f !== "white",
+					).forEach((f) => addOption(r.family, f, f));
+					track(
+						delegate(el, {
+							pickRoleBase: () => {
+								if (r.family.value)
+									applyRoleBase(r.family.value, mode);
+							},
+						}),
+					);
 					return { el };
 				});
 			}
 
 			/** Mount a fieldset (from a template) into `slot` and fill its rows. */
 			function mountFieldset(track, slot, legendText, fill) {
-				mount(track, slot, createView((fsTrack) => {
-					const el = fromTemplate("tpl-fieldset");
-					const r = refs(el);
-					r.legend.textContent = legendText;
-					fill(fsTrack, r.rows);
-					return { el };
-				}));
+				mount(
+					track,
+					slot,
+					createView((fsTrack) => {
+						const el = fromTemplate("tpl-fieldset");
+						const r = refs(el);
+						r.legend.textContent = legendText;
+						fill(fsTrack, r.rows);
+						return { el };
+					}),
+				);
 			}
 
 			/** Build the full control column for one mode into `slot`. */
 			function buildControls(track, slot, mode) {
 				const row = (fsTrack, rowsSlot, label, path) =>
 					mount(fsTrack, rowsSlot, createColorRow, {
-						schema, onSet: setColor, mode, label, path,
+						schema,
+						onSet: setColor,
+						mode,
+						label,
+						path,
 					});
 
 				mountFieldset(track, slot, "Intent Colors", (fsTrack, rows) => {
 					for (const intent of INTENTS) {
-						row(fsTrack, rows, intent, `colors.intent.${intent}.DEFAULT`);
-						row(fsTrack, rows, intent + "-fg", `colors.intent.${intent}.foreground`);
+						row(
+							fsTrack,
+							rows,
+							intent,
+							`colors.intent.${intent}.DEFAULT`,
+						);
+						row(
+							fsTrack,
+							rows,
+							intent + "-fg",
+							`colors.intent.${intent}.foreground`,
+						);
 					}
 				});
 
-				mountFieldset(track, slot, "Role Colors (Paired)", (fsTrack, rows) => {
-					mount(fsTrack, rows, createRoleBase, { mode });
-					for (const role of PAIRED_ROLES) {
-						row(fsTrack, rows, role, `colors.role.paired.${role}.DEFAULT`);
-						row(fsTrack, rows, role + "-fg", `colors.role.paired.${role}.foreground`);
-					}
-				});
+				mountFieldset(
+					track,
+					slot,
+					"Role Colors (Paired)",
+					(fsTrack, rows) => {
+						mount(fsTrack, rows, createRoleBase, { mode });
+						for (const role of PAIRED_ROLES) {
+							row(
+								fsTrack,
+								rows,
+								role,
+								`colors.role.paired.${role}.DEFAULT`,
+							);
+							row(
+								fsTrack,
+								rows,
+								role + "-fg",
+								`colors.role.paired.${role}.foreground`,
+							);
+						}
+					},
+				);
 
-				mountFieldset(track, slot, "Role Colors (Single)", (fsTrack, rows) => {
-					row(fsTrack, rows, "foreground", "colors.role.single.foreground");
-					row(fsTrack, rows, "border", "colors.role.single.border.DEFAULT");
-					row(fsTrack, rows, "input", "colors.role.single.input.DEFAULT");
-					row(fsTrack, rows, "input-hover", "colors.role.single.input.hover");
-					mount(fsTrack, rows, createRingRow, { schema, onSet: setColor, mode });
-				});
+				mountFieldset(
+					track,
+					slot,
+					"Role Colors (Single)",
+					(fsTrack, rows) => {
+						row(
+							fsTrack,
+							rows,
+							"foreground",
+							"colors.role.single.foreground",
+						);
+						row(
+							fsTrack,
+							rows,
+							"border",
+							"colors.role.single.border.DEFAULT",
+						);
+						row(
+							fsTrack,
+							rows,
+							"input",
+							"colors.role.single.input.DEFAULT",
+						);
+						row(
+							fsTrack,
+							rows,
+							"input-hover",
+							"colors.role.single.input.hover",
+						);
+						mount(fsTrack, rows, createRingRow, {
+							schema,
+							onSet: setColor,
+							mode,
+						});
+					},
+				);
 			}
 
 			// ── the app view ────────────────────────────────────────────
@@ -1736,86 +2280,109 @@
 					r.toast.textContent = msg;
 					r.toast.classList.add("show");
 					clearTimeout(toastTimer);
-					toastTimer = setTimeout(() => r.toast.classList.remove("show"), 2000);
+					toastTimer = setTimeout(
+						() => r.toast.classList.remove("show"),
+						2000,
+					);
 				};
 
 				const cycle = (delta) => {
 					const i = themeNames.indexOf(themeName.get());
-					const n = (i + delta + themeNames.length) % themeNames.length;
+					const n =
+						(i + delta + themeNames.length) % themeNames.length;
 					loadTheme(themeNames[n]);
 				};
 
 				// One delegated listener set for the whole shell. (Control-row
 				// actions live in distinct namespaces, so they never collide.)
-				track(delegate(el, {
-					prev: () => cycle(-1),
-					next: () => cycle(1),
-					pickTheme: (_e, t) => loadTheme(t.value),
-					setLayout: (_e, t) => layout.set(t.dataset.arg),
-					toggleControls: () => controlsOpen.update((v) => !v),
-					export: async () => {
-						let ts;
-						try {
-							ts = themeToTypeScript(schema.get(), hexToName);
-						} catch {
-							showToast("Export failed");
-							return;
-						}
-						try {
-							await navigator.clipboard.writeText(ts);
-							showToast("Copied to clipboard!");
-						} catch {
-							// Fallback: dump into a click-to-dismiss textarea.
-							const ta = document.createElement("textarea");
-							ta.value = ts;
-							ta.style.cssText =
-								"position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
-							ta.addEventListener("click", () => ta.remove());
-							document.body.appendChild(ta);
-							ta.select();
-						}
-					},
-				}));
+				track(
+					delegate(el, {
+						prev: () => cycle(-1),
+						next: () => cycle(1),
+						pickTheme: (_e, t) => loadTheme(t.value),
+						setLayout: (_e, t) => layout.set(t.dataset.arg),
+						toggleControls: () => controlsOpen.update((v) => !v),
+						export: async () => {
+							let ts;
+							try {
+								ts = themeToTypeScript(schema.get(), hexToName);
+							} catch {
+								showToast("Export failed");
+								return;
+							}
+							try {
+								await navigator.clipboard.writeText(ts);
+								showToast("Copied to clipboard!");
+							} catch {
+								// Fallback: dump into a click-to-dismiss textarea.
+								const ta = document.createElement("textarea");
+								ta.value = ts;
+								ta.style.cssText =
+									"position:fixed;top:10%;left:10%;width:80%;height:80%;z-index:9999;font-family:monospace;font-size:12px;padding:1rem;";
+								ta.addEventListener("click", () => ta.remove());
+								document.body.appendChild(ta);
+								ta.select();
+							}
+						},
+					}),
+				);
 
 				// RENDER: regenerate the per-panel token CSS when the schema changes.
-				track(reactTo([schema], () => {
-					const s = schema.get();
-					styleLight.textContent = toCssString(
-						generateCssTokens(s.light, PREFIX, "light"),
-						".preview-light .preview-panel-inner",
-					);
-					if (s.dark) {
-						styleDark.textContent = toCssString(
-							generateCssTokens(s.dark, PREFIX, "dark"),
-							".preview-dark .preview-panel-inner",
+				track(
+					reactTo([schema], () => {
+						const s = schema.get();
+						styleLight.textContent = toCssString(
+							generateCssTokens(s.light, PREFIX, "light"),
+							".preview-light .preview-panel-inner",
 						);
-					}
-				}));
+						if (s.dark) {
+							styleDark.textContent = toCssString(
+								generateCssTokens(s.dark, PREFIX, "dark"),
+								".preview-dark .preview-panel-inner",
+							);
+						}
+					}),
+				);
 
 				// LAYOUT: swap the preview content (both panels) + reflect the
 				// segmented control. Rebuilt only when the layout actually changes.
-				track(reactTo([layout], () => {
-					const tplId = layout.get() === "app"
-						? "tpl-preview-app"
-						: "tpl-preview-swatches";
-					r.lightInner.replaceChildren(fromTemplate(tplId));
-					r.darkInner.replaceChildren(fromTemplate(tplId));
-					r.preview.classList.toggle("layout-app", layout.get() === "app");
-					el.querySelectorAll("[data-on='click:setLayout']").forEach((b) =>
-						b.setAttribute("aria-pressed", String(b.dataset.arg === layout.get()))
-					);
-				}));
+				track(
+					reactTo([layout], () => {
+						const tplId =
+							layout.get() === "app"
+								? "tpl-preview-app"
+								: "tpl-preview-swatches";
+						r.lightInner.replaceChildren(fromTemplate(tplId));
+						r.darkInner.replaceChildren(fromTemplate(tplId));
+						r.preview.classList.toggle(
+							"layout-app",
+							layout.get() === "app",
+						);
+						el.querySelectorAll(
+							"[data-on='click:setLayout']",
+						).forEach((b) =>
+							b.setAttribute(
+								"aria-pressed",
+								String(b.dataset.arg === layout.get()),
+							),
+						);
+					}),
+				);
 
 				// Reflect the current theme name in the picker.
-				track(themeName.subscribe((name) => {
-					r.themeSelect.value = name;
-				}));
+				track(
+					themeName.subscribe((name) => {
+						r.themeSelect.value = name;
+					}),
+				);
 
 				// Collapsible controls.
-				track(controlsOpen.subscribe((open) => {
-					r.controls.classList.toggle("collapsed", !open);
-					r.controlsArrow.classList.toggle("open", open);
-				}));
+				track(
+					controlsOpen.subscribe((open) => {
+						r.controls.classList.toggle("collapsed", !open);
+						r.controlsArrow.classList.toggle("open", open);
+					}),
+				);
 
 				return { el };
 			});
@@ -1823,7 +2390,13 @@
 			document.getElementById("app").appendChild(app.el);
 
 			// Expose for console poking.
-			Object.assign(globalThis, { app, schema, themeName, layout, loadTheme });
+			Object.assign(globalThis, {
+				app,
+				schema,
+				themeName,
+				layout,
+				loadTheme,
+			});
 		</script>
 	</body>
 </html>

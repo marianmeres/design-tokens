@@ -79,7 +79,7 @@ const dark = {
 				foreground: colors.black,
 			},
 			success: {
-				DEFAULT: colors.teal[500],
+				DEFAULT: colors.teal[600],
 				foreground: colors.white,
 			},
 		},

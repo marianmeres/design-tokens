@@ -96,14 +96,14 @@
 
 /* prettier-ignore */
 :root.dark {
-	--stuic-color-primary:                        #06b6d4;
+	--stuic-color-primary:                        #0891b2;
 	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), white 10%);
 	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), white 20%);
 	--stuic-color-primary-foreground:             #ffffff;
 	--stuic-color-primary-foreground-hover:       #ffffff;
 	--stuic-color-primary-foreground-active:      #ffffff;
 
-	--stuic-color-accent:                         #94a3b8;
+	--stuic-color-accent:                         #475569;
 	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), white 10%);
 	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), white 20%);
 	--stuic-color-accent-foreground:              #ffffff;
@@ -127,9 +127,9 @@
 	--stuic-color-success:                        #14b8a6;
 	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), white 10%);
 	--stuic-color-success-active:                 color-mix(in oklab, var(--stuic-color-success), white 20%);
-	--stuic-color-success-foreground:             #ffffff;
-	--stuic-color-success-foreground-hover:       #ffffff;
-	--stuic-color-success-foreground-active:      #ffffff;
+	--stuic-color-success-foreground:             #000000;
+	--stuic-color-success-foreground-hover:       #000000;
+	--stuic-color-success-foreground-active:      #000000;
 
 	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
 	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), white 50%);

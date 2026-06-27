@@ -63,7 +63,7 @@ const dark = {
 	colors: {
 		intent: {
 			primary: {
-				DEFAULT: colors.emerald[500],
+				DEFAULT: colors.emerald[600],
 				foreground: colors.white,
 			},
 			accent: {
@@ -80,7 +80,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.emerald[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {

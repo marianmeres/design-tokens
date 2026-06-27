@@ -10,7 +10,7 @@ const light = {
 			},
 			accent: {
 				DEFAULT: colors.amber[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 			destructive: {
 				DEFAULT: colors.rose[600],
@@ -80,7 +80,7 @@ const dark = {
 			},
 			success: {
 				DEFAULT: colors.teal[500],
-				foreground: colors.white,
+				foreground: colors.black,
 			},
 		},
 		role: {
