@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Electric Lemonade — the cocktail: blue curaçao over lemon. Cobalt primary
 // with a lime twist; light mode is poured over lemon-cream surfaces, dark
@@ -57,7 +58,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.yellow[50],
 				},
-				ring: `color-mix(in srgb, ${colors.blue[600]} 20%, transparent)`,
+				ring: rgba(colors.blue[600], 0.2),
 			},
 		},
 	},
@@ -115,7 +116,7 @@ const dark = {
 					DEFAULT: colors.sky[950],
 					hover: colors.sky[900],
 				},
-				ring: `color-mix(in srgb, ${colors.blue[400]} 25%, transparent)`,
+				ring: rgba(colors.blue[400], 0.25),
 			},
 		},
 	},

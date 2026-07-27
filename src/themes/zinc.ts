@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 const theme: ThemeSchema = {
 	light: {
@@ -28,7 +29,7 @@ const theme: ThemeSchema = {
 					foreground: colors.zinc[900], // zinc-900
 					border: { DEFAULT: colors.zinc[300] }, // zinc-300
 					input: { DEFAULT: colors.zinc[50], hover: colors.zinc[100] }, // zinc-50, zinc-100
-					ring: `color-mix(in srgb, ${colors.zinc[800]} 20%, transparent)`, // zinc-800
+					ring: rgba(colors.zinc[800], 0.2), // zinc-800
 				},
 			},
 		},
@@ -59,7 +60,7 @@ const theme: ThemeSchema = {
 					foreground: colors.zinc[50], // zinc-50
 					border: { DEFAULT: colors.zinc[700] }, // zinc-700
 					input: { DEFAULT: colors.zinc[900], hover: colors.zinc[800] }, // zinc-900, zinc-800
-					ring: `color-mix(in srgb, ${colors.zinc[200]} 25%, transparent)`, // zinc-200
+					ring: rgba(colors.zinc[200], 0.25), // zinc-200
 				},
 			},
 		},

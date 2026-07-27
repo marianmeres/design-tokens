@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Monokai Cyan — Monokai's cyan/type color as primary with purple accent
 // Approximation of classic Monokai palette to Tailwind colors
@@ -56,7 +57,7 @@ const light = {
 					DEFAULT: colors.stone[50],
 					hover: colors.stone[100],
 				},
-				ring: `color-mix(in srgb, ${colors.cyan[600]} 20%, transparent)`,
+				ring: rgba(colors.cyan[600], 0.2),
 			},
 		},
 	},
@@ -114,7 +115,7 @@ const dark = {
 					DEFAULT: colors.stone[900],
 					hover: colors.stone[800],
 				},
-				ring: `color-mix(in srgb, ${colors.cyan[400]} 25%, transparent)`,
+				ring: rgba(colors.cyan[400], 0.25),
 			},
 		},
 	},

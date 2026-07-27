@@ -6,6 +6,91 @@ import type {
 	ThemeSchema,
 	TokenSchema,
 } from "./types.ts";
+import { evaluateColorExpression, formatColor, type VarLookup } from "./color.ts";
+
+/**
+ * How to serve engines that lack `color-mix()` (Chrome/Edge < 111,
+ * Safari < 16.2, Firefox < 113) at the token-record level.
+ *
+ * - `"none"` — emit `color-mix()` expressions as-is.
+ * - `"static"` — evaluate every `color-mix()` at build time and emit literal
+ *   colors instead. The output contains no `color-mix()` at all.
+ */
+export type TokenFallback = "none" | "static";
+
+/**
+ * How to serve engines that lack `color-mix()` at the stylesheet level. Adds
+ * one mode on top of {@link TokenFallback}:
+ *
+ * - `"supports"` — emit the `color-mix()` values normally, then repeat the
+ *   affected tokens as precomputed literals inside
+ *   `@supports not (color: color-mix(in oklab, red, blue))`. Modern engines
+ *   are unaffected; older ones get working colors.
+ */
+export type ThemeFallback = TokenFallback | "supports";
+
+/**
+ * The guard wrapping the static fallback block. Note the declaration test
+ * (`color: …`) — a bare `@supports (color-mix(…))` is the `<general-enclosed>`
+ * production, which the spec requires to evaluate to false *everywhere*, so it
+ * would silently hand the fallback to modern browsers too.
+ *
+ * The probe uses `in oklab` because that is the strictly stronger capability
+ * of the two spaces the generator emits: an engine that somehow supported
+ * `srgb` mixing but not `oklab` would fall back for both, which is safe.
+ */
+const COLOR_MIX_GUARD = "@supports not (color: color-mix(in oklab, red, blue))";
+
+/**
+ * Rewrite a single token value to a literal color, or return null to leave it
+ * alone.
+ *
+ * Only values that actually contain `color-mix()` are touched. Plain `var()`
+ * indirection is deliberately preserved — flattening it would defeat the
+ * reboot bridge (whose `--bs-*` vars are references by design) and would
+ * freeze consumer overrides for no benefit, since `var()` itself needs no
+ * fallback.
+ */
+function staticValue(value: string, lookup: VarLookup): string | null {
+	if (!value.includes("color-mix(")) return null;
+	const resolved = evaluateColorExpression(value, lookup);
+	return resolved ? formatColor(resolved) : null;
+}
+
+/**
+ * The subset of `tokens` whose `color-mix()` values could be precomputed,
+ * mapped to their literal equivalents. Tokens without `color-mix()`, and those
+ * whose operands are not statically resolvable, are absent.
+ *
+ * Useful on its own to audit which tokens carry a `color-mix()` browser
+ * requirement, and which of those the generator can cover.
+ *
+ * @param tokens - Generated token key-value pairs (from {@link generateCssTokens})
+ */
+export function resolveStaticOverrides(tokens: GeneratedTokens): GeneratedTokens {
+	const lookup: VarLookup = (name) => tokens[name];
+	const out: GeneratedTokens = {};
+	for (const [key, value] of Object.entries(tokens)) {
+		const literal = staticValue(value, lookup);
+		if (literal !== null) out[key] = literal;
+	}
+	return out;
+}
+
+/**
+ * Evaluate every `color-mix()` expression in a token record at build time,
+ * returning a record of the same shape with literal colors in their place.
+ *
+ * Values whose operands cannot be resolved statically — an author-supplied
+ * `oklch`/`hsl` interpolation space, `currentColor`, an undefined variable —
+ * pass through unchanged. This is intentional: emitting an approximation would
+ * be worse than emitting the original expression.
+ *
+ * @param tokens - Generated token key-value pairs (from {@link generateCssTokens})
+ */
+export function resolveStaticTokens(tokens: GeneratedTokens): GeneratedTokens {
+	return { ...tokens, ...resolveStaticOverrides(tokens) };
+}
 
 /** Options for token generation. */
 export type GenerateOptions = {
@@ -28,12 +113,30 @@ export type GenerateOptions = {
 	/**
 	 * Whether to auto-derive missing hover/active via `color-mix()`. When
 	 * `false`, tokens without explicit hover/active simply fall back to the
-	 * DEFAULT value (useful for environments without `color-mix()` support,
-	 * or for consumers who want flat tokens).
+	 * DEFAULT value — i.e. flat tokens with no visual state change.
+	 *
+	 * This is a *design* knob, not a compatibility one. It does not remove
+	 * `color-mix()` from the output: the `surface-{intent}` tokens are derived
+	 * regardless, and author-supplied `color-mix()` values pass through
+	 * verbatim. For `color-mix()`-free output use {@link GenerateOptions.fallback}
+	 * (`"static"`), or `"supports"` on {@link generateThemeCss} to keep
+	 * `color-mix()` for modern engines while still serving older ones.
 	 *
 	 * @default true
 	 */
 	deriveStates?: boolean;
+
+	/**
+	 * How to handle engines without `color-mix()` support (Chrome/Edge < 111,
+	 * Safari < 16.2, Firefox < 113). See {@link TokenFallback}.
+	 *
+	 * `generateCssTokens` returns a flat record, so it cannot express the
+	 * `"supports"` dual emission — pass that to {@link generateThemeCss}
+	 * instead.
+	 *
+	 * @default "none"
+	 */
+	fallback?: TokenFallback;
 
 	/**
 	 * Contrast mix percentage used to derive the `surface-{intent}-foreground`
@@ -46,9 +149,32 @@ export type GenerateOptions = {
 };
 
 /** Options for {@link generateThemeCss}. */
-export type GenerateThemeOptions = Omit<GenerateOptions, "mode"> & {
+export type GenerateThemeOptions = Omit<GenerateOptions, "mode" | "fallback"> & {
+	/**
+	 * How to handle engines without `color-mix()` support (Chrome/Edge < 111,
+	 * Safari < 16.2, Firefox < 113). See {@link ThemeFallback}.
+	 *
+	 * Defaults to `"supports"`, which is safe by construction: the `:root`
+	 * block is byte-for-byte what `"none"` produces, and older engines pick up
+	 * precomputed literals from a trailing `@supports not (...)` block. This
+	 * matters because `color-mix()` used as a *token value* has no consumer-side
+	 * remedy — the declaration parses everywhere and only fails at substitution
+	 * time, which makes it invalid at computed-value time and resolves the
+	 * property to `unset` (transparent backgrounds, inherited text color). A
+	 * `var(--token, #fallback)` in consumer CSS does not help, because the
+	 * custom property is defined; its value is just unusable.
+	 *
+	 * @default "supports"
+	 */
+	fallback?: ThemeFallback;
+
 	/**
 	 * Wrap the output in `@layer {name} { ... }`. Pass a layer name to enable.
+	 *
+	 * Note that `@layer` itself needs Chrome 99+, Safari 15.4+, Firefox 97+.
+	 * On older engines the whole block is dropped, which leaves the tokens
+	 * *undefined* — that at least makes `var(--token, #fallback)` fire in
+	 * consumer CSS, so it degrades more gracefully than the `color-mix()` case.
 	 */
 	cssLayer?: string;
 
@@ -107,10 +233,9 @@ function deriveColorMixStates(
 	cssVarRef: string,
 	strategy: MixStrategy,
 ): { hover: string; active: string } {
-	const target =
-		strategy.kind === "contrast"
-			? strategy.mode === "light" ? "black" : "white"
-			: strategy.ref;
+	const target = strategy.kind === "contrast"
+		? strategy.mode === "light" ? "black" : "white"
+		: strategy.ref;
 	return {
 		hover: `color-mix(in oklab, ${cssVarRef}, ${target} 10%)`,
 		active: `color-mix(in oklab, ${cssVarRef}, ${target} 20%)`,
@@ -160,10 +285,10 @@ function generatePairedColorTokens(
 	tokens[`${prefix}color-${key}-hover`] = pair.hover ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-active`] = pair.active ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-foreground`] = pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-hover`] =
-		pair.foregroundHover ?? pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-active`] =
-		pair.foregroundActive ?? pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-hover`] = pair.foregroundHover ??
+		pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-active`] = pair.foregroundActive ??
+		pair.foreground;
 }
 
 /** Generate color tokens for a single color */
@@ -200,11 +325,13 @@ export function generateCssTokens(
 	prefix: string,
 	options: GenerateOptions | "light" | "dark" = {},
 ): GeneratedTokens {
-	const opts: GenerateOptions =
-		typeof options === "string" ? { mode: options } : options;
+	const opts: GenerateOptions = typeof options === "string"
+		? { mode: options }
+		: options;
 	const mode = opts.mode ?? "light";
 	const deriveStates = opts.deriveStates ?? true;
 	const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
+	const fallback = opts.fallback ?? "none";
 
 	const p = normalizePrefix(prefix);
 	const tokens: GeneratedTokens = {};
@@ -214,9 +341,7 @@ export function generateCssTokens(
 	// darken/lighten keeps the hue clean.
 	const intentStrategy: MixStrategy = { kind: "contrast", mode };
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
-		const filled = deriveStates
-			? fillPairStates(pair, p, key, intentStrategy)
-			: pair;
+		const filled = deriveStates ? fillPairStates(pair, p, key, intentStrategy) : pair;
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -240,10 +365,9 @@ export function generateCssTokens(
 
 	// Role colors (paired) — auto-derive except "background"
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
-		const filled =
-			key === "background" || !deriveStates
-				? pair
-				: fillPairStates(pair, p, key, roleStrategy);
+		const filled = key === "background" || !deriveStates
+			? pair
+			: fillPairStates(pair, p, key, roleStrategy);
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
@@ -261,7 +385,7 @@ export function generateCssTokens(
 		}
 	}
 
-	return tokens;
+	return fallback === "static" ? resolveStaticTokens(tokens) : tokens;
 }
 
 /**
@@ -311,8 +435,46 @@ export function toCssString(
 	return `${selector} {\n${parts.join("\n\n")}\n}\n`;
 }
 
+/** Indent every non-empty line by one tab. */
+function indent(css: string): string {
+	return css
+		.split("\n")
+		.map((l) => (l ? "\t" + l : l))
+		.join("\n");
+}
+
+/**
+ * Build the `@supports not (color: color-mix(...))` block holding precomputed
+ * literals for every `color-mix()`-valued token in `entries`.
+ *
+ * Emit it *after* the blocks it backs up: `@supports` adds no specificity, so
+ * source order is what makes it win on engines that match the guard.
+ *
+ * @param entries - Selector / token-record pairs, in the same order they are emitted
+ * @returns The CSS block, or null when nothing needs a fallback
+ */
+export function staticFallbackCss(
+	entries: { selector: string; tokens: GeneratedTokens }[],
+): string | null {
+	const inner = entries
+		.map(({ selector, tokens }) => ({
+			selector,
+			overrides: resolveStaticOverrides(tokens),
+		}))
+		.filter(({ overrides }) => Object.keys(overrides).length > 0)
+		.map(({ selector, overrides }) => toCssString(overrides, selector));
+
+	return inner.length ? `${COLOR_MIX_GUARD} {\n${indent(inner.join("\n"))}}\n` : null;
+}
+
 /**
  * Generate complete CSS for a theme (light + optional dark mode).
+ *
+ * With the default `fallback: "supports"` the output is the plain token
+ * block(s) followed by a `@supports not (...)` block repeating the
+ * `color-mix()`-valued tokens as precomputed literals. Source order matters
+ * there: the fallback block comes last so it wins the cascade on engines that
+ * match it, and `:root.dark` keeps beating `:root` on specificity either way.
  *
  * @param schema - Theme schema with required light and optional dark mode
  * @param prefix - CSS variable prefix (auto-normalized)
@@ -323,39 +485,44 @@ export function generateThemeCss(
 	prefix: string,
 	options: GenerateThemeOptions = {},
 ): string {
-	const { cssLayer, prettierIgnore, ...genOptions } = options;
+	const { cssLayer, prettierIgnore, fallback = "supports", ...genOptions } = options;
 	const PRETTIER_IGNORE_PREFIX = "/* prettier-ignore */\n";
 
-	let css = toCssString(
-		generateCssTokens(schema.light, prefix, {
-			...genOptions,
-			mode: "light",
-		}),
-	);
-	if (!cssLayer && prettierIgnore) {
-		css = PRETTIER_IGNORE_PREFIX + css;
-	}
-
+	const modes: { selector: string; tokens: GeneratedTokens }[] = [
+		{
+			selector: ":root",
+			tokens: generateCssTokens(schema.light, prefix, {
+				...genOptions,
+				mode: "light",
+				fallback: fallback === "static" ? "static" : "none",
+			}),
+		},
+	];
 	if (schema.dark) {
-		let darkCss = toCssString(
-			generateCssTokens(schema.dark, prefix, {
+		modes.push({
+			selector: ":root.dark",
+			tokens: generateCssTokens(schema.dark, prefix, {
 				...genOptions,
 				mode: "dark",
+				fallback: fallback === "static" ? "static" : "none",
 			}),
-			":root.dark",
-		);
-		if (!cssLayer && prettierIgnore) {
-			darkCss = PRETTIER_IGNORE_PREFIX + darkCss;
-		}
-		css += "\n" + darkCss;
+		});
 	}
 
+	const blocks = modes.map(({ selector, tokens }) => toCssString(tokens, selector));
+
+	if (fallback === "supports") {
+		const fallbackBlock = staticFallbackCss(modes);
+		if (fallbackBlock) blocks.push(fallbackBlock);
+	}
+
+	let css =
+		(!cssLayer && prettierIgnore
+			? blocks.map((b) => PRETTIER_IGNORE_PREFIX + b)
+			: blocks).join("\n");
+
 	if (cssLayer) {
-		const indented = css
-			.split("\n")
-			.map((l) => (l ? "\t" + l : l))
-			.join("\n");
-		css = `@layer ${cssLayer} {\n${indented}}\n`;
+		css = `@layer ${cssLayer} {\n${indent(css)}}\n`;
 		if (prettierIgnore) {
 			css = PRETTIER_IGNORE_PREFIX + css;
 		}

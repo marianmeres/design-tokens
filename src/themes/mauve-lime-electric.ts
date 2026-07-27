@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 const light = {
 	colors: {
@@ -53,7 +54,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.mauve[100],
 				},
-				ring: `color-mix(in srgb, ${colors.lime[500]} 25%, transparent)`,
+				ring: rgba(colors.lime[500], 0.25),
 			},
 		},
 	},
@@ -111,7 +112,7 @@ const dark = {
 					DEFAULT: colors.mauve[950],
 					hover: colors.mauve[900],
 				},
-				ring: `color-mix(in srgb, ${colors.lime[400]} 30%, transparent)`,
+				ring: rgba(colors.lime[400], 0.3),
 			},
 		},
 	},

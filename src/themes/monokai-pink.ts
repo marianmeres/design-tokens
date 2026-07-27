@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Monokai Pink — the iconic Monokai look with hot pink primary and purple accent
 // Approximation of classic Monokai palette to Tailwind colors
@@ -56,7 +57,7 @@ const light = {
 					DEFAULT: colors.stone[50],
 					hover: colors.stone[100],
 				},
-				ring: `color-mix(in srgb, ${colors.rose[500]} 20%, transparent)`,
+				ring: rgba(colors.rose[500], 0.2),
 			},
 		},
 	},
@@ -114,7 +115,7 @@ const dark = {
 					DEFAULT: colors.stone[900],
 					hover: colors.stone[800],
 				},
-				ring: `color-mix(in srgb, ${colors.rose[500]} 25%, transparent)`,
+				ring: rgba(colors.rose[500], 0.25),
 			},
 		},
 	},

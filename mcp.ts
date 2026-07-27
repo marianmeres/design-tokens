@@ -1,6 +1,6 @@
 import { z } from "npm:zod";
 import type { McpToolDefinition } from "jsr:@marianmeres/mcp-server/types";
-import { generateThemeCss } from "./src/generate.ts";
+import { generateThemeCss, type ThemeFallback } from "./src/generate.ts";
 import { generateThemedCss } from "./src/reboot-bridge.ts";
 import type { ThemeSchema } from "./src/types.ts";
 import { bundledThemeNames, getBundledTheme } from "./src/themes/mod.ts";
@@ -47,7 +47,7 @@ export const tools: McpToolDefinition[] = [
 	{
 		name: "generate-theme-css",
 		description:
-			"Generate CSS custom properties from a design token theme schema (ThemeSchema JSON) with light and optional dark mode. Returns a complete CSS string with :root selectors and auto-derived hover/active states via color-mix().",
+			"Generate CSS custom properties from a design token theme schema (ThemeSchema JSON) with light and optional dark mode. Returns a complete CSS string with :root selectors and auto-derived hover/active states via color-mix(), plus an @supports fallback block for browsers older than Chrome 111 / Safari 16.2 / Firefox 113.",
 		params: {
 			theme: z
 				.string()
@@ -59,10 +59,17 @@ export const tools: McpToolDefinition[] = [
 				.describe(
 					'CSS variable prefix, e.g. "app-" produces --app-color-primary. A trailing dash is auto-added if missing.',
 				),
+			fallback: z
+				.enum(["supports", "static", "none"])
+				.optional()
+				.describe(
+					'Legacy-browser strategy for color-mix(). "supports" (default) appends an @supports not (...) block with precomputed literals; "static" precomputes everything so the output has no color-mix() at all; "none" emits color-mix() only.',
+				),
 		},
 		handler: (args) => {
 			const theme = args.theme as string;
 			const prefix = args.prefix as string;
+			const fallback = args.fallback as ThemeFallback | undefined;
 			let parsed: unknown;
 			try {
 				parsed = JSON.parse(theme);
@@ -74,7 +81,7 @@ export const tools: McpToolDefinition[] = [
 			}
 			try {
 				const schema = validateThemeSchema(parsed);
-				return Promise.resolve(generateThemeCss(schema, prefix));
+				return Promise.resolve(generateThemeCss(schema, prefix, { fallback }));
 			} catch (e) {
 				return Promise.resolve(
 					e instanceof Error ? e.message : String(e),
@@ -105,11 +112,18 @@ export const tools: McpToolDefinition[] = [
 				.describe(
 					"Include Bootstrap Reboot --bs-* bridge variables. Default: false",
 				),
+			fallback: z
+				.enum(["supports", "static", "none"])
+				.optional()
+				.describe(
+					'Legacy-browser strategy for color-mix(). "supports" (default) appends an @supports not (...) block with precomputed literals; "static" precomputes everything so the output has no color-mix() at all; "none" emits color-mix() only — the most compact output, useful when previewing the derivation itself.',
+				),
 		},
 		handler: (args) => {
 			const name = args.name as string | undefined;
 			const prefix = (args.prefix as string | undefined) ?? "app-";
 			const withReboot = args.withReboot as boolean | undefined;
+			const fallback = args.fallback as ThemeFallback | undefined;
 
 			if (!name) {
 				return Promise.resolve(
@@ -128,8 +142,8 @@ export const tools: McpToolDefinition[] = [
 
 			return Promise.resolve(
 				withReboot
-					? generateThemedCss(theme, prefix)
-					: generateThemeCss(theme, prefix),
+					? generateThemedCss(theme, prefix, { fallback })
+					: generateThemeCss(theme, prefix, { fallback }),
 			);
 		},
 	},

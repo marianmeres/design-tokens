@@ -89,9 +89,9 @@
 	--stuic-color-input-hover:                    #f4f4f0;
 	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
 
-	--stuic-color-ring:                           color-mix(in srgb, #2b2b22 20%, transparent);
-	--stuic-color-ring-hover:                     color-mix(in srgb, #2b2b22 20%, transparent);
-	--stuic-color-ring-active:                    color-mix(in srgb, #2b2b22 20%, transparent);
+	--stuic-color-ring:                           rgba(43, 43, 34, 0.2);
+	--stuic-color-ring-hover:                     rgba(43, 43, 34, 0.2);
+	--stuic-color-ring-active:                    rgba(43, 43, 34, 0.2);
 }
 
 /* prettier-ignore */
@@ -185,7 +185,100 @@
 	--stuic-color-input-hover:                    #2b2b22;
 	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
 
-	--stuic-color-ring:                           color-mix(in srgb, #e8e8e3 25%, transparent);
-	--stuic-color-ring-hover:                     color-mix(in srgb, #e8e8e3 25%, transparent);
-	--stuic-color-ring-active:                    color-mix(in srgb, #e8e8e3 25%, transparent);
+	--stuic-color-ring:                           rgba(232, 232, 227, 0.25);
+	--stuic-color-ring-hover:                     rgba(232, 232, 227, 0.25);
+	--stuic-color-ring-active:                    rgba(232, 232, 227, 0.25);
+}
+
+/* prettier-ignore */
+@supports not (color: color-mix(in oklab, red, blue)) {
+	:root {
+		--stuic-color-primary-hover:                  #24241c;
+		--stuic-color-primary-active:                 #1d1d16;
+
+		--stuic-color-accent-hover:                   #6b6b59;
+		--stuic-color-accent-active:                  #5a5a4b;
+
+		--stuic-color-destructive-hover:              #6b6b59;
+		--stuic-color-destructive-active:             #5a5a4b;
+
+		--stuic-color-warning-hover:                  #949487;
+		--stuic-color-warning-active:                 #7e7e73;
+
+		--stuic-color-success-hover:                  #6b6b59;
+		--stuic-color-success-active:                 #5a5a4b;
+
+		--stuic-color-surface-primary:                #dcdcd9;
+		--stuic-color-surface-primary-foreground:     #161611;
+		--stuic-color-surface-primary-border:         #bdbdb9;
+		--stuic-color-surface-accent:                 #e8e8e3;
+		--stuic-color-surface-accent-foreground:      #3e3e34;
+		--stuic-color-surface-accent-border:          #d5d5cd;
+		--stuic-color-surface-destructive:            #e8e8e3;
+		--stuic-color-surface-destructive-foreground: #3e3e34;
+		--stuic-color-surface-destructive-border:     #d5d5cd;
+		--stuic-color-surface-warning:                #efefeb;
+		--stuic-color-surface-warning-foreground:     #56564e;
+		--stuic-color-surface-warning-border:         #e3e3dd;
+		--stuic-color-surface-success:                #e8e8e3;
+		--stuic-color-surface-success-foreground:     #3e3e34;
+		--stuic-color-surface-success-border:         #d5d5cd;
+		--stuic-color-surface-hover:                  #d1d1cc;
+		--stuic-color-surface-active:                 #bbbbb5;
+		--stuic-color-surface-1-hover:                #c3c3bb;
+		--stuic-color-surface-1-active:               #aeaea6;
+
+		--stuic-color-muted-hover:                    #dcdcd7;
+		--stuic-color-muted-active:                   #c4c4bf;
+
+		--stuic-color-border-hover:                   #c3c3bb;
+		--stuic-color-border-active:                  #aeaea6;
+
+		--stuic-color-input-active:                   #c9c9c6;
+	}
+
+	:root.dark {
+		--stuic-color-primary-hover:                  #eaeae6;
+		--stuic-color-primary-active:                 #edede9;
+
+		--stuic-color-accent-hover:                   #888875;
+		--stuic-color-accent-active:                  #959584;
+
+		--stuic-color-destructive-hover:              #888875;
+		--stuic-color-destructive-active:             #959584;
+
+		--stuic-color-warning-hover:                  #b3b3a6;
+		--stuic-color-warning-active:                 #bbbbaf;
+
+		--stuic-color-success-hover:                  #888875;
+		--stuic-color-success-active:                 #959584;
+
+		--stuic-color-surface-primary:                #3b3b35;
+		--stuic-color-surface-primary-foreground:     #f3f3f1;
+		--stuic-color-surface-primary-border:         #5a5a53;
+		--stuic-color-surface-accent:                 #2b2b22;
+		--stuic-color-surface-accent-foreground:      #bebeb3;
+		--stuic-color-surface-accent-border:          #39392e;
+		--stuic-color-surface-destructive:            #2b2b22;
+		--stuic-color-surface-destructive-foreground: #bebeb3;
+		--stuic-color-surface-destructive-border:     #39392e;
+		--stuic-color-surface-warning:                #32322a;
+		--stuic-color-surface-warning-foreground:     #d5d5ce;
+		--stuic-color-surface-warning-border:         #48483e;
+		--stuic-color-surface-success:                #2b2b22;
+		--stuic-color-surface-success-foreground:     #bebeb3;
+		--stuic-color-surface-success-border:         #39392e;
+		--stuic-color-surface-hover:                  #57574a;
+		--stuic-color-surface-active:                 #68685b;
+		--stuic-color-surface-1-hover:                #6a6a5b;
+		--stuic-color-surface-1-active:               #79796b;
+
+		--stuic-color-muted-hover:                    #3d3d34;
+		--stuic-color-muted-active:                   #4f4f47;
+
+		--stuic-color-border-hover:                   #57574a;
+		--stuic-color-border-active:                  #68685b;
+
+		--stuic-color-input-active:                   #43433c;
+	}
 }

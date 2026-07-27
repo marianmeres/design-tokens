@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Peacock — iridescent teal plumage with a fuchsia eye-spot. Surfaces commit
 // fully to the teal family: jewel-pastel feathers in light mode, deep
@@ -57,7 +58,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.teal[50],
 				},
-				ring: `color-mix(in srgb, ${colors.teal[600]} 20%, transparent)`,
+				ring: rgba(colors.teal[600], 0.2),
 			},
 		},
 	},
@@ -115,7 +116,7 @@ const dark = {
 					DEFAULT: colors.teal[950],
 					hover: colors.teal[900],
 				},
-				ring: `color-mix(in srgb, ${colors.teal[400]} 25%, transparent)`,
+				ring: rgba(colors.teal[400], 0.25),
 			},
 		},
 	},

@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Hummingbird — watermelon's brand colors perched on peacock's surfaces.
 // Anna's hummingbird wears exactly this: iridescent teal plumage with a
@@ -61,7 +62,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.teal[50],
 				},
-				ring: `color-mix(in srgb, ${pink} 20%, transparent)`,
+				ring: rgba(pink, 0.2),
 			},
 		},
 	},
@@ -119,7 +120,7 @@ const dark = {
 					DEFAULT: colors.teal[950],
 					hover: colors.teal[900],
 				},
-				ring: `color-mix(in srgb, ${pink} 25%, transparent)`,
+				ring: rgba(pink, 0.25),
 			},
 		},
 	},

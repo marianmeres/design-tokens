@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 const theme: ThemeSchema = {
 	light: {
@@ -31,7 +32,7 @@ const theme: ThemeSchema = {
 					foreground: colors.stone[900], // stone-900
 					border: { DEFAULT: colors.stone[300] }, // stone-300
 					input: { DEFAULT: colors.stone[50], hover: colors.stone[100] }, // stone-50, stone-100
-					ring: `color-mix(in srgb, ${colors.stone[800]} 20%, transparent)`, // stone-800
+					ring: rgba(colors.stone[800], 0.2), // stone-800
 				},
 			},
 		},
@@ -65,7 +66,7 @@ const theme: ThemeSchema = {
 					foreground: colors.stone[50], // stone-50
 					border: { DEFAULT: colors.stone[700] }, // stone-700
 					input: { DEFAULT: colors.stone[900], hover: colors.stone[800] }, // stone-900, stone-800
-					ring: `color-mix(in srgb, ${colors.stone[200]} 25%, transparent)`, // stone-200
+					ring: rgba(colors.stone[200], 0.25), // stone-200
 				},
 			},
 		},

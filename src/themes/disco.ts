@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Disco — gold lamé and pink lasers. Light mode is daytime at the venue:
 // mirrorball silver (mauve neutrals) with gold-on-black buttons. Dark mode is
@@ -57,7 +58,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.mauve[50],
 				},
-				ring: `color-mix(in srgb, ${colors.yellow[400]} 20%, transparent)`,
+				ring: rgba(colors.yellow[400], 0.2),
 			},
 		},
 	},
@@ -115,7 +116,7 @@ const dark = {
 					DEFAULT: colors.violet[950],
 					hover: colors.violet[900],
 				},
-				ring: `color-mix(in srgb, ${colors.yellow[400]} 25%, transparent)`,
+				ring: rgba(colors.yellow[400], 0.25),
 			},
 		},
 	},

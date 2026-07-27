@@ -8,7 +8,12 @@
  */
 
 import type { GeneratedTokens, ThemeSchema } from "./types.ts";
-import { generateCssTokens, type GenerateThemeOptions, toCssString } from "./generate.ts";
+import {
+	generateCssTokens,
+	type GenerateThemeOptions,
+	staticFallbackCss,
+	toCssString,
+} from "./generate.ts";
 import { hexToRgbTriplet } from "./utils.ts";
 
 /**
@@ -32,13 +37,15 @@ function normalizePrefix(prefix: string): string {
  * generates `--bs-*-rgb` companions ONLY when the underlying token resolves
  * to a literal hex color. For auto-derived tokens (e.g. the implicit
  * `primary-hover` when no explicit hover is given) the value is a
- * `color-mix()` expression, which cannot be decomposed into an RGB triplet at
- * build time — those companions are omitted, and any Reboot rule that needs
- * them (notably `rgba(var(--bs-link-color-rgb), …)` alpha variants) will fall
- * back to Reboot's defaults.
+ * `color-mix()` expression, which cannot be decomposed into an RGB triplet —
+ * those companions are omitted, and any Reboot rule that needs them (notably
+ * `rgba(var(--bs-link-color-rgb), …)` alpha variants) will fall back to
+ * Reboot's defaults.
  *
- * If you need complete alpha-blend support, provide explicit hex `hover` /
- * `active` values on your `ColorPair`s.
+ * If you need complete alpha-blend support, either pass
+ * `fallback: "static"` to {@link generateThemedCss} (which precomputes the
+ * mixes, so every token becomes a literal and every companion is emitted) or
+ * provide explicit hex `hover` / `active` values on your `ColorPair`s.
  *
  * @param tokens - Generated token key-value pairs (from generateCssTokens)
  * @param prefix - The same prefix used in generateCssTokens (trailing dash optional)
@@ -113,6 +120,12 @@ export function generateRebootBridge(
 /**
  * Generate complete themed CSS including both design tokens AND reboot bridge.
  *
+ * Like {@link generateThemeCss}, this defaults to `fallback: "supports"` — the
+ * `:root` blocks are unchanged and a trailing `@supports not (...)` block
+ * carries precomputed literals for engines without `color-mix()`. Pass
+ * `fallback: "static"` to drop `color-mix()` entirely, which additionally
+ * completes the `--bs-*-rgb` companions (see above).
+ *
  * @param schema - Theme schema with light (required) and dark (optional) modes
  * @param prefix - CSS variable prefix (trailing dash optional)
  * @param options - Forwarded to {@link generateCssTokens} for each mode
@@ -122,10 +135,17 @@ export function generateThemedCss(
 	prefix: string,
 	options: Omit<GenerateThemeOptions, "cssLayer"> = {},
 ): string {
+	const { fallback = "supports", ...genOptions } = options;
+
+	// In "static" mode the bridge must see resolved tokens, otherwise its -rgb
+	// companions would still be computed from `color-mix()` strings.
+	const tokenFallback = fallback === "static" ? "static" : "none";
+
 	// Light mode
 	const lightTokens = generateCssTokens(schema.light, prefix, {
-		...options,
+		...genOptions,
 		mode: "light",
+		fallback: tokenFallback,
 	});
 	const lightBridge = generateRebootBridge(lightTokens, prefix);
 	let css = toCssString({ ...lightTokens, ...lightBridge });
@@ -133,15 +153,19 @@ export function generateThemedCss(
 	// Reboot's default `a` rules use `rgba(var(--bs-link-color-rgb), …)` for
 	// alpha variants. When the underlying token is a `color-mix()` expression
 	// the -rgb companion doesn't exist — these overrides force the plain
-	// `var()` path so links still render correctly.
+	// `var()` path so links still render correctly. Kept in every mode so link
+	// rendering doesn't shift depending on the `fallback` setting.
 	css += "\na { color: var(--bs-link-color); }";
 	css += "\na:hover { color: var(--bs-link-hover-color); }";
+
+	const modes = [{ selector: ":root", tokens: lightTokens }];
 
 	// Dark mode
 	if (schema.dark) {
 		const darkTokens = generateCssTokens(schema.dark, prefix, {
-			...options,
+			...genOptions,
 			mode: "dark",
+			fallback: tokenFallback,
 		});
 		const darkBridge = generateRebootBridge(darkTokens, prefix);
 		css += "\n" +
@@ -151,6 +175,12 @@ export function generateThemedCss(
 			);
 		css += "\n:root.dark a { color: var(--bs-link-color); }";
 		css += "\n:root.dark a:hover { color: var(--bs-link-hover-color); }";
+		modes.push({ selector: ":root.dark", tokens: darkTokens });
+	}
+
+	if (fallback === "supports") {
+		const fallbackBlock = staticFallbackCss(modes);
+		if (fallbackBlock) css += "\n\n" + fallbackBlock;
 	}
 
 	return css;

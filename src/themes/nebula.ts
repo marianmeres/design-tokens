@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Nebula — a magenta gas cloud pierced by cyan starlight. Light mode floats
 // on a lilac haze (violet surfaces), dark mode sinks into deep-space indigo.
@@ -56,7 +57,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.violet[50],
 				},
-				ring: `color-mix(in srgb, ${colors.fuchsia[600]} 20%, transparent)`,
+				ring: rgba(colors.fuchsia[600], 0.2),
 			},
 		},
 	},
@@ -114,7 +115,7 @@ const dark = {
 					DEFAULT: colors.indigo[950],
 					hover: colors.indigo[900],
 				},
-				ring: `color-mix(in srgb, ${colors.fuchsia[400]} 25%, transparent)`,
+				ring: rgba(colors.fuchsia[400], 0.25),
 			},
 		},
 	},

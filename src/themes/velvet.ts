@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Velvet — burgundy and gold, rose-monochrome luxe. Light mode is blush
 // velvet (rose surfaces with a deep wine primary), dark mode is the same
@@ -57,7 +58,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: colors.rose[50],
 				},
-				ring: `color-mix(in srgb, ${colors.rose[900]} 20%, transparent)`,
+				ring: rgba(colors.rose[900], 0.2),
 			},
 		},
 	},
@@ -115,7 +116,7 @@ const dark = {
 					DEFAULT: colors.rose[950],
 					hover: colors.rose[900],
 				},
-				ring: `color-mix(in srgb, ${colors.rose[400]} 25%, transparent)`,
+				ring: rgba(colors.rose[400], 0.25),
 			},
 		},
 	},

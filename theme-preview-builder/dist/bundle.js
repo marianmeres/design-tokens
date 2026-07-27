@@ -618,6 +618,458 @@ const colors = {
         950: "#4c0519"
     }
 };
+const NAMED = {
+    transparent: "#00000000",
+    black: "#000000",
+    silver: "#c0c0c0",
+    gray: "#808080",
+    grey: "#808080",
+    white: "#ffffff",
+    maroon: "#800000",
+    red: "#ff0000",
+    purple: "#800080",
+    fuchsia: "#ff00ff",
+    magenta: "#ff00ff",
+    green: "#008000",
+    lime: "#00ff00",
+    olive: "#808000",
+    yellow: "#ffff00",
+    navy: "#000080",
+    blue: "#0000ff",
+    teal: "#008080",
+    aqua: "#00ffff",
+    cyan: "#00ffff",
+    orange: "#ffa500"
+};
+const clamp01 = (n)=>n < 0 ? 0 : n > 1 ? 1 : n;
+function splitTopLevel(input, separator) {
+    const out = [];
+    let depth = 0;
+    let cur = "";
+    for (const ch of input){
+        if (ch === "(") depth++;
+        else if (ch === ")") depth--;
+        if (ch === separator && depth === 0) {
+            out.push(cur.trim());
+            cur = "";
+        } else {
+            cur += ch;
+        }
+    }
+    out.push(cur.trim());
+    return out;
+}
+function splitWhitespace(input) {
+    const out = [];
+    let depth = 0;
+    let cur = "";
+    for (const ch of input){
+        if (ch === "(") depth++;
+        else if (ch === ")") depth--;
+        if (/\s/.test(ch) && depth === 0) {
+            if (cur) out.push(cur);
+            cur = "";
+        } else {
+            cur += ch;
+        }
+    }
+    if (cur) out.push(cur);
+    return out;
+}
+function unwrapFn(input, name) {
+    const lower = input.toLowerCase();
+    if (!lower.startsWith(name + "(") || !input.endsWith(")")) return null;
+    const inner = input.slice(name.length + 1, -1);
+    let depth = 0;
+    for (const ch of inner){
+        if (ch === "(") depth++;
+        else if (ch === ")") {
+            depth--;
+            if (depth < 0) return null;
+        }
+    }
+    return depth === 0 ? inner : null;
+}
+function parseNumeric(token, pctBasis) {
+    const t = token.trim().toLowerCase();
+    if (t === "none") return 0;
+    if (t.endsWith("%")) {
+        const n = Number(t.slice(0, -1));
+        return Number.isFinite(n) ? n / 100 * pctBasis : null;
+    }
+    const n = Number(t);
+    return Number.isFinite(n) ? n : null;
+}
+function parseAngle(token) {
+    const t = token.trim().toLowerCase();
+    if (t === "none") return 0;
+    const m = t.match(/^([+-]?[\d.]+)(deg|rad|grad|turn)?$/);
+    if (!m) return null;
+    const n = Number(m[1]);
+    if (!Number.isFinite(n)) return null;
+    switch(m[2]){
+        case "rad":
+            return n * 180 / Math.PI;
+        case "grad":
+            return n * 0.9;
+        case "turn":
+            return n * 360;
+        default:
+            return n;
+    }
+}
+function normalizeFnArgs(inner) {
+    const slash = splitTopLevel(inner, "/");
+    if (slash.length === 2) {
+        const parts = splitWhitespace(slash[0]);
+        return parts.length === 3 ? {
+            parts,
+            alpha: slash[1]
+        } : null;
+    }
+    if (slash.length > 2) return null;
+    const commas = splitTopLevel(inner, ",");
+    if (commas.length === 3) return {
+        parts: commas,
+        alpha: null
+    };
+    if (commas.length === 4) {
+        return {
+            parts: commas.slice(0, 3),
+            alpha: commas[3]
+        };
+    }
+    if (commas.length === 1) {
+        const parts = splitWhitespace(inner);
+        if (parts.length === 3) return {
+            parts,
+            alpha: null
+        };
+    }
+    return null;
+}
+function parseAlpha(token) {
+    if (token === null) return 1;
+    const n = parseNumeric(token, 1);
+    return n === null ? null : clamp01(n);
+}
+function hslToRgb(h, s, l) {
+    h = (h % 360 + 360) % 360;
+    s = clamp01(s);
+    l = clamp01(l);
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(h / 60 % 2 - 1));
+    const m = l - c / 2;
+    const seg = Math.floor(h / 60) % 6;
+    const rgb = seg === 0 ? [
+        c,
+        x,
+        0
+    ] : seg === 1 ? [
+        x,
+        c,
+        0
+    ] : seg === 2 ? [
+        0,
+        c,
+        x
+    ] : seg === 3 ? [
+        0,
+        x,
+        c
+    ] : seg === 4 ? [
+        x,
+        0,
+        c
+    ] : [
+        c,
+        0,
+        x
+    ];
+    return [
+        rgb[0] + m,
+        rgb[1] + m,
+        rgb[2] + m
+    ];
+}
+function parseColor(value) {
+    const input = value.trim();
+    if (!input) return null;
+    const named = NAMED[input.toLowerCase()];
+    if (named) return parseColor(named);
+    if (input.startsWith("#")) {
+        let hex = input.slice(1);
+        if (!/^[0-9a-fA-F]+$/.test(hex)) return null;
+        if (hex.length === 3 || hex.length === 4) {
+            hex = hex.split("").map((c)=>c + c).join("");
+        }
+        if (hex.length !== 6 && hex.length !== 8) return null;
+        return {
+            r: parseInt(hex.slice(0, 2), 16) / 255,
+            g: parseInt(hex.slice(2, 4), 16) / 255,
+            b: parseInt(hex.slice(4, 6), 16) / 255,
+            a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+        };
+    }
+    for (const name of [
+        "rgba",
+        "rgb"
+    ]){
+        const inner = unwrapFn(input, name);
+        if (inner === null) continue;
+        const args = normalizeFnArgs(inner);
+        if (!args) return null;
+        const [r, g, b] = args.parts.map((p)=>parseNumeric(p, 255));
+        const a = parseAlpha(args.alpha);
+        if (r === null || g === null || b === null || a === null) return null;
+        return {
+            r: clamp01(r / 255),
+            g: clamp01(g / 255),
+            b: clamp01(b / 255),
+            a
+        };
+    }
+    for (const name of [
+        "hsla",
+        "hsl"
+    ]){
+        const inner = unwrapFn(input, name);
+        if (inner === null) continue;
+        const args = normalizeFnArgs(inner);
+        if (!args) return null;
+        const h = parseAngle(args.parts[0]);
+        const s = parseNumeric(args.parts[1], 1);
+        const l = parseNumeric(args.parts[2], 1);
+        const a = parseAlpha(args.alpha);
+        if (h === null || s === null || l === null || a === null) return null;
+        const sNorm = args.parts[1].trim().endsWith("%") ? s : s / 100;
+        const lNorm = args.parts[2].trim().endsWith("%") ? l : l / 100;
+        const [r, g, b] = hslToRgb(h, sNorm, lNorm);
+        return {
+            r: clamp01(r),
+            g: clamp01(g),
+            b: clamp01(b),
+            a
+        };
+    }
+    const oklabInner = unwrapFn(input, "oklab");
+    if (oklabInner !== null) {
+        const args = normalizeFnArgs(oklabInner);
+        if (!args) return null;
+        const L = parseNumeric(args.parts[0], 1);
+        const A = parseNumeric(args.parts[1], 0.4);
+        const B = parseNumeric(args.parts[2], 0.4);
+        const alpha = parseAlpha(args.alpha);
+        if (L === null || A === null || B === null || alpha === null) return null;
+        return {
+            ...oklabToSrgb(L, A, B),
+            a: alpha
+        };
+    }
+    const oklchInner = unwrapFn(input, "oklch");
+    if (oklchInner !== null) {
+        const args = normalizeFnArgs(oklchInner);
+        if (!args) return null;
+        const L = parseNumeric(args.parts[0], 1);
+        const C = parseNumeric(args.parts[1], 0.4);
+        const H = parseAngle(args.parts[2]);
+        const alpha = parseAlpha(args.alpha);
+        if (L === null || C === null || H === null || alpha === null) return null;
+        const rad = H * Math.PI / 180;
+        return {
+            ...oklabToSrgb(L, C * Math.cos(rad), C * Math.sin(rad)),
+            a: alpha
+        };
+    }
+    return null;
+}
+function formatColor(color) {
+    const to255 = (n)=>Math.round(clamp01(n) * 255);
+    const r = to255(color.r);
+    const g = to255(color.g);
+    const b = to255(color.b);
+    const a = clamp01(color.a);
+    if (a >= 0.9995) {
+        return "#" + [
+            r,
+            g,
+            b
+        ].map((n)=>n.toString(16).padStart(2, "0")).join("");
+    }
+    return `rgba(${r}, ${g}, ${b}, ${Number(a.toFixed(3))})`;
+}
+const toLinear = (c)=>c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+const toGamma = (c)=>c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+function srgbToOklab(r, g, b) {
+    const lr = toLinear(r);
+    const lg = toLinear(g);
+    const lb = toLinear(b);
+    const l = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb;
+    const m = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb;
+    const s = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb;
+    const l_ = Math.cbrt(l);
+    const m_ = Math.cbrt(m);
+    const s_ = Math.cbrt(s);
+    return [
+        0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_,
+        1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_,
+        0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_
+    ];
+}
+function oklabToSrgb(L, A, B) {
+    const l_ = L + 0.3963377774 * A + 0.2158037573 * B;
+    const m_ = L - 0.1055613458 * A - 0.0638541728 * B;
+    const s_ = L - 0.0894841775 * A - 1.291485548 * B;
+    const l = l_ * l_ * l_;
+    const m = m_ * m_ * m_;
+    const s = s_ * s_ * s_;
+    const lr = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    const lg = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    const lb = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+    return {
+        r: clamp01(toGamma(lr)),
+        g: clamp01(toGamma(lg)),
+        b: clamp01(toGamma(lb))
+    };
+}
+function toSpace(color, space) {
+    switch(space){
+        case "srgb":
+            return [
+                color.r,
+                color.g,
+                color.b
+            ];
+        case "srgb-linear":
+            return [
+                toLinear(color.r),
+                toLinear(color.g),
+                toLinear(color.b)
+            ];
+        case "oklab":
+            return srgbToOklab(color.r, color.g, color.b);
+    }
+}
+function fromSpace(coords, space) {
+    switch(space){
+        case "srgb":
+            return {
+                r: clamp01(coords[0]),
+                g: clamp01(coords[1]),
+                b: clamp01(coords[2])
+            };
+        case "srgb-linear":
+            return {
+                r: clamp01(toGamma(coords[0])),
+                g: clamp01(toGamma(coords[1])),
+                b: clamp01(toGamma(coords[2]))
+            };
+        case "oklab":
+            return oklabToSrgb(coords[0], coords[1], coords[2]);
+    }
+}
+function mixColors(space, c1, p1, c2, p2) {
+    let a1;
+    let a2;
+    if (p1 === null && p2 === null) {
+        a1 = 50;
+        a2 = 50;
+    } else if (p1 === null) {
+        a2 = p2;
+        a1 = 100 - a2;
+    } else if (p2 === null) {
+        a1 = p1;
+        a2 = 100 - a1;
+    } else {
+        a1 = p1;
+        a2 = p2;
+    }
+    a1 = Math.max(0, Math.min(100, a1));
+    a2 = Math.max(0, Math.min(100, a2));
+    const sum = a1 + a2;
+    if (sum === 0) return null;
+    const w1 = a1 / sum;
+    const w2 = a2 / sum;
+    const alphaMultiplier = sum < 100 ? sum / 100 : 1;
+    const s1 = toSpace(c1, space);
+    const s2 = toSpace(c2, space);
+    const alpha = w1 * c1.a + w2 * c2.a;
+    const coords = [
+        0,
+        1,
+        2
+    ].map((i)=>{
+        const mixed = w1 * s1[i] * c1.a + w2 * s2[i] * c2.a;
+        return alpha === 0 ? 0 : mixed / alpha;
+    });
+    return {
+        ...fromSpace(coords, space),
+        a: clamp01(alpha * alphaMultiplier)
+    };
+}
+function splitColorAndPct(arg) {
+    const tokens = splitWhitespace(arg);
+    const colorTokens = [];
+    let pct = null;
+    for (const token of tokens){
+        if (pct === null && /^[+-]?(\d+\.?\d*|\.\d+)%$/.test(token)) {
+            pct = Number(token.slice(0, -1));
+        } else {
+            colorTokens.push(token);
+        }
+    }
+    return {
+        color: colorTokens.join(" "),
+        pct
+    };
+}
+function evaluateColorExpression(expr, lookup = ()=>undefined) {
+    return evaluate(expr, lookup, new Set());
+}
+function evaluate(expr, lookup, seen) {
+    const input = expr.trim();
+    if (!input) return null;
+    const varInner = unwrapFn(input, "var");
+    if (varInner !== null) {
+        const args = splitTopLevel(varInner, ",");
+        const name = args[0].trim().replace(/^--/, "");
+        const fallback = args.length > 1 ? args.slice(1).join(",").trim() : null;
+        if (seen.has(name)) return null;
+        const value = lookup(name);
+        if (value === undefined) {
+            return fallback === null ? null : evaluate(fallback, lookup, seen);
+        }
+        const next = new Set(seen);
+        next.add(name);
+        return evaluate(value, lookup, next);
+    }
+    const mixInner = unwrapFn(input, "color-mix");
+    if (mixInner !== null) {
+        const args = splitTopLevel(mixInner, ",");
+        if (args.length !== 3) return null;
+        const spaceTokens = splitWhitespace(args[0]);
+        if (spaceTokens.length !== 2 || spaceTokens[0].toLowerCase() !== "in") {
+            return null;
+        }
+        const space = spaceTokens[1].toLowerCase();
+        if (space !== "srgb" && space !== "srgb-linear" && space !== "oklab") return null;
+        const left = splitColorAndPct(args[1]);
+        const right = splitColorAndPct(args[2]);
+        const c1 = evaluate(left.color, lookup, seen);
+        const c2 = evaluate(right.color, lookup, seen);
+        if (!c1 || !c2) return null;
+        return mixColors(space, c1, left.pct, c2, right.pct);
+    }
+    return parseColor(input);
+}
+function rgba(color, alpha) {
+    const parsed = parseColor(color);
+    if (!parsed) throw new TypeError(`Unparseable color: ${color}`);
+    return formatColor({
+        ...parsed,
+        a: clamp01(parsed.a * alpha)
+    });
+}
 const light = {
     colors: {
         intent: {
@@ -670,7 +1122,7 @@ const light = {
                     DEFAULT: colors.olive[50],
                     hover: colors.olive[100]
                 },
-                ring: `color-mix(in srgb, ${colors.amber[600]} 20%, transparent)`
+                ring: rgba(colors.amber[600], 0.2)
             }
         }
     }
@@ -727,7 +1179,7 @@ const dark = {
                     DEFAULT: colors.olive[900],
                     hover: colors.olive[800]
                 },
-                ring: `color-mix(in srgb, ${colors.amber[500]} 25%, transparent)`
+                ring: rgba(colors.amber[500], 0.25)
             }
         }
     }
@@ -788,7 +1240,7 @@ const light1 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[600]} 20%, transparent)`
+                ring: rgba(colors.blue[600], 0.2)
             }
         }
     }
@@ -845,7 +1297,7 @@ const dark1 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[400]} 25%, transparent)`
+                ring: rgba(colors.blue[400], 0.25)
             }
         }
     }
@@ -906,7 +1358,7 @@ const light2 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[600]} 20%, transparent)`
+                ring: rgba(colors.cyan[600], 0.2)
             }
         }
     }
@@ -963,7 +1415,7 @@ const dark2 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[400]} 25%, transparent)`
+                ring: rgba(colors.cyan[400], 0.25)
             }
         }
     }
@@ -1024,7 +1476,7 @@ const light3 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[600]} 20%, transparent)`
+                ring: rgba(colors.cyan[600], 0.2)
             }
         }
     }
@@ -1081,7 +1533,7 @@ const dark3 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[400]} 25%, transparent)`
+                ring: rgba(colors.cyan[400], 0.25)
             }
         }
     }
@@ -1142,7 +1594,7 @@ const light4 = {
                     DEFAULT: colors.white,
                     hover: colors.mauve[50]
                 },
-                ring: `color-mix(in srgb, ${colors.yellow[400]} 20%, transparent)`
+                ring: rgba(colors.yellow[400], 0.2)
             }
         }
     }
@@ -1199,7 +1651,7 @@ const dark4 = {
                     DEFAULT: colors.violet[950],
                     hover: colors.violet[900]
                 },
-                ring: `color-mix(in srgb, ${colors.yellow[400]} 25%, transparent)`
+                ring: rgba(colors.yellow[400], 0.25)
             }
         }
     }
@@ -1260,7 +1712,7 @@ const light5 = {
                     DEFAULT: colors.white,
                     hover: colors.yellow[50]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[600]} 20%, transparent)`
+                ring: rgba(colors.blue[600], 0.2)
             }
         }
     }
@@ -1317,7 +1769,7 @@ const dark5 = {
                     DEFAULT: colors.sky[950],
                     hover: colors.sky[900]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[400]} 25%, transparent)`
+                ring: rgba(colors.blue[400], 0.25)
             }
         }
     }
@@ -1378,7 +1830,7 @@ const light6 = {
                     DEFAULT: colors.amber[50],
                     hover: colors.stone[100]
                 },
-                ring: `color-mix(in srgb, ${colors.emerald[700]} 20%, transparent)`
+                ring: rgba(colors.emerald[700], 0.2)
             }
         }
     }
@@ -1435,7 +1887,7 @@ const dark6 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.emerald[500]} 25%, transparent)`
+                ring: rgba(colors.emerald[500], 0.25)
             }
         }
     }
@@ -1496,7 +1948,7 @@ const light7 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.emerald[600]} 20%, transparent)`
+                ring: rgba(colors.emerald[600], 0.2)
             }
         }
     }
@@ -1553,7 +2005,7 @@ const dark7 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.emerald[400]} 25%, transparent)`
+                ring: rgba(colors.emerald[400], 0.25)
             }
         }
     }
@@ -1614,7 +2066,7 @@ const light8 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.fuchsia[600]} 20%, transparent)`
+                ring: rgba(colors.fuchsia[600], 0.2)
             }
         }
     }
@@ -1671,7 +2123,7 @@ const dark8 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.fuchsia[400]} 25%, transparent)`
+                ring: rgba(colors.fuchsia[400], 0.25)
             }
         }
     }
@@ -1733,7 +2185,7 @@ const theme9 = {
                         DEFAULT: colors.gray[50],
                         hover: colors.gray[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.gray[800]} 20%, transparent)`
+                    ring: rgba(colors.gray[800], 0.2)
                 }
             }
         }
@@ -1790,7 +2242,7 @@ const theme9 = {
                         DEFAULT: colors.gray[900],
                         hover: colors.gray[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.gray[200]} 25%, transparent)`
+                    ring: rgba(colors.gray[200], 0.25)
                 }
             }
         }
@@ -1850,7 +2302,7 @@ const light9 = {
                     DEFAULT: colors.white,
                     hover: colors.teal[50]
                 },
-                ring: `color-mix(in srgb, ${pink} 20%, transparent)`
+                ring: rgba(pink, 0.2)
             }
         }
     }
@@ -1907,7 +2359,7 @@ const dark9 = {
                     DEFAULT: colors.teal[950],
                     hover: colors.teal[900]
                 },
-                ring: `color-mix(in srgb, ${pink} 25%, transparent)`
+                ring: rgba(pink, 0.25)
             }
         }
     }
@@ -1968,7 +2420,7 @@ const light10 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.indigo[600]} 20%, transparent)`
+                ring: rgba(colors.indigo[600], 0.2)
             }
         }
     }
@@ -2025,7 +2477,7 @@ const dark10 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.indigo[400]} 25%, transparent)`
+                ring: rgba(colors.indigo[400], 0.25)
             }
         }
     }
@@ -2086,7 +2538,7 @@ const light11 = {
                     DEFAULT: colors.white,
                     hover: colors.zinc[100]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[500]} 25%, transparent)`
+                ring: rgba(colors.lime[500], 0.25)
             }
         }
     }
@@ -2143,7 +2595,7 @@ const dark11 = {
                     DEFAULT: colors.zinc[950],
                     hover: colors.zinc[900]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[400]} 30%, transparent)`
+                ring: rgba(colors.lime[400], 0.3)
             }
         }
     }
@@ -2205,7 +2657,7 @@ const theme13 = {
                         DEFAULT: colors.mauve[50],
                         hover: colors.mauve[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.mauve[800]} 20%, transparent)`
+                    ring: rgba(colors.mauve[800], 0.2)
                 }
             }
         }
@@ -2262,7 +2714,7 @@ const theme13 = {
                         DEFAULT: colors.mauve[900],
                         hover: colors.mauve[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.mauve[200]} 25%, transparent)`
+                    ring: rgba(colors.mauve[200], 0.25)
                 }
             }
         }
@@ -2320,7 +2772,7 @@ const light12 = {
                     DEFAULT: colors.white,
                     hover: colors.mauve[100]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[500]} 25%, transparent)`
+                ring: rgba(colors.lime[500], 0.25)
             }
         }
     }
@@ -2377,7 +2829,7 @@ const dark12 = {
                     DEFAULT: colors.mauve[950],
                     hover: colors.mauve[900]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[400]} 30%, transparent)`
+                ring: rgba(colors.lime[400], 0.3)
             }
         }
     }
@@ -2438,7 +2890,7 @@ const light13 = {
                     DEFAULT: colors.white,
                     hover: colors.mauve[50]
                 },
-                ring: `color-mix(in srgb, ${colors.mauve[700]} 20%, transparent)`
+                ring: rgba(colors.mauve[700], 0.2)
             }
         }
     }
@@ -2495,7 +2947,7 @@ const dark13 = {
                     DEFAULT: colors.mauve[900],
                     hover: colors.mauve[800]
                 },
-                ring: `color-mix(in srgb, ${colors.mauve[400]} 25%, transparent)`
+                ring: rgba(colors.mauve[400], 0.25)
             }
         }
     }
@@ -2557,7 +3009,7 @@ const theme16 = {
                         DEFAULT: colors.mist[50],
                         hover: colors.mist[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.mist[800]} 20%, transparent)`
+                    ring: rgba(colors.mist[800], 0.2)
                 }
             }
         }
@@ -2614,7 +3066,7 @@ const theme16 = {
                         DEFAULT: colors.mist[900],
                         hover: colors.mist[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.mist[200]} 25%, transparent)`
+                    ring: rgba(colors.mist[200], 0.25)
                 }
             }
         }
@@ -2672,7 +3124,7 @@ const light14 = {
                     DEFAULT: colors.white,
                     hover: colors.mist[50]
                 },
-                ring: `color-mix(in srgb, ${colors.indigo[600]} 20%, transparent)`
+                ring: rgba(colors.indigo[600], 0.2)
             }
         }
     }
@@ -2729,7 +3181,7 @@ const dark14 = {
                     DEFAULT: colors.mist[900],
                     hover: colors.mist[800]
                 },
-                ring: `color-mix(in srgb, ${colors.indigo[400]} 25%, transparent)`
+                ring: rgba(colors.indigo[400], 0.25)
             }
         }
     }
@@ -2790,7 +3242,7 @@ const light15 = {
                     DEFAULT: colors.white,
                     hover: colors.mist[50]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[500]} 20%, transparent)`
+                ring: rgba(colors.violet[500], 0.2)
             }
         }
     }
@@ -2847,7 +3299,7 @@ const dark15 = {
                     DEFAULT: colors.mist[950],
                     hover: colors.mist[900]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[400]} 25%, transparent)`
+                ring: rgba(colors.violet[400], 0.25)
             }
         }
     }
@@ -2908,7 +3360,7 @@ const light16 = {
                     DEFAULT: colors.stone[50],
                     hover: colors.stone[100]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[600]} 20%, transparent)`
+                ring: rgba(colors.cyan[600], 0.2)
             }
         }
     }
@@ -2965,7 +3417,7 @@ const dark16 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[400]} 25%, transparent)`
+                ring: rgba(colors.cyan[400], 0.25)
             }
         }
     }
@@ -3026,7 +3478,7 @@ const light17 = {
                     DEFAULT: colors.stone[50],
                     hover: colors.stone[100]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[600]} 20%, transparent)`
+                ring: rgba(colors.lime[600], 0.2)
             }
         }
     }
@@ -3083,7 +3535,7 @@ const dark17 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.lime[400]} 25%, transparent)`
+                ring: rgba(colors.lime[400], 0.25)
             }
         }
     }
@@ -3144,7 +3596,7 @@ const light18 = {
                     DEFAULT: colors.stone[50],
                     hover: colors.stone[100]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[500]} 20%, transparent)`
+                ring: rgba(colors.rose[500], 0.2)
             }
         }
     }
@@ -3201,7 +3653,7 @@ const dark18 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[500]} 25%, transparent)`
+                ring: rgba(colors.rose[500], 0.25)
             }
         }
     }
@@ -3262,7 +3714,7 @@ const light19 = {
                     DEFAULT: colors.white,
                     hover: colors.violet[50]
                 },
-                ring: `color-mix(in srgb, ${colors.fuchsia[600]} 20%, transparent)`
+                ring: rgba(colors.fuchsia[600], 0.2)
             }
         }
     }
@@ -3319,7 +3771,7 @@ const dark19 = {
                     DEFAULT: colors.indigo[950],
                     hover: colors.indigo[900]
                 },
-                ring: `color-mix(in srgb, ${colors.fuchsia[400]} 25%, transparent)`
+                ring: rgba(colors.fuchsia[400], 0.25)
             }
         }
     }
@@ -3380,7 +3832,7 @@ const light20 = {
                     DEFAULT: colors.white,
                     hover: colors.slate[50]
                 },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+                ring: rgba(colors.red[600], 0.2)
             }
         }
     }
@@ -3437,7 +3889,7 @@ const dark20 = {
                     DEFAULT: colors.slate[900],
                     hover: colors.slate[800]
                 },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+                ring: rgba(colors.red[400], 0.25)
             }
         }
     }
@@ -3499,7 +3951,7 @@ const theme24 = {
                         DEFAULT: colors.olive[50],
                         hover: colors.olive[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.olive[800]} 20%, transparent)`
+                    ring: rgba(colors.olive[800], 0.2)
                 }
             }
         }
@@ -3556,7 +4008,7 @@ const theme24 = {
                         DEFAULT: colors.olive[900],
                         hover: colors.olive[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.olive[200]} 25%, transparent)`
+                    ring: rgba(colors.olive[200], 0.25)
                 }
             }
         }
@@ -3614,7 +4066,7 @@ const light21 = {
                     DEFAULT: colors.olive[50],
                     hover: colors.olive[100]
                 },
-                ring: `color-mix(in srgb, ${colors.olive[700]} 20%, transparent)`
+                ring: rgba(colors.olive[700], 0.2)
             }
         }
     }
@@ -3671,7 +4123,7 @@ const dark21 = {
                     DEFAULT: colors.olive[900],
                     hover: colors.olive[800]
                 },
-                ring: `color-mix(in srgb, ${colors.olive[400]} 25%, transparent)`
+                ring: rgba(colors.olive[400], 0.25)
             }
         }
     }
@@ -3732,7 +4184,7 @@ const light22 = {
                     DEFAULT: colors.white,
                     hover: colors.orange[50]
                 },
-                ring: `color-mix(in srgb, ${colors.orange[600]} 20%, transparent)`
+                ring: rgba(colors.orange[600], 0.2)
             }
         }
     }
@@ -3789,7 +4241,7 @@ const dark22 = {
                     DEFAULT: colors.stone[950],
                     hover: colors.stone[900]
                 },
-                ring: `color-mix(in srgb, ${colors.orange[500]} 25%, transparent)`
+                ring: rgba(colors.orange[500], 0.25)
             }
         }
     }
@@ -3850,7 +4302,7 @@ const light23 = {
                     DEFAULT: colors.white,
                     hover: colors.teal[50]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[600]} 20%, transparent)`
+                ring: rgba(colors.teal[600], 0.2)
             }
         }
     }
@@ -3907,7 +4359,7 @@ const dark23 = {
                     DEFAULT: colors.teal[950],
                     hover: colors.teal[900]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[400]} 25%, transparent)`
+                ring: rgba(colors.teal[400], 0.25)
             }
         }
     }
@@ -3968,7 +4420,7 @@ const light24 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.pink[600]} 20%, transparent)`
+                ring: rgba(colors.pink[600], 0.2)
             }
         }
     }
@@ -4025,7 +4477,7 @@ const dark24 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.pink[400]} 25%, transparent)`
+                ring: rgba(colors.pink[400], 0.25)
             }
         }
     }
@@ -4086,7 +4538,7 @@ const light25 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.pink[600]} 20%, transparent)`
+                ring: rgba(colors.pink[600], 0.2)
             }
         }
     }
@@ -4143,7 +4595,7 @@ const dark25 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.pink[400]} 25%, transparent)`
+                ring: rgba(colors.pink[400], 0.25)
             }
         }
     }
@@ -4204,7 +4656,7 @@ const light26 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.purple[600]} 20%, transparent)`
+                ring: rgba(colors.purple[600], 0.2)
             }
         }
     }
@@ -4261,7 +4713,7 @@ const dark26 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.purple[400]} 25%, transparent)`
+                ring: rgba(colors.purple[400], 0.25)
             }
         }
     }
@@ -4322,7 +4774,7 @@ const light27 = {
                     DEFAULT: colors.white,
                     hover: colors.slate[50]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[600]} 20%, transparent)`
+                ring: rgba(colors.blue[600], 0.2)
             }
         }
     }
@@ -4379,7 +4831,7 @@ const dark27 = {
                     DEFAULT: colors.slate[900],
                     hover: colors.slate[800]
                 },
-                ring: `color-mix(in srgb, ${colors.blue[400]} 25%, transparent)`
+                ring: rgba(colors.blue[400], 0.25)
             }
         }
     }
@@ -4440,7 +4892,7 @@ const light28 = {
                     DEFAULT: colors.white,
                     hover: colors.slate[50]
                 },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+                ring: rgba(colors.red[600], 0.2)
             }
         }
     }
@@ -4497,7 +4949,7 @@ const dark28 = {
                     DEFAULT: colors.slate[900],
                     hover: colors.slate[800]
                 },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+                ring: rgba(colors.red[400], 0.25)
             }
         }
     }
@@ -4558,7 +5010,7 @@ const light29 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+                ring: rgba(colors.red[600], 0.2)
             }
         }
     }
@@ -4615,7 +5067,7 @@ const dark29 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+                ring: rgba(colors.red[400], 0.25)
             }
         }
     }
@@ -4676,7 +5128,7 @@ const light30 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+                ring: rgba(colors.red[600], 0.2)
             }
         }
     }
@@ -4733,7 +5185,7 @@ const dark30 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+                ring: rgba(colors.red[400], 0.25)
             }
         }
     }
@@ -4794,7 +5246,7 @@ const light31 = {
                     DEFAULT: colors.white,
                     hover: colors.slate[50]
                 },
-                ring: `color-mix(in srgb, ${colors.red[600]} 20%, transparent)`
+                ring: rgba(colors.red[600], 0.2)
             }
         }
     }
@@ -4851,7 +5303,7 @@ const dark31 = {
                     DEFAULT: colors.slate[900],
                     hover: colors.slate[800]
                 },
-                ring: `color-mix(in srgb, ${colors.red[400]} 25%, transparent)`
+                ring: rgba(colors.red[400], 0.25)
             }
         }
     }
@@ -4912,7 +5364,7 @@ const light32 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[600]} 20%, transparent)`
+                ring: rgba(colors.rose[600], 0.2)
             }
         }
     }
@@ -4969,7 +5421,7 @@ const dark32 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[400]} 25%, transparent)`
+                ring: rgba(colors.rose[400], 0.25)
             }
         }
     }
@@ -5030,7 +5482,7 @@ const light33 = {
                     DEFAULT: colors.white,
                     hover: colors.stone[50]
                 },
-                ring: `color-mix(in srgb, ${colors.sky[600]} 20%, transparent)`
+                ring: rgba(colors.sky[600], 0.2)
             }
         }
     }
@@ -5087,7 +5539,7 @@ const dark33 = {
                     DEFAULT: colors.stone[900],
                     hover: colors.stone[800]
                 },
-                ring: `color-mix(in srgb, ${colors.sky[400]} 25%, transparent)`
+                ring: rgba(colors.sky[400], 0.25)
             }
         }
     }
@@ -5148,7 +5600,7 @@ const light34 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[600]} 20%, transparent)`
+                ring: rgba(colors.cyan[600], 0.2)
             }
         }
     }
@@ -5205,7 +5657,7 @@ const dark34 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.cyan[400]} 25%, transparent)`
+                ring: rgba(colors.cyan[400], 0.25)
             }
         }
     }
@@ -5266,7 +5718,7 @@ const light35 = {
                     DEFAULT: colors.white,
                     hover: colors.slate[50]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[500]} 20%, transparent)`
+                ring: rgba(colors.teal[500], 0.2)
             }
         }
     }
@@ -5323,7 +5775,7 @@ const dark35 = {
                     DEFAULT: colors.slate[950],
                     hover: colors.slate[900]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[400]} 25%, transparent)`
+                ring: rgba(colors.teal[400], 0.25)
             }
         }
     }
@@ -5385,7 +5837,7 @@ const theme40 = {
                         DEFAULT: colors.stone[50],
                         hover: colors.stone[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.stone[800]} 20%, transparent)`
+                    ring: rgba(colors.stone[800], 0.2)
                 }
             }
         }
@@ -5442,7 +5894,7 @@ const theme40 = {
                         DEFAULT: colors.stone[900],
                         hover: colors.stone[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.stone[200]} 25%, transparent)`
+                    ring: rgba(colors.stone[200], 0.25)
                 }
             }
         }
@@ -5500,7 +5952,7 @@ const light36 = {
                     DEFAULT: colors.stone[50],
                     hover: colors.stone[100]
                 },
-                ring: `color-mix(in srgb, ${colors.stone[700]} 20%, transparent)`
+                ring: rgba(colors.stone[700], 0.2)
             }
         }
     }
@@ -5557,7 +6009,7 @@ const dark36 = {
                     DEFAULT: colors.stone[950],
                     hover: colors.stone[900]
                 },
-                ring: `color-mix(in srgb, ${colors.stone[400]} 25%, transparent)`
+                ring: rgba(colors.stone[400], 0.25)
             }
         }
     }
@@ -5619,7 +6071,7 @@ const theme42 = {
                         DEFAULT: colors.taupe[50],
                         hover: colors.taupe[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.taupe[800]} 20%, transparent)`
+                    ring: rgba(colors.taupe[800], 0.2)
                 }
             }
         }
@@ -5676,7 +6128,7 @@ const theme42 = {
                         DEFAULT: colors.taupe[900],
                         hover: colors.taupe[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.taupe[200]} 25%, transparent)`
+                    ring: rgba(colors.taupe[200], 0.25)
                 }
             }
         }
@@ -5734,7 +6186,7 @@ const light37 = {
                     DEFAULT: colors.taupe[50],
                     hover: colors.taupe[100]
                 },
-                ring: `color-mix(in srgb, ${colors.taupe[700]} 20%, transparent)`
+                ring: rgba(colors.taupe[700], 0.2)
             }
         }
     }
@@ -5791,7 +6243,7 @@ const dark37 = {
                     DEFAULT: colors.taupe[900],
                     hover: colors.taupe[800]
                 },
-                ring: `color-mix(in srgb, ${colors.taupe[300]} 25%, transparent)`
+                ring: rgba(colors.taupe[300], 0.25)
             }
         }
     }
@@ -5852,7 +6304,7 @@ const light38 = {
                     DEFAULT: colors.white,
                     hover: colors.taupe[50]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[600]} 20%, transparent)`
+                ring: rgba(colors.rose[600], 0.2)
             }
         }
     }
@@ -5909,7 +6361,7 @@ const dark38 = {
                     DEFAULT: colors.taupe[900],
                     hover: colors.taupe[800]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[400]} 25%, transparent)`
+                ring: rgba(colors.rose[400], 0.25)
             }
         }
     }
@@ -5970,7 +6422,7 @@ const light39 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[600]} 20%, transparent)`
+                ring: rgba(colors.teal[600], 0.2)
             }
         }
     }
@@ -6027,7 +6479,7 @@ const dark39 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.teal[400]} 25%, transparent)`
+                ring: rgba(colors.teal[400], 0.25)
             }
         }
     }
@@ -6088,7 +6540,7 @@ const light40 = {
                     DEFAULT: colors.white,
                     hover: colors.rose[50]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[900]} 20%, transparent)`
+                ring: rgba(colors.rose[900], 0.2)
             }
         }
     }
@@ -6145,7 +6597,7 @@ const dark40 = {
                     DEFAULT: colors.rose[950],
                     hover: colors.rose[900]
                 },
-                ring: `color-mix(in srgb, ${colors.rose[400]} 25%, transparent)`
+                ring: rgba(colors.rose[400], 0.25)
             }
         }
     }
@@ -6206,7 +6658,7 @@ const light41 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[600]} 20%, transparent)`
+                ring: rgba(colors.violet[600], 0.2)
             }
         }
     }
@@ -6263,7 +6715,7 @@ const dark41 = {
                     DEFAULT: colors.neutral[900],
                     hover: colors.neutral[800]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[400]} 25%, transparent)`
+                ring: rgba(colors.violet[400], 0.25)
             }
         }
     }
@@ -6324,7 +6776,7 @@ const light42 = {
                     DEFAULT: colors.white,
                     hover: colors.neutral[50]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[500]} 20%, transparent)`
+                ring: rgba(colors.violet[500], 0.2)
             }
         }
     }
@@ -6381,7 +6833,7 @@ const dark42 = {
                     DEFAULT: colors.zinc[950],
                     hover: colors.zinc[900]
                 },
-                ring: `color-mix(in srgb, ${colors.violet[400]} 25%, transparent)`
+                ring: rgba(colors.violet[400], 0.25)
             }
         }
     }
@@ -6462,7 +6914,7 @@ const light43 = {
                     DEFAULT: colors.white,
                     hover: rind[50]
                 },
-                ring: `color-mix(in srgb, ${pink1} 20%, transparent)`
+                ring: rgba(pink1, 0.2)
             }
         }
     }
@@ -6519,7 +6971,7 @@ const dark43 = {
                     DEFAULT: flesh[900],
                     hover: flesh[800]
                 },
-                ring: `color-mix(in srgb, ${pink1} 25%, transparent)`
+                ring: rgba(pink1, 0.25)
             }
         }
     }
@@ -6581,7 +7033,7 @@ const theme50 = {
                         DEFAULT: colors.zinc[50],
                         hover: colors.zinc[100]
                     },
-                    ring: `color-mix(in srgb, ${colors.zinc[800]} 20%, transparent)`
+                    ring: rgba(colors.zinc[800], 0.2)
                 }
             }
         }
@@ -6638,7 +7090,7 @@ const theme50 = {
                         DEFAULT: colors.zinc[900],
                         hover: colors.zinc[800]
                     },
-                    ring: `color-mix(in srgb, ${colors.zinc[200]} 25%, transparent)`
+                    ring: rgba(colors.zinc[200], 0.25)
                 }
             }
         }
@@ -6811,6 +7263,26 @@ const mod = {
     bundledThemeNames: bundledThemeNames,
     getBundledTheme: getBundledTheme
 };
+function staticValue(value, lookup) {
+    if (!value.includes("color-mix(")) return null;
+    const resolved = evaluateColorExpression(value, lookup);
+    return resolved ? formatColor(resolved) : null;
+}
+function resolveStaticOverrides(tokens) {
+    const lookup = (name)=>tokens[name];
+    const out = {};
+    for (const [key, value] of Object.entries(tokens)){
+        const literal = staticValue(value, lookup);
+        if (literal !== null) out[key] = literal;
+    }
+    return out;
+}
+function resolveStaticTokens(tokens) {
+    return {
+        ...tokens,
+        ...resolveStaticOverrides(tokens)
+    };
+}
 function normalizePrefix(prefix) {
     if (prefix === "") return "";
     return prefix.endsWith("-") ? prefix : prefix + "-";
@@ -6869,6 +7341,7 @@ function generateCssTokens(schema, prefix, options = {}) {
     const mode = opts.mode ?? "light";
     const deriveStates = opts.deriveStates ?? true;
     const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
+    const fallback = opts.fallback ?? "none";
     const p = normalizePrefix(prefix);
     const tokens = {};
     const intentStrategy = {
@@ -6900,7 +7373,7 @@ function generateCssTokens(schema, prefix, options = {}) {
             generateSingleColorTokens(tokens, key, color, p);
         }
     }
-    return tokens;
+    return fallback === "static" ? resolveStaticTokens(tokens) : tokens;
 }
 function getBaseColor(key) {
     const match = key.match(/color-([a-z]+)/);

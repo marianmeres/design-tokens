@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 const theme: ThemeSchema = {
 	light: {
@@ -31,7 +32,7 @@ const theme: ThemeSchema = {
 					foreground: colors.olive[900],
 					border: { DEFAULT: colors.olive[300] },
 					input: { DEFAULT: colors.olive[50], hover: colors.olive[100] },
-					ring: `color-mix(in srgb, ${colors.olive[800]} 20%, transparent)`,
+					ring: rgba(colors.olive[800], 0.2),
 				},
 			},
 		},
@@ -65,7 +66,7 @@ const theme: ThemeSchema = {
 					foreground: colors.olive[50],
 					border: { DEFAULT: colors.olive[700] },
 					input: { DEFAULT: colors.olive[900], hover: colors.olive[800] },
-					ring: `color-mix(in srgb, ${colors.olive[200]} 25%, transparent)`,
+					ring: rgba(colors.olive[200], 0.25),
 				},
 			},
 		},

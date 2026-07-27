@@ -1,5 +1,6 @@
 import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 // Watermelon — fresh mint rind around a hot pink heart. The two brand colors
 // are used verbatim (no palette approximation). Surfaces carry the fruit's
@@ -83,7 +84,7 @@ const light = {
 					DEFAULT: colors.white,
 					hover: rind[50],
 				},
-				ring: `color-mix(in srgb, ${pink} 20%, transparent)`,
+				ring: rgba(pink, 0.2),
 			},
 		},
 	},
@@ -141,7 +142,7 @@ const dark = {
 					DEFAULT: flesh[900],
 					hover: flesh[800],
 				},
-				ring: `color-mix(in srgb, ${pink} 25%, transparent)`,
+				ring: rgba(pink, 0.25),
 			},
 		},
 	},

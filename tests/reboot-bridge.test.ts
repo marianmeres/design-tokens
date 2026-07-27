@@ -118,3 +118,39 @@ Deno.test("generateThemedCss - dark mode section present when dark schema provid
 	assert(parts[0].includes("--bs-link-color:"));
 	assert(parts[1].includes("--bs-link-color:"));
 });
+
+// --- legacy fallback ---
+
+Deno.test("generateThemedCss - defaults to the @supports fallback", () => {
+	const css = generateThemedCss({ light: schema, dark: schema }, PREFIX);
+	assert(css.includes("@supports not (color: color-mix(in oklab, red, blue))"));
+	// Additive: the pre-fallback output is still a prefix of the new one.
+	const none = generateThemedCss({ light: schema, dark: schema }, PREFIX, {
+		fallback: "none",
+	});
+	assert(css.startsWith(none));
+});
+
+Deno.test("generateThemedCss - fallback 'static' emits zero color-mix", () => {
+	const css = generateThemedCss({ light: schema, dark: schema }, PREFIX, {
+		fallback: "static",
+	});
+	assertEquals(css.includes("color-mix("), false);
+});
+
+// The gap documented on generateRebootBridge: -rgb companions are omitted when
+// the token is a color-mix() expression. Static mode closes it.
+Deno.test("generateRebootBridge - omits the -rgb companion for color-mix tokens", () => {
+	const tokens = generateCssTokens(schema, PREFIX);
+	const bridge = generateRebootBridge(tokens, PREFIX);
+	assert(bridge["bs-link-hover-color"]);
+	assertEquals(bridge["bs-link-hover-color-rgb"], undefined);
+});
+
+Deno.test("generateRebootBridge - static tokens restore the -rgb companion", () => {
+	const tokens = generateCssTokens(schema, PREFIX, { fallback: "static" });
+	const bridge = generateRebootBridge(tokens, PREFIX);
+	assert(bridge["bs-link-hover-color-rgb"]);
+	// #0d6efd (13, 110, 253) mixed 10% toward black in oklab
+	assertEquals(bridge["bs-link-hover-color-rgb"], "10, 95, 220");
+});

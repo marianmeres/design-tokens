@@ -4,7 +4,6 @@
  * Takes a structured color token schema and produces CSS variables for
  * light and dark modes, with automatic hover/active state derivation
  * using `color-mix()`.
- *
  */
 
 /** Generate CSS token key-value pairs from a {@link TokenSchema}. */
@@ -16,11 +15,26 @@ export { generateThemeCss } from "./generate.ts";
 /** Convert a tokens record to a CSS declaration block string. */
 export { toCssString } from "./generate.ts";
 
+/** Evaluate every `color-mix()` in a token record to a literal color. */
+export { resolveStaticTokens } from "./generate.ts";
+
+/** The subset of a token record that carries a `color-mix()` requirement, precomputed. */
+export { resolveStaticOverrides } from "./generate.ts";
+
+/** Build the `@supports not (color-mix)` block backing up a set of token blocks. */
+export { staticFallbackCss } from "./generate.ts";
+
 /** Options accepted by {@link generateCssTokens}. */
 export type { GenerateOptions } from "./generate.ts";
 
 /** Options accepted by {@link generateThemeCss}. */
 export type { GenerateThemeOptions } from "./generate.ts";
+
+/** Legacy-engine fallback strategy for a token record: `"none"` | `"static"`. */
+export type { TokenFallback } from "./generate.ts";
+
+/** Legacy-engine fallback strategy for a stylesheet: adds `"supports"`. */
+export type { ThemeFallback } from "./generate.ts";
 
 /** Base color value with optional hover/active pseudo states. */
 export type { ColorPair } from "./types.ts";
@@ -66,6 +80,30 @@ export { hexToRgb } from "./utils.ts";
 
 /** Convert a hex color to an `"r, g, b"` triplet string. */
 export { hexToRgbTriplet } from "./utils.ts";
+
+/** Build an `rgba()` string from a color and an alpha — the `color-mix()`-free way to tint. */
+export { rgba } from "./color.ts";
+
+/** Parse any supported CSS color into an {@link Rgba}. */
+export { parseColor } from "./color.ts";
+
+/** Serialize an {@link Rgba} to `#rrggbb` or legacy `rgba()`. */
+export { formatColor } from "./color.ts";
+
+/** Mix two colors the way `color-mix()` does (premultiplied, spec percentages). */
+export { mixColors } from "./color.ts";
+
+/** Evaluate a `color-mix()` / `var()` color expression to a literal color. */
+export { evaluateColorExpression } from "./color.ts";
+
+/** A color with `r`/`g`/`b`/`a` components in `0..1`. */
+export type { Rgba } from "./color.ts";
+
+/** Interpolation color spaces understood by {@link mixColors}. */
+export type { MixSpace } from "./color.ts";
+
+/** Resolves a custom property name to its declared value. */
+export type { VarLookup } from "./color.ts";
 
 /** Complete Tailwind CSS v3 color palette as hex values. */
 export { colors } from "./colors.ts";
