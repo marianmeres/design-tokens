@@ -204,3 +204,21 @@ Deno.test("mcp: generate-theme-css names the schema path for a broken leaf, not 
 	assert(out.includes('"foreground"'));
 	assert(!out.includes("reading 'includes'"));
 });
+
+Deno.test("mcp: non-string state field via overrides gets a path-naming error, not a TypeError", async () => {
+	const out = await byName("generate-theme-css").handler({
+		baseTheme: "amberOliveSafari",
+		overrides: JSON.stringify({
+			light: {
+				colors: {
+					intent: {
+						primary: { DEFAULT: "#4f46e5", foreground: "#ffffff", hover: 5 },
+					},
+				},
+			},
+		}),
+		prefix: "app-",
+	});
+	assert(out.includes('"colors.intent.primary.hover"'));
+	assert(!out.includes("is not a function"));
+});

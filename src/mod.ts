@@ -39,10 +39,10 @@ export type { TokenFallback } from "./generate.ts";
 /** Legacy-engine fallback strategy for a stylesheet: adds `"supports"`. */
 export type { ThemeFallback } from "./generate.ts";
 
-/** Base color value with optional hover/active pseudo states. */
+/** Color pair: `DEFAULT` plus required `foreground`, with optional hover/active pseudo states. */
 export type { ColorPair } from "./types.ts";
 
-/** Color value: a hex string or an object with DEFAULT and optional pseudo states. */
+/** Base color value: an object with `DEFAULT` and optional hover/active pseudo states. */
 export type { ColorValue } from "./types.ts";
 
 /** Generated CSS token key-value pairs (without the `--` prefix on keys). */

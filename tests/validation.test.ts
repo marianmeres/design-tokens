@@ -137,6 +137,51 @@ Deno.test("validation - non-string leaves are named with their actual value", ()
 	);
 });
 
+Deno.test("validation - non-string optional state fields are rejected, null is tolerated", () => {
+	const withState = (state: unknown): TokenSchema => {
+		const s = structuredClone(completeMode) as unknown as {
+			colors: { intent: Record<string, unknown> };
+		};
+		s.colors.intent.primary = {
+			DEFAULT: "#4f46e5",
+			foreground: "#fff",
+			hover: state,
+		};
+		return s as unknown as TokenSchema;
+	};
+	// A number would emit `--x: 5;`; an object would emit `--x: [object Object];`
+	// — or crash the static resolver with `value.includes is not a function`.
+	for (const bad of [5, {}, [], true]) {
+		assertThrows(
+			() => generateCssTokens(withState(bad), "my-"),
+			Error,
+			`"colors.intent.primary.hover" must be a string when present`,
+		);
+	}
+	// Through generateThemeCss (default "supports" fallback, where the crash
+	// used to surface) the error carries the mode prefix.
+	assertThrows(
+		() => generateThemeCss({ light: withState(5) }, "my-"),
+		Error,
+		`[light] Invalid TokenSchema: "colors.intent.primary.hover"`,
+	);
+	// `null` degrades via `??` everywhere, so it stays legal — and the output
+	// record stays all-strings.
+	const tokens = generateCssTokens(withState(null), "my-");
+	assertEquals(tokens["my-color-primary-hover"].includes("color-mix("), true);
+
+	// Same guard on role single object states.
+	const singleBad = structuredClone(completeMode) as unknown as {
+		colors: { role: { single: Record<string, unknown> } };
+	};
+	singleBad.colors.role.single.border = { DEFAULT: "#d4d4d8", hover: 42 };
+	assertThrows(
+		() => generateCssTokens(singleBad as unknown as TokenSchema, "my-"),
+		Error,
+		`"colors.role.single.border.hover" must be a string when present`,
+	);
+});
+
 // --- class (c): the two operands ---
 
 Deno.test("validation - sparse schema with intents but no background throws pointing at mergeThemeSchema", () => {

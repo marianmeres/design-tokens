@@ -263,6 +263,33 @@ function assertColorPair(value: unknown, path: string): void {
 			);
 		}
 	}
+	assertOptionalStates(
+		value,
+		["hover", "active", "foregroundHover", "foregroundActive"],
+		path,
+	);
+}
+
+/**
+ * Optional state fields must be strings when carried — a non-string value
+ * would flow verbatim into the token record (`--x: 5;`, `--x: [object
+ * Object];`) or crash the static resolver three frames from the mistake.
+ * `null` is exempt: every consumer of these fields degrades it via `??`.
+ */
+function assertOptionalStates(
+	value: Record<string, unknown>,
+	keys: readonly string[],
+	path: string,
+): void {
+	for (const key of keys) {
+		const v = value[key];
+		if (v !== undefined && v !== null && typeof v !== "string") {
+			throw new TokenSchemaError(
+				`Invalid TokenSchema: "${path}.${key}" must be a string when ` +
+					`present (got ${describe(v)}). ${MERGE_HINT}`,
+			);
+		}
+	}
 }
 
 /** A `SingleColor` entry must be a string or an object with a string `DEFAULT`. */
@@ -274,6 +301,7 @@ function assertSingleColor(value: unknown, path: string): void {
 				`a string "DEFAULT" (got ${describe(value)}). ${MERGE_HINT}`,
 		);
 	}
+	assertOptionalStates(value, ["hover", "active"], path);
 }
 
 function describe(value: unknown): string {

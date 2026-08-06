@@ -206,6 +206,24 @@ Deno.test("mergeThemeSchema - unknown container keys throw with their path", () 
 	);
 });
 
+Deno.test("mergeThemeSchema - prototype-chain key names cannot bypass the no-minting guard", () => {
+	// `in` would see these on Object.prototype; the guard must use own keys
+	// only ("__proto__" would additionally fire the real setter on Node).
+	for (
+		const hostile of [
+			`{"light":{"colors":{"intent":{"constructor":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+			`{"light":{"colors":{"role":{"single":{"toString":"#123456"}}}}}`,
+			`{"light":{"colors":{"intent":{"__proto__":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+		]
+	) {
+		assertThrows(
+			() => mergeThemeSchema(base, JSON.parse(hostile) as ThemeSchemaOverrides),
+			Error,
+			"does not exist in the base theme",
+		);
+	}
+});
+
 // --- mode edge cases ---
 
 Deno.test("mergeThemeSchema - dark overrides against a light-only base throw", () => {
@@ -224,6 +242,13 @@ Deno.test("mergeThemeSchema - dark overrides against a light-only base throw", (
 		Error,
 		"base theme has no dark mode",
 	);
+});
+
+Deno.test("mergeThemeSchema - empty dark override against a light-only base is a no-op, not an error", () => {
+	const lightOnly: ThemeSchema = { light: base.light };
+	const merged = mergeThemeSchema(lightOnly, { dark: {} });
+	assertEquals(merged.light, base.light);
+	assert(!("dark" in merged));
 });
 
 Deno.test("mergeThemeSchema - light-only base without dark overrides merges fine and stays light-only", () => {

@@ -183,9 +183,10 @@ Prefer literal color values (hex, or `colors.indigo[600]` from the bundled palet
 resolved at build time, so those tokens lose their precomputed legacy-browser fallback.
 
 Do **not** try to override by layering a second generated stylesheet over a base theme's
-CSS — a sparse schema is rejected by the generator, and layered output breaks subtly on
-engines without `color-mix()` support even when it looks fine on modern ones. Merge the
-schemas, generate one stylesheet.
+CSS — the generator rejects sparse schemas whose output would reference tokens they never
+declare (the common override shapes), and even a sparse schema that does generate breaks
+subtly when layered, on engines without `color-mix()` support, while looking fine on
+modern ones. Merge the schemas, generate one stylesheet.
 
 Since the merged output is derived from the installed base, run the generate step as
 part of your build (e.g. a `prebuild` hook) rather than committing its output — that
@@ -234,11 +235,11 @@ and author-supplied `color-mix()` values pass through). Use `fallback` for that.
 `color-mix()` needs Chrome/Edge 111+, Safari 16.2+, Firefox 113+. The `fallback` option
 controls what older engines get:
 
-| `fallback`            | Output                                                                               |
-| --------------------- | ------------------------------------------------------------------------------------ |
-| `"supports"`(default) | Normal output, plus a trailing `@supports not (...)` block with precomputed literals |
-| `"static"`            | Every `color-mix()` evaluated at build time — the output contains none at all        |
-| `"none"`              | `color-mix()` only; breaks on older engines                                          |
+| `fallback`            | Output                                                                                                      |
+| --------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `"supports"`(default) | Normal output, plus a trailing `@supports not (...)` block with precomputed literals                        |
+| `"static"`            | Statically resolvable `color-mix()` evaluated at build time to literals; unresolvable operands pass through |
+| `"none"`              | `color-mix()` only; breaks on older engines                                                                 |
 
 ```css
 /* fallback: "supports" */

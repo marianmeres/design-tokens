@@ -15,7 +15,7 @@ The schema must be complete — the generator throws an error naming the offendi
 - `options` (`GenerateOptions | "light" | "dark"`, optional) — A mode string for quick switching, or an options object. Default: `{}`
   - `mode` (`"light" | "dark"`, optional) — Controls two things: (a) the `surface-{intent}-foreground` contrast mix (toward `black` in light, `white` in dark), and (b) the direction of **intent** hover/active derivation (toward `black` in light, `white` in dark). **Role** hover/active is mode-independent — it always mixes toward `--{prefix}color-foreground`, which itself flips per mode. Default: `"light"`
   - `deriveStates` (`boolean`, optional) — When `false`, missing hover/active fall back to DEFAULT instead of being derived via `color-mix()` — i.e. flat tokens with no visual state change. This is a _design_ knob, **not** a compatibility one: it does not remove `color-mix()` from the output, because `surface-{intent}` tokens are derived regardless and author-supplied `color-mix()` values pass through verbatim. Use `fallback` for that. Default: `true`
-  - `fallback` (`TokenFallback`, optional) — `"static"` evaluates every `color-mix()` at build time so the output contains none; `"none"` emits them as-is. Default: `"none"`
+  - `fallback` (`TokenFallback`, optional) — `"static"` evaluates statically resolvable `color-mix()` expressions at build time and emits literal colors; expressions whose operands cannot be resolved at build time (e.g. author-supplied `var()` refs to variables declared elsewhere) pass through unchanged. `"none"` emits them as-is. Default: `"none"`
   - `surfaceForegroundContrast` (`number`, optional) — Mix percentage (0–100) used to derive the `surface-{intent}-foreground` token. Higher values increase contrast against the tinted surface background. Default: `50`
 
 **Returns:** `GeneratedTokens` — Key-value record of token names to CSS values (keys without the `--` prefix)
@@ -103,7 +103,7 @@ The merge recurses through the containers (`light`/`dark` → `colors` → `inte
 **Parameters:**
 
 - `base` (`ThemeSchema`) — A complete theme, e.g. a bundled theme from `./themes`
-- `overrides` (`ThemeSchemaOverrides`) — Sparse overrides. Keys must already exist in the base (typo protection — a key the base does not have throws instead of minting junk tokens); `dark` overrides require the base to have a dark mode. To change the key set, author it on the base schema object.
+- `overrides` (`ThemeSchemaOverrides`) — Sparse overrides. Keys must already exist in the base (typo protection — a key the base does not have throws instead of minting junk tokens); non-empty `dark` overrides require the base to have a dark mode (an empty `dark: {}` is a no-op against any base). To change the key set, author it on the base schema object.
 
 **Returns:** `ThemeSchema` — A new complete theme, ready for `generateThemeCss`
 
@@ -504,7 +504,7 @@ Options passed to `generateThemeCss`. Omits `mode` (set automatically per sectio
 type TokenFallback = "none" | "static";
 ```
 
-Legacy-engine strategy for a token _record_. `"none"` emits `color-mix()` expressions as-is; `"static"` evaluates them at build time so the record contains only literal colors.
+Legacy-engine strategy for a token _record_. `"none"` emits `color-mix()` expressions as-is; `"static"` evaluates statically resolvable ones at build time so the record contains literal colors — expressions whose operands cannot be resolved at build time pass through unchanged.
 
 ---
 

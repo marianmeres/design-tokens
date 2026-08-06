@@ -40,7 +40,10 @@ function replaceLeaves<T>(
 		);
 	}
 	for (const [key, leaf] of Object.entries(source)) {
-		if (!(key in target)) {
+		// Object.hasOwn, not `in`: the prototype chain would let keys like
+		// "constructor" / "toString" / "__proto__" slip past the guard (and on
+		// Node, assigning "__proto__" would fire the real setter).
+		if (!Object.hasOwn(target, key)) {
 			throw new Error(
 				`Invalid ThemeSchemaOverrides: "${path}.${key}" does not exist ` +
 					`in the base theme (base has: ${
@@ -117,8 +120,8 @@ function mergeMode(
  * `foreground` that no longer contrasts. To keep parts of a base leaf, spread
  * it yourself: `{ ...base.light.colors.intent.primary, DEFAULT: "#4f46e5" }`.
  *
- * Override keys must already exist in the base (typo protection); dark
- * overrides require the base to have a dark mode. To change the key set,
+ * Override keys must already exist in the base (typo protection); non-empty
+ * dark overrides require the base to have a dark mode. To change the key set,
  * author it on the base schema object.
  *
  * @param base - A complete theme (e.g. a bundled theme from `./themes`)
@@ -154,12 +157,19 @@ export function mergeThemeSchema(
 		throw new Error(`Invalid ThemeSchemaOverrides: expected an object.`);
 	}
 	assertKnownKeys(o, ["light", "dark"], "overrides");
-	if (o.dark != null && base.dark == null) {
-		throw new Error(
-			`Invalid ThemeSchemaOverrides: "dark" overrides were given but the ` +
-				`base theme has no dark mode — author the dark mode on the base ` +
-				`schema object instead.`,
-		);
+	if (o.dark != null) {
+		if (!isPlainObject(o.dark)) {
+			throw new Error(`Invalid ThemeSchemaOverrides: "dark" must be an object.`);
+		}
+		// An *empty* dark override is "no changes to dark" — harmless against
+		// any base. Only actual dark overrides require the base to have one.
+		if (Object.keys(o.dark).length > 0 && base.dark == null) {
+			throw new Error(
+				`Invalid ThemeSchemaOverrides: "dark" overrides were given but ` +
+					`the base theme has no dark mode — author the dark mode on ` +
+					`the base schema object instead.`,
+			);
+		}
 	}
 	return {
 		light: mergeMode(base.light, o.light, "light"),
