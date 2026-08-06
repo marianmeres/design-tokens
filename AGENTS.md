@@ -59,6 +59,7 @@ Entry points:
 | `generateCssTokens(schema, prefix, options?)` | Generate token key-value pairs. Third arg: `GenerateOptions` object or `"light"`/`"dark"` shorthand                        |
 | `toCssString(tokens, selector?)`              | Convert tokens to a CSS declaration block (groups by base color name)                                                      |
 | `generateThemeCss(schema, prefix, options?)`  | Generate complete CSS for light + optional dark mode; supports `fallback`, `cssLayer` wrapping and `prettierIgnore` pragma |
+| `mergeThemeSchema(base, overrides)`           | Merge sparse `ThemeSchemaOverrides` over a complete base theme; replaces whole entries, never mints keys the base lacks    |
 | `resolveStaticTokens(tokens)`                 | Evaluate every `color-mix()` in a record to a literal color                                                                |
 | `resolveStaticOverrides(tokens)`              | Only the tokens that carried a `color-mix()`, precomputed — use to audit legacy exposure                                   |
 | `staticFallbackCss(entries)`                  | Build the `@supports not (...)` block backing up a set of `{selector, tokens}` blocks                                      |
@@ -87,7 +88,9 @@ Entry points:
 | Type                    | Purpose                                                                                   |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
 | `ThemeSchema`           | `{ light: TokenSchema; dark?: TokenSchema }`                                              |
-| `TokenSchema`           | Intent colors, role paired/single colors                                                  |
+| `TokenSchema`           | Intent colors, role paired/single colors — **complete** by contract (see convention 13)   |
+| `ThemeSchemaOverrides`  | `{ light?, dark? }` sparse overrides for `mergeThemeSchema`; never passed to generators   |
+| `TokenSchemaOverrides`  | Single-mode sparse overrides; no index signatures, so typo'd keys are compile errors      |
 | `ColorPair`             | `{ DEFAULT, foreground, hover?, active?, foregroundHover?, foregroundActive? }`           |
 | `ColorValue`            | `{ DEFAULT, hover?, active? }`                                                            |
 | `SingleColor`           | `string \| ColorValue`                                                                    |
@@ -124,6 +127,7 @@ Entry points:
 10. **`deriveStates` is a design knob, not a compatibility one.** It flattens hover/active; it does NOT remove `color-mix()` (surface-`{intent}` is derived regardless, and author-supplied values pass through). Use `fallback: "static"` for `color-mix()`-free output.
 11. **Theme schemas must not contain `color-mix()`.** Use `rgba(color, alpha)` — exactly equivalent to `color-mix(in srgb, <color> <α>%, transparent)` because mixing with `transparent` is premultiplied, but with no browser requirement. A `color-mix()` in a schema propagates into that token's derived states too.
 12. **Layering semantics for dividers/hairlines**: `border` is calibrated against the **page background / muted** layer (≈ background + one step) and is hand-authored per theme — it may deliberately equal a `surface` step (e.g. dark themes where `border` == `surface` == the same neutral), so it is **not** a safe divider drawn _on top of_ a `surface`. For an on-surface hairline/divider use `surface-1` (one curated step from `surface` in both modes). There is intentionally no dedicated `surface-border` token — `surface-1` covers the case, and the name would collide with the outer-edge meaning of `surface-{intent}-border` (see #5).
+13. **Complete schema in, self-standing stylesheet out.** The generator rejects — with an error naming the schema path — any schema whose output would reference a token it does not declare: the five containers, non-string `DEFAULT`/`foreground` leaves, and the two derived operands (`colors.role.paired.background` when intent colors are present; `colors.role.single.foreground` when role hover/active derivation fires). Key-completeness beyond that stays the type's job — a self-consistent minimal schema still generates. Sparse "override" schemas are rejected by design: layering a sparse generated stylesheet over a base un-repairs the base's `@supports` legacy fallback (the override's `color-mix()` re-declaration wins the cascade, and the override's own fallback block cannot resolve operands it does not carry — see #9 for why there is no consumer-side remedy). The supported override path is `mergeThemeSchema(base, overrides)` → generate one stylesheet.
 
 ## Adding a New Theme
 
@@ -143,6 +147,7 @@ Entry points:
 - [ ] If changing generator output (CSS text), note as potential BC change
 - [ ] If changing derivation or color math, run `deno task css:build` and confirm the diff is what you expect
 - [ ] Never emit `color-mix()` without a fallback path — tests assert the `@supports` block covers every `color-mix()` token exactly
+- [ ] Never emit a `var()` reference to a token the same stylesheet does not declare — the generator enforces this for the two derived operands (convention 13); tests audit the full declared-vs-referenced set
 
 ## Known Limitations
 

@@ -14,7 +14,10 @@ import { evaluateColorExpression, formatColor, type VarLookup } from "./color.ts
  *
  * - `"none"` — emit `color-mix()` expressions as-is.
  * - `"static"` — evaluate every `color-mix()` at build time and emit literal
- *   colors instead. The output contains no `color-mix()` at all.
+ *   colors instead. The output contains no `color-mix()` for statically
+ *   resolvable values; expressions whose operands cannot be resolved at build
+ *   time (e.g. author-supplied `var()` refs to variables declared elsewhere)
+ *   pass through unchanged.
  */
 export type TokenFallback = "none" | "static";
 
@@ -199,6 +202,89 @@ function normalizePrefix(prefix: string): string {
 	return prefix.endsWith("-") ? prefix : prefix + "-";
 }
 
+/**
+ * Thrown when a schema would generate broken output. Internal — the message
+ * (which always names the offending schema path) is the public contract.
+ */
+class TokenSchemaError extends Error {
+	override name = "TokenSchemaError";
+}
+
+const MERGE_HINT =
+	"To override parts of an existing theme, merge your overrides over a " +
+	"complete base first: mergeThemeSchema(base, overrides).";
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+	return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+/**
+ * Guard the five container objects the generator dereferences, with an error
+ * naming the missing path instead of `Cannot read properties of undefined`.
+ */
+function assertSchemaContainers(schema: TokenSchema): void {
+	const bad = (path: string, got: unknown): never => {
+		throw new TokenSchemaError(
+			`Invalid TokenSchema: "${path}" is ${
+				got === undefined ? "missing" : "not an object"
+			} — a complete schema has the shape ` +
+				`{ colors: { intent, role: { paired, single } } }. ${MERGE_HINT}`,
+		);
+	};
+	if (!isPlainObject(schema)) bad("(schema)", schema);
+	if (!isPlainObject(schema.colors)) bad("colors", schema.colors);
+	if (!isPlainObject(schema.colors.intent)) bad("colors.intent", schema.colors.intent);
+	if (!isPlainObject(schema.colors.role)) bad("colors.role", schema.colors.role);
+	if (!isPlainObject(schema.colors.role.paired)) {
+		bad("colors.role.paired", schema.colors.role.paired);
+	}
+	if (!isPlainObject(schema.colors.role.single)) {
+		bad("colors.role.single", schema.colors.role.single);
+	}
+}
+
+/**
+ * A `ColorPair` entry must carry string `DEFAULT` and `foreground` — anything
+ * else would be written into the token record verbatim (`--x: undefined;`,
+ * `--x: 5;`) and only fail at CSS substitution time, far from the mistake.
+ */
+function assertColorPair(value: unknown, path: string): void {
+	if (!isPlainObject(value)) {
+		throw new TokenSchemaError(
+			`Invalid TokenSchema: "${path}" must be an object with string ` +
+				`"DEFAULT" and "foreground" (got ${describe(value)}). ${MERGE_HINT}`,
+		);
+	}
+	for (const key of ["DEFAULT", "foreground"] as const) {
+		if (typeof value[key] !== "string") {
+			throw new TokenSchemaError(
+				`Invalid TokenSchema: "${path}" must declare a string "${key}" ` +
+					`(got ${describe(value[key])}). ${MERGE_HINT}`,
+			);
+		}
+	}
+}
+
+/** A `SingleColor` entry must be a string or an object with a string `DEFAULT`. */
+function assertSingleColor(value: unknown, path: string): void {
+	if (typeof value === "string") return;
+	if (!isPlainObject(value) || typeof value.DEFAULT !== "string") {
+		throw new TokenSchemaError(
+			`Invalid TokenSchema: "${path}" must be a string or an object with ` +
+				`a string "DEFAULT" (got ${describe(value)}). ${MERGE_HINT}`,
+		);
+	}
+}
+
+function describe(value: unknown): string {
+	if (value === null) return "null";
+	if (Array.isArray(value)) return "an array";
+	if (typeof value === "object") {
+		return `an object with keys [${Object.keys(value).join(", ")}]`;
+	}
+	return typeof value === "string" ? JSON.stringify(value) : String(value);
+}
+
 /** Check if a single color is an object with states or a plain string */
 function isSingleColorObject(value: SingleColor): value is ColorValue {
 	return (
@@ -333,14 +419,21 @@ export function generateCssTokens(
 	const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
 	const fallback = opts.fallback ?? "none";
 
+	assertSchemaContainers(schema);
+
 	const p = normalizePrefix(prefix);
 	const tokens: GeneratedTokens = {};
+
+	// Set when a role hover/active derivation actually fires — those derived
+	// values reference `--{p}color-foreground`, which the output must declare.
+	let referencesForeground = false;
 
 	// Intent colors (auto-derive hover/active via color-mix when enabled).
 	// Saturated brand colors mix toward black/white (mode-aware) — neutral
 	// darken/lighten keeps the hue clean.
 	const intentStrategy: MixStrategy = { kind: "contrast", mode };
 	for (const [key, pair] of Object.entries(schema.colors.intent)) {
+		assertColorPair(pair, `colors.intent.${key}`);
 		const filled = deriveStates ? fillPairStates(pair, p, key, intentStrategy) : pair;
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
@@ -365,15 +458,22 @@ export function generateCssTokens(
 
 	// Role colors (paired) — auto-derive except "background"
 	for (const [key, pair] of Object.entries(schema.colors.role.paired)) {
-		const filled = key === "background" || !deriveStates
-			? pair
-			: fillPairStates(pair, p, key, roleStrategy);
+		assertColorPair(pair, `colors.role.paired.${key}`);
+		const derive = key !== "background" && deriveStates;
+		if (derive && (pair.hover === undefined || pair.active === undefined)) {
+			referencesForeground = true;
+		}
+		const filled = derive ? fillPairStates(pair, p, key, roleStrategy) : pair;
 		generatePairedColorTokens(tokens, key, filled, p);
 	}
 
 	// Role colors (single)
 	for (const [key, color] of Object.entries(schema.colors.role.single)) {
+		assertSingleColor(color, `colors.role.single.${key}`);
 		if (isSingleColorObject(color) && deriveStates) {
+			if (color.hover === undefined || color.active === undefined) {
+				referencesForeground = true;
+			}
 			generateSingleColorTokens(
 				tokens,
 				key,
@@ -383,6 +483,31 @@ export function generateCssTokens(
 		} else {
 			generateSingleColorTokens(tokens, key, color, p);
 		}
+	}
+
+	// The two derived operands: reject a schema whose output would reference a
+	// token it never declares. Everything else — including a schema with fewer
+	// keys than TokenSchema requires — generates a stylesheet that stands
+	// alone, so it is not the generator's business to refuse it.
+	if (
+		Object.keys(schema.colors.intent).length > 0 &&
+		tokens[`${p}color-background`] === undefined
+	) {
+		throw new TokenSchemaError(
+			`Invalid TokenSchema: "colors.role.paired.background" is required ` +
+				`when intent colors are present — every surface-{intent} token ` +
+				`references var(--${p}color-background), which this schema's ` +
+				`output would never declare. ${MERGE_HINT}`,
+		);
+	}
+	if (referencesForeground && tokens[`${p}color-foreground`] === undefined) {
+		throw new TokenSchemaError(
+			`Invalid TokenSchema: "colors.role.single.foreground" is required ` +
+				`when role hover/active states are derived — derived values ` +
+				`reference var(--${p}color-foreground), which this schema's ` +
+				`output would never declare. Declare it, or pass ` +
+				`deriveStates: false. ${MERGE_HINT}`,
+		);
 	}
 
 	return fallback === "static" ? resolveStaticTokens(tokens) : tokens;
@@ -488,25 +613,35 @@ export function generateThemeCss(
 	const { cssLayer, prettierIgnore, fallback = "supports", ...genOptions } = options;
 	const PRETTIER_IGNORE_PREFIX = "/* prettier-ignore */\n";
 
-	const modes: { selector: string; tokens: GeneratedTokens }[] = [
-		{
-			selector: ":root",
-			tokens: generateCssTokens(schema.light, prefix, {
+	if (!isPlainObject(schema) || schema.light === undefined) {
+		throw new TokenSchemaError(
+			`Invalid ThemeSchema: expected { light: TokenSchema, dark?: TokenSchema }` +
+				` (got ${describe(schema)}). ${MERGE_HINT}`,
+		);
+	}
+
+	// Re-throw schema validation errors with the mode they came from — the
+	// same path exists in both modes, so an unqualified path is ambiguous.
+	const modeTokens = (mode: "light" | "dark", tokenSchema: TokenSchema) => {
+		try {
+			return generateCssTokens(tokenSchema, prefix, {
 				...genOptions,
-				mode: "light",
+				mode,
 				fallback: fallback === "static" ? "static" : "none",
-			}),
-		},
+			});
+		} catch (e) {
+			if (e instanceof TokenSchemaError) {
+				throw new TokenSchemaError(`[${mode}] ${e.message}`);
+			}
+			throw e;
+		}
+	};
+
+	const modes: { selector: string; tokens: GeneratedTokens }[] = [
+		{ selector: ":root", tokens: modeTokens("light", schema.light) },
 	];
 	if (schema.dark) {
-		modes.push({
-			selector: ":root.dark",
-			tokens: generateCssTokens(schema.dark, prefix, {
-				...genOptions,
-				mode: "dark",
-				fallback: fallback === "static" ? "static" : "none",
-			}),
-		});
+		modes.push({ selector: ":root.dark", tokens: modeTokens("dark", schema.dark) });
 	}
 
 	const blocks = modes.map(({ selector, tokens }) => toCssString(tokens, selector));

@@ -12,6 +12,9 @@ export { generateCssTokens } from "./generate.ts";
 /** Generate complete CSS for a theme (light + optional dark mode). */
 export { generateThemeCss } from "./generate.ts";
 
+/** Merge sparse overrides over a complete base theme ("bundled theme X, but primary is indigo"). */
+export { mergeThemeSchema } from "./merge.ts";
+
 /** Convert a tokens record to a CSS declaration block string. */
 export { toCssString } from "./generate.ts";
 
@@ -63,8 +66,14 @@ export type { SingleColor } from "./types.ts";
 /** A complete theme definition with required light mode and optional dark mode. */
 export type { ThemeSchema } from "./types.ts";
 
-/** Complete token schema for a single mode (light or dark). */
+/** Complete token schema for a single mode (light or dark) — completeness is load-bearing; for sparse overrides use {@link mergeThemeSchema}. */
 export type { TokenSchema } from "./types.ts";
+
+/** Sparse single-mode overrides for {@link mergeThemeSchema} — not accepted by {@link generateCssTokens}. */
+export type { TokenSchemaOverrides } from "./types.ts";
+
+/** Sparse theme overrides for {@link mergeThemeSchema} — not accepted by {@link generateThemeCss}. */
+export type { ThemeSchemaOverrides } from "./types.ts";
 
 /** Helper: partial known keys, allow additional. */
 export type { WithOptional } from "./types.ts";

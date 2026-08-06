@@ -4,7 +4,9 @@
 
 ### `generateCssTokens(schema, prefix, options?)`
 
-Generate CSS token key-value pairs from a single-mode token schema.
+Generate CSS token key-value pairs from a complete single-mode token schema.
+
+The schema must be complete — the generator throws an error naming the offending schema path when a container or required value is missing, or when the output would reference a token it never declares (`colors.role.paired.background` when intent colors are present; `colors.role.single.foreground` when role hover/active states are derived). To override parts of an existing theme, use [`mergeThemeSchema`](#mergethemeschemabase-overrides) instead of passing a partial schema.
 
 **Parameters:**
 
@@ -88,6 +90,37 @@ const css = generateThemeCss(zinc, "app-", { cssLayer: "tokens" });
 //     :root { ... }
 //     :root.dark { ... }
 // }
+```
+
+---
+
+### `mergeThemeSchema(base, overrides)`
+
+Merge sparse overrides over a complete base theme, returning a new complete `ThemeSchema` — the supported way to express "bundled theme X, but primary is indigo". The base is never mutated; an absent or empty override mode yields the base mode unchanged.
+
+The merge recurses through the containers (`light`/`dark` → `colors` → `intent`/`role` → `paired`/`single`) and **replaces whole entries** — an overridden `ColorPair` or `SingleColor` supersedes the base entry entirely, never merges into it, so a changed `DEFAULT` cannot silently inherit a stale explicit `hover` or a `foreground` that no longer contrasts. To keep parts of a base entry, spread it yourself: `{ ...base.light.colors.intent.primary, DEFAULT: "#4f46e5" }`.
+
+**Parameters:**
+
+- `base` (`ThemeSchema`) — A complete theme, e.g. a bundled theme from `./themes`
+- `overrides` (`ThemeSchemaOverrides`) — Sparse overrides. Keys must already exist in the base (typo protection — a key the base does not have throws instead of minting junk tokens); `dark` overrides require the base to have a dark mode. To change the key set, author it on the base schema object.
+
+**Returns:** `ThemeSchema` — A new complete theme, ready for `generateThemeCss`
+
+**Example:**
+
+```typescript
+import { generateThemeCss, mergeThemeSchema } from "@marianmeres/design-tokens";
+import { amberOliveSafari } from "@marianmeres/design-tokens/themes";
+
+const theme = mergeThemeSchema(amberOliveSafari, {
+	light: {
+		colors: {
+			intent: { primary: { DEFAULT: "#4f46e5", foreground: "#ffffff" } },
+		},
+	},
+});
+const css = generateThemeCss(theme, "app-");
 ```
 
 ---
@@ -358,7 +391,40 @@ type TokenSchema = {
 };
 ```
 
-Single-mode token schema. Intent colors define primary UI actions; role colors define structural UI elements. Arbitrary string keys are allowed on every collection (for custom additions).
+Complete single-mode token schema. Intent colors define primary UI actions; role colors define structural UI elements. Arbitrary string keys are allowed on every collection (for custom additions).
+
+Completeness is load-bearing, not ceremonial: the generator derives tokens whose values reference `--{prefix}color-background` (every `surface-{intent}` token) and `--{prefix}color-foreground` (role hover/active derivation), and only `role.paired.background` / `role.single.foreground` declare those. A sparse schema would generate a stylesheet that references tokens it never declares, so the generator rejects it. To override parts of an existing theme, use [`mergeThemeSchema`](#mergethemeschemabase-overrides) with a `ThemeSchemaOverrides`.
+
+---
+
+### `ThemeSchemaOverrides`
+
+```typescript
+type ThemeSchemaOverrides = {
+	light?: TokenSchemaOverrides;
+	dark?: TokenSchemaOverrides;
+};
+```
+
+Sparse theme overrides for `mergeThemeSchema` — **not** accepted by `generateThemeCss`; merge it over a complete `ThemeSchema` first. An absent or empty mode leaves the base mode unchanged.
+
+---
+
+### `TokenSchemaOverrides`
+
+```typescript
+type TokenSchemaOverrides = {
+	colors?: {
+		intent?: Partial<Record<IntentColorKey, ColorPair>>;
+		role?: {
+			paired?: Partial<Record<RolePairedKey | RolePairedOptionalKey, ColorPair>>;
+			single?: Partial<Record<RoleSingleKey, SingleColor>>;
+		};
+	};
+};
+```
+
+Sparse single-mode overrides for `mergeThemeSchema` — **not** accepted by `generateCssTokens`. Deliberately carries no index signatures (unlike `TokenSchema`), so a typo'd key in an override literal is a compile error instead of a silently minted junk token. To introduce a genuinely new key, author it on the base schema object (e.g. `{ ...base.light.colors.intent, info: … }`).
 
 ---
 

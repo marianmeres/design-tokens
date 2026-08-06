@@ -66,7 +66,14 @@ export type WithKnown<TRequired extends string, TOptional extends string, TValue
 	& Record<string, TValue>;
 
 /**
- * Complete token schema for a single mode (light or dark).
+ * Complete token schema for a single mode (light or dark). Completeness is
+ * load-bearing, not ceremonial: the generator derives tokens whose values
+ * reference `--{prefix}color-background` (every `surface-{intent}` token) and
+ * `--{prefix}color-foreground` (role hover/active derivation), and only
+ * `role.paired.background` / `role.single.foreground` declare those. A sparse
+ * schema would generate a stylesheet that references tokens it never declares.
+ * To override parts of an existing theme, use `mergeThemeSchema` with a
+ * {@link ThemeSchemaOverrides} instead of passing a partial schema here.
  *
  * Defines intent colors (primary, accent, destructive, warning, success),
  * role paired colors (background, muted, surface required; surface-1 optional
@@ -81,6 +88,36 @@ export type TokenSchema = {
 			single: WithRequired<RoleSingleKey, SingleColor>;
 		};
 	};
+};
+
+/**
+ * Sparse single-mode overrides for `mergeThemeSchema` — NOT accepted by
+ * `generateCssTokens`; merge it over a complete {@link TokenSchema} first.
+ *
+ * Deliberately carries no index signatures (unlike {@link TokenSchema}), so a
+ * typo'd key in an override literal is a compile error instead of a silently
+ * minted junk token. To introduce a genuinely new key, author it on the base
+ * schema object (e.g. `{ ...base.light.colors.intent, info: … }`) rather than
+ * through an override.
+ */
+export type TokenSchemaOverrides = {
+	colors?: {
+		intent?: Partial<Record<IntentColorKey, ColorPair>>;
+		role?: {
+			paired?: Partial<Record<RolePairedKey | RolePairedOptionalKey, ColorPair>>;
+			single?: Partial<Record<RoleSingleKey, SingleColor>>;
+		};
+	};
+};
+
+/**
+ * Sparse theme overrides for `mergeThemeSchema` — NOT accepted by
+ * `generateThemeCss`; merge it over a complete {@link ThemeSchema} first.
+ * An absent or empty mode leaves the base mode unchanged.
+ */
+export type ThemeSchemaOverrides = {
+	light?: TokenSchemaOverrides;
+	dark?: TokenSchemaOverrides;
 };
 
 /** Generated CSS token key-value pairs (without the `--` prefix on keys). */

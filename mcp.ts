@@ -1,8 +1,9 @@
 import { z } from "npm:zod";
 import type { McpToolDefinition } from "jsr:@marianmeres/mcp-server/types";
 import { generateThemeCss, type ThemeFallback } from "./src/generate.ts";
+import { mergeThemeSchema } from "./src/merge.ts";
 import { generateThemedCss } from "./src/reboot-bridge.ts";
-import type { ThemeSchema } from "./src/types.ts";
+import type { ThemeSchema, ThemeSchemaOverrides } from "./src/types.ts";
 import { bundledThemeNames, getBundledTheme } from "./src/themes/mod.ts";
 
 /**
@@ -47,12 +48,25 @@ export const tools: McpToolDefinition[] = [
 	{
 		name: "generate-theme-css",
 		description:
-			"Generate CSS custom properties from a design token theme schema (ThemeSchema JSON) with light and optional dark mode. Returns a complete CSS string with :root selectors and auto-derived hover/active states via color-mix(), plus an @supports fallback block for browsers older than Chrome 111 / Safari 16.2 / Firefox 113.",
+			'Generate CSS custom properties from a design token theme schema with light and optional dark mode. Provide either a complete ThemeSchema JSON (`theme`), or a bundled theme name (`baseTheme`) with optional sparse `overrides` merged over it — the way to express e.g. "amberOliveSafari but primary is indigo" without authoring a full schema. Returns a complete CSS string with :root selectors and auto-derived hover/active states via color-mix(), plus an @supports fallback block for browsers older than Chrome 111 / Safari 16.2 / Firefox 113.',
 		params: {
 			theme: z
 				.string()
+				.optional()
 				.describe(
-					"ThemeSchema as JSON string — { light: TokenSchema, dark?: TokenSchema }",
+					"Complete ThemeSchema as JSON string — { light: TokenSchema, dark?: TokenSchema }. Provide exactly one of `theme` or `baseTheme`.",
+				),
+			baseTheme: z
+				.string()
+				.optional()
+				.describe(
+					"Bundled theme name (camelCase, e.g. amberOliveSafari) to use as the complete base. Provide exactly one of `theme` or `baseTheme`.",
+				),
+			overrides: z
+				.string()
+				.optional()
+				.describe(
+					'ThemeSchemaOverrides as JSON string — sparse overrides merged over `baseTheme`, replacing whole entries (e.g. {"light":{"colors":{"intent":{"primary":{"DEFAULT":"#4f46e5","foreground":"#ffffff"}}}}}). Keys must already exist in the base. Requires `baseTheme`.',
 				),
 			prefix: z
 				.string()
@@ -63,24 +77,56 @@ export const tools: McpToolDefinition[] = [
 				.enum(["supports", "static", "none"])
 				.optional()
 				.describe(
-					'Legacy-browser strategy for color-mix(). "supports" (default) appends an @supports not (...) block with precomputed literals; "static" precomputes everything so the output has no color-mix() at all; "none" emits color-mix() only.',
+					'Legacy-browser strategy for color-mix(). "supports" (default) appends an @supports not (...) block with precomputed literals; "static" precomputes statically resolvable values so the output has no color-mix() left; "none" emits color-mix() only.',
 				),
 		},
 		handler: (args) => {
-			const theme = args.theme as string;
+			const themeJson = args.theme as string | undefined;
+			const baseTheme = args.baseTheme as string | undefined;
+			const overridesJson = args.overrides as string | undefined;
 			const prefix = args.prefix as string;
 			const fallback = args.fallback as ThemeFallback | undefined;
-			let parsed: unknown;
-			try {
-				parsed = JSON.parse(theme);
-			} catch (e) {
-				const msg = e instanceof Error ? e.message : String(e);
+
+			if (!themeJson === !baseTheme) {
 				return Promise.resolve(
-					`Could not parse \`theme\` as JSON: ${msg}`,
+					"Provide exactly one of `theme` (complete ThemeSchema JSON) or `baseTheme` (bundled theme name).",
 				);
 			}
+			if (overridesJson && !baseTheme) {
+				return Promise.resolve(
+					"`overrides` requires `baseTheme` — overrides are merged over a complete bundled base.",
+				);
+			}
+
+			const parseJson = (json: string, label: string): unknown => {
+				try {
+					return JSON.parse(json);
+				} catch (e) {
+					const msg = e instanceof Error ? e.message : String(e);
+					throw new Error(`Could not parse \`${label}\` as JSON: ${msg}`);
+				}
+			};
+
 			try {
-				const schema = validateThemeSchema(parsed);
+				let schema: ThemeSchema;
+				if (baseTheme) {
+					const base = getBundledTheme(baseTheme);
+					if (!base) {
+						return Promise.resolve(
+							`Unknown baseTheme "${baseTheme}". Available: ${
+								bundledThemeNames.join(", ")
+							}`,
+						);
+					}
+					schema = mergeThemeSchema(
+						base,
+						(overridesJson
+							? parseJson(overridesJson, "overrides")
+							: {}) as ThemeSchemaOverrides,
+					);
+				} else {
+					schema = validateThemeSchema(parseJson(themeJson!, "theme"));
+				}
 				return Promise.resolve(generateThemeCss(schema, prefix, { fallback }));
 			} catch (e) {
 				return Promise.resolve(

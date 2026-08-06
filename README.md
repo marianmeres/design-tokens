@@ -150,6 +150,48 @@ exactly equivalent to `color-mix(in srgb, <color> 25%, transparent)` — mixing 
 `transparent` is premultiplied, so only alpha changes — but it needs no modern-browser
 support and it keeps your schema free of expressions the generator has to work around.
 
+## Overriding a bundled theme
+
+To tweak an existing theme rather than author a full schema — "amber-olive-safari,
+but primary is indigo" — merge sparse overrides over the bundled base with
+`mergeThemeSchema` and generate from the merged result:
+
+```ts
+import { generateThemeCss, mergeThemeSchema } from "@marianmeres/design-tokens";
+import { amberOliveSafari } from "@marianmeres/design-tokens/themes";
+
+const theme = mergeThemeSchema(amberOliveSafari, {
+	light: {
+		colors: {
+			intent: { primary: { DEFAULT: "#4f46e5", foreground: "#ffffff" } },
+		},
+	},
+});
+
+const css = generateThemeCss(theme, "app-");
+```
+
+An override replaces the whole entry — the base's explicit `hover`/`active`/`foreground`
+for that entry are gone, not inherited (they would no longer match your new `DEFAULT`;
+omitted states are auto-derived from it instead). To keep parts of the base entry,
+spread it yourself: `{ ...amberOliveSafari.light.colors.intent.primary, DEFAULT: "#4f46e5" }`.
+An absent or empty mode (`dark: {}`) leaves the base mode untouched, and a key the
+base does not have is an error — both in the `ThemeSchemaOverrides` type and at runtime.
+
+Prefer literal color values (hex, or `colors.indigo[600]` from the bundled palette) over
+`var()` references in overrides: a value like `var(--color-indigo-600)` cannot be
+resolved at build time, so those tokens lose their precomputed legacy-browser fallback.
+
+Do **not** try to override by layering a second generated stylesheet over a base theme's
+CSS — a sparse schema is rejected by the generator, and layered output breaks subtly on
+engines without `color-mix()` support even when it looks fine on modern ones. Merge the
+schemas, generate one stylesheet.
+
+Since the merged output is derived from the installed base, run the generate step as
+part of your build (e.g. a `prebuild` hook) rather than committing its output — that
+way upstream theme improvements flow in with every dependency update. If you prefer
+committing it, add a CI check that regenerating leaves the file unchanged.
+
 ## Bundled themes
 
 ```ts

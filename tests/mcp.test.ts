@@ -108,3 +108,99 @@ Deno.test("mcp: tool description reports current theme count", () => {
 		"description should contain a numeric theme count",
 	);
 });
+
+// --- baseTheme + overrides ---
+
+Deno.test("mcp: generate-theme-css merges overrides over a bundled base", async () => {
+	const out = await byName("generate-theme-css").handler({
+		baseTheme: "amberOliveSafari",
+		overrides: JSON.stringify({
+			light: {
+				colors: {
+					intent: {
+						primary: { DEFAULT: "#4f46e5", foreground: "#ffffff" },
+					},
+				},
+			},
+		}),
+		prefix: "app-",
+	});
+	assert(out.includes("--app-color-primary:"));
+	assert(out.includes("#4f46e5"));
+	assert(out.includes(":root.dark"));
+});
+
+Deno.test("mcp: generate-theme-css with baseTheme alone generates the base", async () => {
+	const out = await byName("generate-theme-css").handler({
+		baseTheme: "gray",
+		prefix: "app-",
+	});
+	assert(out.includes("--app-color-primary:"));
+});
+
+Deno.test("mcp: generate-theme-css requires exactly one of theme / baseTheme", async () => {
+	const neither = await byName("generate-theme-css").handler({ prefix: "app-" });
+	assert(neither.includes("exactly one"));
+	const both = await byName("generate-theme-css").handler({
+		theme: "{}",
+		baseTheme: "gray",
+		prefix: "app-",
+	});
+	assert(both.includes("exactly one"));
+});
+
+Deno.test("mcp: generate-theme-css rejects overrides without baseTheme", async () => {
+	const out = await byName("generate-theme-css").handler({
+		theme: "{}",
+		overrides: "{}",
+		prefix: "app-",
+	});
+	assert(out.includes("`overrides` requires `baseTheme`"));
+});
+
+Deno.test("mcp: generate-theme-css rejects unknown baseTheme with the available list", async () => {
+	const out = await byName("generate-theme-css").handler({
+		baseTheme: "not-a-theme",
+		prefix: "app-",
+	});
+	assert(out.startsWith("Unknown baseTheme"));
+	assert(out.includes("amberOliveSafari"));
+});
+
+Deno.test("mcp: generate-theme-css surfaces the typo'd-override-key error", async () => {
+	const out = await byName("generate-theme-css").handler({
+		baseTheme: "gray",
+		overrides: JSON.stringify({
+			light: {
+				colors: {
+					intent: { primry: { DEFAULT: "#4f46e5", foreground: "#fff" } },
+				},
+			},
+		}),
+		prefix: "app-",
+	});
+	assert(out.includes(`"light.colors.intent.primry" does not exist`));
+});
+
+Deno.test("mcp: generate-theme-css names the schema path for a broken leaf, not a TypeError", async () => {
+	const schema = {
+		light: {
+			colors: {
+				intent: { primary: { DEFAULT: "#000" } },
+				role: {
+					paired: {
+						background: { DEFAULT: "#fff", foreground: "#000" },
+					},
+					single: { foreground: "#000" },
+				},
+			},
+		},
+	};
+	const out = await byName("generate-theme-css").handler({
+		theme: JSON.stringify(schema),
+		prefix: "app-",
+	});
+	assert(out.includes('"colors.intent.primary"'));
+	assert(out.includes('"foreground"'));
+	assert(!out.includes("reading 'includes'"));
+});
