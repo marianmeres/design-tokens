@@ -1,0 +1,284 @@
+/* prettier-ignore */
+:root {
+	--stuic-color-primary:                        #84cc16;
+	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), black 10%);
+	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), black 20%);
+	--stuic-color-primary-foreground:             #000000;
+	--stuic-color-primary-foreground-hover:       #000000;
+	--stuic-color-primary-foreground-active:      #000000;
+
+	--stuic-color-accent:                         #f2749f;
+	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), black 10%);
+	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), black 20%);
+	--stuic-color-accent-foreground:              #14122a;
+	--stuic-color-accent-foreground-hover:        #14122a;
+	--stuic-color-accent-foreground-active:       #14122a;
+
+	--stuic-color-destructive:                    #dc2626;
+	--stuic-color-destructive-hover:              color-mix(in oklab, var(--stuic-color-destructive), black 10%);
+	--stuic-color-destructive-active:             color-mix(in oklab, var(--stuic-color-destructive), black 20%);
+	--stuic-color-destructive-foreground:         #ffffff;
+	--stuic-color-destructive-foreground-hover:   #ffffff;
+	--stuic-color-destructive-foreground-active:  #ffffff;
+
+	--stuic-color-warning:                        #f59e0b;
+	--stuic-color-warning-hover:                  color-mix(in oklab, var(--stuic-color-warning), black 10%);
+	--stuic-color-warning-active:                 color-mix(in oklab, var(--stuic-color-warning), black 20%);
+	--stuic-color-warning-foreground:             #ffffff;
+	--stuic-color-warning-foreground-hover:       #ffffff;
+	--stuic-color-warning-foreground-active:      #ffffff;
+
+	--stuic-color-success:                        #059669;
+	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), black 10%);
+	--stuic-color-success-active:                 color-mix(in oklab, var(--stuic-color-success), black 20%);
+	--stuic-color-success-foreground:             #ffffff;
+	--stuic-color-success-foreground-hover:       #ffffff;
+	--stuic-color-success-foreground-active:      #ffffff;
+
+	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), black 50%);
+	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
+	--stuic-color-surface-accent:                 color-mix(in srgb, var(--stuic-color-accent) 15%, var(--stuic-color-background));
+	--stuic-color-surface-accent-foreground:      color-mix(in srgb, var(--stuic-color-accent), black 50%);
+	--stuic-color-surface-accent-border:          color-mix(in srgb, var(--stuic-color-accent) 30%, var(--stuic-color-background));
+	--stuic-color-surface-destructive:            color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+	--stuic-color-surface-destructive-foreground: color-mix(in srgb, var(--stuic-color-destructive), black 50%);
+	--stuic-color-surface-destructive-border:     color-mix(in srgb, var(--stuic-color-destructive) 30%, var(--stuic-color-background));
+	--stuic-color-surface-warning:                color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background));
+	--stuic-color-surface-warning-foreground:     color-mix(in srgb, var(--stuic-color-warning), black 50%);
+	--stuic-color-surface-warning-border:         color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background));
+	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
+	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), black 50%);
+	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
+	--stuic-color-surface:                        #e5e2f3;
+	--stuic-color-surface-hover:                  color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-active:                 color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-foreground:             #14122a;
+	--stuic-color-surface-foreground-hover:       #14122a;
+	--stuic-color-surface-foreground-active:      #14122a;
+	--stuic-color-surface-1:                      #d4d0e9;
+	--stuic-color-surface-1-hover:                color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-1-active:               color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-1-foreground:           #14122a;
+	--stuic-color-surface-1-foreground-hover:     #14122a;
+	--stuic-color-surface-1-foreground-active:    #14122a;
+
+	--stuic-color-background:                     #f8f7fd;
+	--stuic-color-background-hover:               #f8f7fd;
+	--stuic-color-background-active:              #f8f7fd;
+	--stuic-color-background-foreground:          #14122a;
+	--stuic-color-background-foreground-hover:    #14122a;
+	--stuic-color-background-foreground-active:   #14122a;
+
+	--stuic-color-muted:                          #f0eefa;
+	--stuic-color-muted-hover:                    color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
+	--stuic-color-muted-active:                   color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
+	--stuic-color-muted-foreground:               #6d6989;
+	--stuic-color-muted-foreground-hover:         #6d6989;
+	--stuic-color-muted-foreground-active:        #6d6989;
+
+	--stuic-color-foreground:                     #14122a;
+	--stuic-color-foreground-hover:               #14122a;
+	--stuic-color-foreground-active:              #14122a;
+
+	--stuic-color-border:                         #d4d0e9;
+	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
+	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
+
+	--stuic-color-input:                          #ffffff;
+	--stuic-color-input-hover:                    #f8f7fd;
+	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
+
+	--stuic-color-ring:                           rgba(132, 204, 22, 0.25);
+	--stuic-color-ring-hover:                     rgba(132, 204, 22, 0.25);
+	--stuic-color-ring-active:                    rgba(132, 204, 22, 0.25);
+}
+
+/* prettier-ignore */
+:root.dark {
+	--stuic-color-primary:                        #bef264;
+	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), white 10%);
+	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), white 20%);
+	--stuic-color-primary-foreground:             #14122a;
+	--stuic-color-primary-foreground-hover:       #14122a;
+	--stuic-color-primary-foreground-active:      #14122a;
+
+	--stuic-color-accent:                         #f2749f;
+	--stuic-color-accent-hover:                   color-mix(in oklab, var(--stuic-color-accent), white 10%);
+	--stuic-color-accent-active:                  color-mix(in oklab, var(--stuic-color-accent), white 20%);
+	--stuic-color-accent-foreground:              #14122a;
+	--stuic-color-accent-foreground-hover:        #14122a;
+	--stuic-color-accent-foreground-active:       #14122a;
+
+	--stuic-color-destructive:                    #ef4444;
+	--stuic-color-destructive-hover:              color-mix(in oklab, var(--stuic-color-destructive), white 10%);
+	--stuic-color-destructive-active:             color-mix(in oklab, var(--stuic-color-destructive), white 20%);
+	--stuic-color-destructive-foreground:         #ffffff;
+	--stuic-color-destructive-foreground-hover:   #ffffff;
+	--stuic-color-destructive-foreground-active:  #ffffff;
+
+	--stuic-color-warning:                        #fbbf24;
+	--stuic-color-warning-hover:                  color-mix(in oklab, var(--stuic-color-warning), white 10%);
+	--stuic-color-warning-active:                 color-mix(in oklab, var(--stuic-color-warning), white 20%);
+	--stuic-color-warning-foreground:             #000000;
+	--stuic-color-warning-foreground-hover:       #000000;
+	--stuic-color-warning-foreground-active:      #000000;
+
+	--stuic-color-success:                        #10b981;
+	--stuic-color-success-hover:                  color-mix(in oklab, var(--stuic-color-success), white 10%);
+	--stuic-color-success-active:                 color-mix(in oklab, var(--stuic-color-success), white 20%);
+	--stuic-color-success-foreground:             #000000;
+	--stuic-color-success-foreground-hover:       #000000;
+	--stuic-color-success-foreground-active:      #000000;
+
+	--stuic-color-surface-primary:                color-mix(in srgb, var(--stuic-color-primary) 15%, var(--stuic-color-background));
+	--stuic-color-surface-primary-foreground:     color-mix(in srgb, var(--stuic-color-primary), white 50%);
+	--stuic-color-surface-primary-border:         color-mix(in srgb, var(--stuic-color-primary) 30%, var(--stuic-color-background));
+	--stuic-color-surface-accent:                 color-mix(in srgb, var(--stuic-color-accent) 15%, var(--stuic-color-background));
+	--stuic-color-surface-accent-foreground:      color-mix(in srgb, var(--stuic-color-accent), white 50%);
+	--stuic-color-surface-accent-border:          color-mix(in srgb, var(--stuic-color-accent) 30%, var(--stuic-color-background));
+	--stuic-color-surface-destructive:            color-mix(in srgb, var(--stuic-color-destructive) 15%, var(--stuic-color-background));
+	--stuic-color-surface-destructive-foreground: color-mix(in srgb, var(--stuic-color-destructive), white 50%);
+	--stuic-color-surface-destructive-border:     color-mix(in srgb, var(--stuic-color-destructive) 30%, var(--stuic-color-background));
+	--stuic-color-surface-warning:                color-mix(in srgb, var(--stuic-color-warning) 15%, var(--stuic-color-background));
+	--stuic-color-surface-warning-foreground:     color-mix(in srgb, var(--stuic-color-warning), white 50%);
+	--stuic-color-surface-warning-border:         color-mix(in srgb, var(--stuic-color-warning) 30%, var(--stuic-color-background));
+	--stuic-color-surface-success:                color-mix(in srgb, var(--stuic-color-success) 15%, var(--stuic-color-background));
+	--stuic-color-surface-success-foreground:     color-mix(in srgb, var(--stuic-color-success), white 50%);
+	--stuic-color-surface-success-border:         color-mix(in srgb, var(--stuic-color-success) 30%, var(--stuic-color-background));
+	--stuic-color-surface:                        #262340;
+	--stuic-color-surface-hover:                  color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-active:                 color-mix(in oklab, var(--stuic-color-surface), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-foreground:             #b6b3cd;
+	--stuic-color-surface-foreground-hover:       #b6b3cd;
+	--stuic-color-surface-foreground-active:      #b6b3cd;
+	--stuic-color-surface-1:                      #33304f;
+	--stuic-color-surface-1-hover:                color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 10%);
+	--stuic-color-surface-1-active:               color-mix(in oklab, var(--stuic-color-surface-1), var(--stuic-color-foreground) 20%);
+	--stuic-color-surface-1-foreground:           #d9d7e6;
+	--stuic-color-surface-1-foreground-hover:     #d9d7e6;
+	--stuic-color-surface-1-foreground-active:    #d9d7e6;
+
+	--stuic-color-background:                     #14122a;
+	--stuic-color-background-hover:               #14122a;
+	--stuic-color-background-active:              #14122a;
+	--stuic-color-background-foreground:          #f6f5fb;
+	--stuic-color-background-foreground-hover:    #f6f5fb;
+	--stuic-color-background-foreground-active:   #f6f5fb;
+
+	--stuic-color-muted:                          #1c1a35;
+	--stuic-color-muted-hover:                    color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 10%);
+	--stuic-color-muted-active:                   color-mix(in oklab, var(--stuic-color-muted), var(--stuic-color-foreground) 20%);
+	--stuic-color-muted-foreground:               #8b87ad;
+	--stuic-color-muted-foreground-hover:         #8b87ad;
+	--stuic-color-muted-foreground-active:        #8b87ad;
+
+	--stuic-color-foreground:                     #f6f5fb;
+	--stuic-color-foreground-hover:               #f6f5fb;
+	--stuic-color-foreground-active:              #f6f5fb;
+
+	--stuic-color-border:                         #262340;
+	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
+	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
+
+	--stuic-color-input:                          #14122a;
+	--stuic-color-input-hover:                    #1c1a35;
+	--stuic-color-input-active:                   color-mix(in oklab, var(--stuic-color-input), var(--stuic-color-foreground) 20%);
+
+	--stuic-color-ring:                           rgba(190, 242, 100, 0.25);
+	--stuic-color-ring-hover:                     rgba(190, 242, 100, 0.25);
+	--stuic-color-ring-active:                    rgba(190, 242, 100, 0.25);
+}
+
+/* prettier-ignore */
+@supports not (color: color-mix(in oklab, red, blue)) {
+	:root {
+		--stuic-color-primary-hover:                  #72b112;
+		--stuic-color-primary-active:                 #60970d;
+
+		--stuic-color-accent-hover:                   #d2648a;
+		--stuic-color-accent-active:                  #b45475;
+
+		--stuic-color-destructive-hover:              #bf2020;
+		--stuic-color-destructive-active:             #a31919;
+
+		--stuic-color-warning-hover:                  #d58908;
+		--stuic-color-warning-active:                 #b67406;
+
+		--stuic-color-success-hover:                  #04825a;
+		--stuic-color-success-active:                 #036e4c;
+
+		--stuic-color-surface-primary:                #e7f1da;
+		--stuic-color-surface-primary-foreground:     #42660b;
+		--stuic-color-surface-primary-border:         #d5eab8;
+		--stuic-color-surface-accent:                 #f7e3ef;
+		--stuic-color-surface-accent-foreground:      #793a50;
+		--stuic-color-surface-accent-border:          #f6d0e1;
+		--stuic-color-surface-destructive:            #f4d8dd;
+		--stuic-color-surface-destructive-foreground: #6e1313;
+		--stuic-color-surface-destructive-border:     #f0b8bc;
+		--stuic-color-surface-warning:                #f8ead9;
+		--stuic-color-surface-warning-foreground:     #7b4f06;
+		--stuic-color-surface-warning-border:         #f7dcb4;
+		--stuic-color-surface-success:                #d4e8e7;
+		--stuic-color-surface-success-foreground:     #034b35;
+		--stuic-color-surface-success-border:         #afdad1;
+		--stuic-color-surface-hover:                  #cdcadd;
+		--stuic-color-surface-active:                 #b6b3c7;
+		--stuic-color-surface-1-hover:                #bebbd4;
+		--stuic-color-surface-1-active:               #a9a6bf;
+
+		--stuic-color-muted-hover:                    #d7d5e3;
+		--stuic-color-muted-active:                   #bebdcc;
+
+		--stuic-color-border-hover:                   #bebbd4;
+		--stuic-color-border-active:                  #a9a6bf;
+
+		--stuic-color-input-active:                   #c9cad0;
+	}
+
+	:root.dark {
+		--stuic-color-primary-hover:                  #c4f478;
+		--stuic-color-primary-active:                 #cbf58a;
+
+		--stuic-color-accent-hover:                   #f583a8;
+		--stuic-color-accent-active:                  #f891b2;
+
+		--stuic-color-destructive-hover:              #f45c57;
+		--stuic-color-destructive-active:             #f8716a;
+
+		--stuic-color-warning-hover:                  #fcc64c;
+		--stuic-color-warning-active:                 #fccd66;
+
+		--stuic-color-success-hover:                  #43c08d;
+		--stuic-color-success-active:                 #5fc899;
+
+		--stuic-color-surface-primary:                #2e3433;
+		--stuic-color-surface-primary-foreground:     #dff9b2;
+		--stuic-color-surface-primary-border:         #47553b;
+		--stuic-color-surface-accent:                 #35213c;
+		--stuic-color-surface-accent-foreground:      #f9bacf;
+		--stuic-color-surface-accent-border:          #572f4d;
+		--stuic-color-surface-destructive:            #351a2e;
+		--stuic-color-surface-destructive-foreground: #f7a2a2;
+		--stuic-color-surface-destructive-border:     #562132;
+		--stuic-color-surface-warning:                #372c29;
+		--stuic-color-surface-warning-foreground:     #fddf92;
+		--stuic-color-surface-warning-border:         #594628;
+		--stuic-color-surface-success:                #132b37;
+		--stuic-color-surface-success-foreground:     #88dcc0;
+		--stuic-color-surface-success-border:         #134444;
+		--stuic-color-surface-hover:                  #373551;
+		--stuic-color-surface-active:                 #4a4862;
+		--stuic-color-surface-1-hover:                #44415f;
+		--stuic-color-surface-1-active:               #55536f;
+
+		--stuic-color-muted-hover:                    #2e2d47;
+		--stuic-color-muted-active:                   #414059;
+
+		--stuic-color-border-hover:                   #373551;
+		--stuic-color-border-active:                  #4a4862;
+
+		--stuic-color-input-active:                   #39394f;
+	}
+}

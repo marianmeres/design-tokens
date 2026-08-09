@@ -19,6 +19,8 @@ export type { ThemeSchema } from "../types.ts";
 export { default as amberOliveSafari } from "./amber-olive-safari.ts";
 /** Blue primary / orange accent theme. */
 export { default as blueOrange } from "./blue-orange.ts";
+/** Terracotta coral primary / warm gold accent on peach-cream surfaces — roasted brown dark mode. */
+export { default as coralAmber } from "./coral-amber.ts";
 /** Cyan primary / red accent theme. */
 export { default as cyanRed } from "./cyan-red.ts";
 /** Cyan primary / slate accent theme. */
@@ -47,6 +49,8 @@ export { default as mauve } from "./mauve.ts";
 export { default as mauveLimeElectric } from "./mauve-lime-electric.ts";
 /** Mauve primary / teal accent theme — soft purple greys with oceanic highlights. */
 export { default as mauveTeal } from "./mauve-teal.ts";
+/** Pine green primary / butter accent on mint-tinted paper — neutral graphite dark mode. */
+export { default as mintGraphite } from "./mint-graphite.ts";
 /** Cool blue-grey mist monochrome theme. */
 export { default as mist } from "./mist.ts";
 /** Indigo primary / sky accent on mist base — cool Nordic fjord tones. */
@@ -61,6 +65,8 @@ export { default as monokaiGreen } from "./monokai-green.ts";
 export { default as monokaiPink } from "./monokai-pink.ts";
 /** Fuchsia primary / cyan accent — lilac haze light surfaces, deep-space indigo dark. */
 export { default as nebula } from "./nebula.ts";
+/** Highlighter lime primary / bubblegum pink accent on midnight indigo — dark-first, with a lilac-paper light mode. */
+export { default as nightCandy } from "./night-candy.ts";
 /** Red primary / navy accent / slate base — American flag (Old Glory red, white & blue). */
 export { default as oldGlory } from "./old-glory.ts";
 /** Warm yellow-grey olive monochrome theme. */
@@ -120,6 +126,7 @@ export { default as zinc } from "./zinc.ts";
 
 import amberOliveSafari_ from "./amber-olive-safari.ts";
 import blueOrange_ from "./blue-orange.ts";
+import coralAmber_ from "./coral-amber.ts";
 import cyanRed_ from "./cyan-red.ts";
 import cyanSlate_ from "./cyan-slate.ts";
 import disco_ from "./disco.ts";
@@ -134,6 +141,7 @@ import limeFuchsiaNeon_ from "./lime-fuchsia-neon.ts";
 import mauve_ from "./mauve.ts";
 import mauveLimeElectric_ from "./mauve-lime-electric.ts";
 import mauveTeal_ from "./mauve-teal.ts";
+import mintGraphite_ from "./mint-graphite.ts";
 import mist_ from "./mist.ts";
 import mistIndigoFjord_ from "./mist-indigo-fjord.ts";
 import mistVioletAurora_ from "./mist-violet-aurora.ts";
@@ -141,6 +149,7 @@ import monokaiCyan_ from "./monokai-cyan.ts";
 import monokaiGreen_ from "./monokai-green.ts";
 import monokaiPink_ from "./monokai-pink.ts";
 import nebula_ from "./nebula.ts";
+import nightCandy_ from "./night-candy.ts";
 import oldGlory_ from "./old-glory.ts";
 import olive_ from "./olive.ts";
 import oliveAmberSafari_ from "./olive-amber-safari.ts";
@@ -174,6 +183,7 @@ import zinc_ from "./zinc.ts";
 export const themeNames = [
 	"amber-olive-safari",
 	"blue-orange",
+	"coral-amber",
 	"cyan-red",
 	"cyan-slate",
 	"disco",
@@ -188,6 +198,7 @@ export const themeNames = [
 	"mauve",
 	"mauve-lime-electric",
 	"mauve-teal",
+	"mint-graphite",
 	"mist",
 	"mist-indigo-fjord",
 	"mist-violet-aurora",
@@ -195,6 +206,7 @@ export const themeNames = [
 	"monokai-green",
 	"monokai-pink",
 	"nebula",
+	"night-candy",
 	"old-glory",
 	"olive",
 	"olive-amber-safari",
@@ -229,6 +241,7 @@ export const themeNames = [
 export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	amberOliveSafari: amberOliveSafari_,
 	blueOrange: blueOrange_,
+	coralAmber: coralAmber_,
 	cyanRed: cyanRed_,
 	cyanSlate: cyanSlate_,
 	disco: disco_,
@@ -243,6 +256,7 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	mauve: mauve_,
 	mauveLimeElectric: mauveLimeElectric_,
 	mauveTeal: mauveTeal_,
+	mintGraphite: mintGraphite_,
 	mist: mist_,
 	mistIndigoFjord: mistIndigoFjord_,
 	mistVioletAurora: mistVioletAurora_,
@@ -250,6 +264,7 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	monokaiGreen: monokaiGreen_,
 	monokaiPink: monokaiPink_,
 	nebula: nebula_,
+	nightCandy: nightCandy_,
 	oldGlory: oldGlory_,
 	olive: olive_,
 	oliveAmberSafari: oliveAmberSafari_,
