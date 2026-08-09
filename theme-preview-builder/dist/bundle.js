@@ -1131,7 +1131,7 @@ const dark = {
     colors: {
         intent: {
             primary: {
-                DEFAULT: colors.amber[500],
+                DEFAULT: colors.amber[600],
                 foreground: colors.black
             },
             accent: {
@@ -7287,6 +7287,73 @@ function normalizePrefix(prefix) {
     if (prefix === "") return "";
     return prefix.endsWith("-") ? prefix : prefix + "-";
 }
+class TokenSchemaError extends Error {
+    name = "TokenSchemaError";
+}
+const MERGE_HINT = "To override parts of an existing theme, merge your overrides over a " + "complete base first: mergeThemeSchema(base, overrides).";
+function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+function assertSchemaContainers(schema) {
+    const bad = (path, got)=>{
+        throw new TokenSchemaError(`Invalid TokenSchema: "${path}" is ${got === undefined ? "missing" : "not an object"} — a complete schema has the shape ` + `{ colors: { intent, role: { paired, single } } }. ${MERGE_HINT}`);
+    };
+    if (!isPlainObject(schema)) bad("(schema)", schema);
+    if (!isPlainObject(schema.colors)) bad("colors", schema.colors);
+    if (!isPlainObject(schema.colors.intent)) bad("colors.intent", schema.colors.intent);
+    if (!isPlainObject(schema.colors.role)) bad("colors.role", schema.colors.role);
+    if (!isPlainObject(schema.colors.role.paired)) {
+        bad("colors.role.paired", schema.colors.role.paired);
+    }
+    if (!isPlainObject(schema.colors.role.single)) {
+        bad("colors.role.single", schema.colors.role.single);
+    }
+}
+function assertColorPair(value, path) {
+    if (!isPlainObject(value)) {
+        throw new TokenSchemaError(`Invalid TokenSchema: "${path}" must be an object with string ` + `"DEFAULT" and "foreground" (got ${describe(value)}). ${MERGE_HINT}`);
+    }
+    for (const key of [
+        "DEFAULT",
+        "foreground"
+    ]){
+        if (typeof value[key] !== "string") {
+            throw new TokenSchemaError(`Invalid TokenSchema: "${path}" must declare a string "${key}" ` + `(got ${describe(value[key])}). ${MERGE_HINT}`);
+        }
+    }
+    assertOptionalStates(value, [
+        "hover",
+        "active",
+        "foregroundHover",
+        "foregroundActive"
+    ], path);
+}
+function assertOptionalStates(value, keys, path) {
+    for (const key of keys){
+        const v = value[key];
+        if (v !== undefined && v !== null && typeof v !== "string") {
+            throw new TokenSchemaError(`Invalid TokenSchema: "${path}.${key}" must be a string when ` + `present (got ${describe(v)}). ${MERGE_HINT}`);
+        }
+    }
+}
+function assertSingleColor(value, path) {
+    if (typeof value === "string") return;
+    if (!isPlainObject(value) || typeof value.DEFAULT !== "string") {
+        throw new TokenSchemaError(`Invalid TokenSchema: "${path}" must be a string or an object with ` + `a string "DEFAULT" (got ${describe(value)}). ${MERGE_HINT}`);
+    }
+    assertOptionalStates(value, [
+        "hover",
+        "active"
+    ], path);
+}
+function describe(value) {
+    if (value === null) return "null";
+    if (Array.isArray(value)) return "an array";
+    if (typeof value === "object") {
+        return `an object with keys [${Object.keys(value).join(", ")}]`;
+    }
+    return typeof value === "string" ? JSON.stringify(value) : String(value);
+}
 function isSingleColorObject(value) {
     return value !== null && typeof value === "object" && !Array.isArray(value) && "DEFAULT" in value;
 }
@@ -7342,13 +7409,16 @@ function generateCssTokens(schema, prefix, options = {}) {
     const deriveStates = opts.deriveStates ?? true;
     const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
     const fallback = opts.fallback ?? "none";
+    assertSchemaContainers(schema);
     const p = normalizePrefix(prefix);
     const tokens = {};
+    let referencesForeground = false;
     const intentStrategy = {
         kind: "contrast",
         mode
     };
     for (const [key, pair] of Object.entries(schema.colors.intent)){
+        assertColorPair(pair, `colors.intent.${key}`);
         const filled = deriveStates ? fillPairStates(pair, p, key, intentStrategy) : pair;
         generatePairedColorTokens(tokens, key, filled, p);
     }
@@ -7363,15 +7433,30 @@ function generateCssTokens(schema, prefix, options = {}) {
         ref: `var(--${p}color-foreground)`
     };
     for (const [key, pair] of Object.entries(schema.colors.role.paired)){
-        const filled = key === "background" || !deriveStates ? pair : fillPairStates(pair, p, key, roleStrategy);
+        assertColorPair(pair, `colors.role.paired.${key}`);
+        const derive = key !== "background" && deriveStates;
+        if (derive && (pair.hover === undefined || pair.active === undefined)) {
+            referencesForeground = true;
+        }
+        const filled = derive ? fillPairStates(pair, p, key, roleStrategy) : pair;
         generatePairedColorTokens(tokens, key, filled, p);
     }
     for (const [key, color] of Object.entries(schema.colors.role.single)){
+        assertSingleColor(color, `colors.role.single.${key}`);
         if (isSingleColorObject(color) && deriveStates) {
+            if (color.hover === undefined || color.active === undefined) {
+                referencesForeground = true;
+            }
             generateSingleColorTokens(tokens, key, fillColorValueStates(color, p, key, roleStrategy), p);
         } else {
             generateSingleColorTokens(tokens, key, color, p);
         }
+    }
+    if (Object.keys(schema.colors.intent).length > 0 && tokens[`${p}color-background`] === undefined) {
+        throw new TokenSchemaError(`Invalid TokenSchema: "colors.role.paired.background" is required ` + `when intent colors are present — every surface-{intent} token ` + `references var(--${p}color-background), which this schema's ` + `output would never declare. ${MERGE_HINT}`);
+    }
+    if (referencesForeground && tokens[`${p}color-foreground`] === undefined) {
+        throw new TokenSchemaError(`Invalid TokenSchema: "colors.role.single.foreground" is required ` + `when role hover/active states are derived — derived values ` + `reference var(--${p}color-foreground), which this schema's ` + `output would never declare. Declare it, or pass ` + `deriveStates: false. ${MERGE_HINT}`);
     }
     return fallback === "static" ? resolveStaticTokens(tokens) : tokens;
 }

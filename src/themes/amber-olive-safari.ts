@@ -64,7 +64,7 @@ const dark = {
 	colors: {
 		intent: {
 			primary: {
-				DEFAULT: colors.amber[500],
+				DEFAULT: colors.amber[600],
 				foreground: colors.black,
 			},
 			accent: {

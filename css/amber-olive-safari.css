@@ -96,7 +96,7 @@
 
 /* prettier-ignore */
 :root.dark {
-	--stuic-color-primary:                        #f59e0b;
+	--stuic-color-primary:                        #d97706;
 	--stuic-color-primary-hover:                  color-mix(in oklab, var(--stuic-color-primary), white 10%);
 	--stuic-color-primary-active:                 color-mix(in oklab, var(--stuic-color-primary), white 20%);
 	--stuic-color-primary-foreground:             #000000;
@@ -238,8 +238,8 @@
 	}
 
 	:root.dark {
-		--stuic-color-primary-hover:                  #f7a83f;
-		--stuic-color-primary-active:                 #f9b35b;
+		--stuic-color-primary-hover:                  #de8537;
+		--stuic-color-primary-active:                 #e39352;
 
 		--stuic-color-accent-hover:                   #b3b3a6;
 		--stuic-color-accent-active:                  #bbbbaf;
@@ -253,9 +253,9 @@
 		--stuic-color-success-hover:                  #43c08d;
 		--stuic-color-success-active:                 #5fc899;
 
-		--stuic-color-surface-primary:                #3d3014;
-		--stuic-color-surface-primary-foreground:     #facf85;
-		--stuic-color-surface-primary-border:         #5e4413;
+		--stuic-color-surface-primary:                #392b14;
+		--stuic-color-surface-primary-foreground:     #ecbb83;
+		--stuic-color-surface-primary-border:         #553811;
 		--stuic-color-surface-accent:                 #32322a;
 		--stuic-color-surface-accent-foreground:      #d5d5ce;
 		--stuic-color-surface-accent-border:          #48483e;
