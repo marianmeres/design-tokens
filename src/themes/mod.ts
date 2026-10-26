@@ -105,6 +105,8 @@ export { default as slateTealOcean } from "./slate-teal-ocean.ts";
 export { default as stone } from "./stone.ts";
 /** Stone primary / orange accent earth theme. */
 export { default as stoneOrangeEarth } from "./stone-orange-earth.ts";
+/** Stone primary / teal accent oasis theme — slate-teal-ocean's warm-gray sibling. */
+export { default as stoneTealOasis } from "./stone-teal-oasis.ts";
 /** Warm neutral taupe monochrome theme. */
 export { default as taupe } from "./taupe.ts";
 /** Taupe primary / olive accent clay theme — all-earthy, warm and grounded. */
@@ -169,6 +171,7 @@ import slateCyan_ from "./slate-cyan.ts";
 import slateTealOcean_ from "./slate-teal-ocean.ts";
 import stone_ from "./stone.ts";
 import stoneOrangeEarth_ from "./stone-orange-earth.ts";
+import stoneTealOasis_ from "./stone-teal-oasis.ts";
 import taupe_ from "./taupe.ts";
 import taupeOliveClay_ from "./taupe-olive-clay.ts";
 import taupeRoseBlush_ from "./taupe-rose-blush.ts";
@@ -226,6 +229,7 @@ export const themeNames = [
 	"slate-teal-ocean",
 	"stone",
 	"stone-orange-earth",
+	"stone-teal-oasis",
 	"taupe",
 	"taupe-olive-clay",
 	"taupe-rose-blush",
@@ -284,6 +288,7 @@ export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {
 	slateTealOcean: slateTealOcean_,
 	stone: stone_,
 	stoneOrangeEarth: stoneOrangeEarth_,
+	stoneTealOasis: stoneTealOasis_,
 	taupe: taupe_,
 	taupeOliveClay: taupeOliveClay_,
 	taupeRoseBlush: taupeRoseBlush_,

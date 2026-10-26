@@ -6444,7 +6444,125 @@ const theme44 = {
     light: light39,
     dark: dark39
 };
+const light40 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.stone[700],
+                foreground: colors.white
+            },
+            accent: {
+                DEFAULT: colors.teal[500],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.red[600],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[500],
+                foreground: colors.white
+            },
+            success: {
+                DEFAULT: colors.teal[600],
+                foreground: colors.white
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.stone[50],
+                    foreground: colors.stone[900]
+                },
+                muted: {
+                    DEFAULT: colors.stone[100],
+                    foreground: colors.stone[500]
+                },
+                surface: {
+                    DEFAULT: colors.stone[200],
+                    foreground: colors.stone[900]
+                },
+                "surface-1": {
+                    DEFAULT: colors.stone[300],
+                    foreground: colors.stone[900]
+                }
+            },
+            single: {
+                foreground: colors.stone[900],
+                border: {
+                    DEFAULT: colors.stone[300]
+                },
+                input: {
+                    DEFAULT: colors.white,
+                    hover: colors.stone[50]
+                },
+                ring: rgba(colors.teal[500], 0.2)
+            }
+        }
+    }
+};
+const dark40 = {
+    colors: {
+        intent: {
+            primary: {
+                DEFAULT: colors.stone[400],
+                foreground: colors.stone[950]
+            },
+            accent: {
+                DEFAULT: colors.teal[600],
+                foreground: colors.white
+            },
+            destructive: {
+                DEFAULT: colors.red[500],
+                foreground: colors.white
+            },
+            warning: {
+                DEFAULT: colors.amber[400],
+                foreground: colors.black
+            },
+            success: {
+                DEFAULT: colors.teal[500],
+                foreground: colors.black
+            }
+        },
+        role: {
+            paired: {
+                background: {
+                    DEFAULT: colors.stone[950],
+                    foreground: colors.stone[50]
+                },
+                muted: {
+                    DEFAULT: colors.stone[900],
+                    foreground: colors.stone[500]
+                },
+                surface: {
+                    DEFAULT: colors.stone[800],
+                    foreground: colors.stone[400]
+                },
+                "surface-1": {
+                    DEFAULT: colors.stone[700],
+                    foreground: colors.stone[300]
+                }
+            },
+            single: {
+                foreground: colors.stone[50],
+                border: {
+                    DEFAULT: colors.stone[700]
+                },
+                input: {
+                    DEFAULT: colors.stone[950],
+                    hover: colors.stone[900]
+                },
+                ring: rgba(colors.teal[400], 0.25)
+            }
+        }
+    }
+};
 const theme45 = {
+    light: light40,
+    dark: dark40
+};
+const theme46 = {
     light: {
         colors: {
             intent: {
@@ -6560,7 +6678,7 @@ const theme45 = {
         }
     }
 };
-const light40 = {
+const light41 = {
     colors: {
         intent: {
             primary: {
@@ -6617,7 +6735,7 @@ const light40 = {
         }
     }
 };
-const dark40 = {
+const dark41 = {
     colors: {
         intent: {
             primary: {
@@ -6674,11 +6792,11 @@ const dark40 = {
         }
     }
 };
-const theme46 = {
-    light: light40,
-    dark: dark40
+const theme47 = {
+    light: light41,
+    dark: dark41
 };
-const light41 = {
+const light42 = {
     colors: {
         intent: {
             primary: {
@@ -6735,7 +6853,7 @@ const light41 = {
         }
     }
 };
-const dark41 = {
+const dark42 = {
     colors: {
         intent: {
             primary: {
@@ -6792,11 +6910,11 @@ const dark41 = {
         }
     }
 };
-const theme47 = {
-    light: light41,
-    dark: dark41
+const theme48 = {
+    light: light42,
+    dark: dark42
 };
-const light42 = {
+const light43 = {
     colors: {
         intent: {
             primary: {
@@ -6853,7 +6971,7 @@ const light42 = {
         }
     }
 };
-const dark42 = {
+const dark43 = {
     colors: {
         intent: {
             primary: {
@@ -6910,11 +7028,11 @@ const dark42 = {
         }
     }
 };
-const theme48 = {
-    light: light42,
-    dark: dark42
+const theme49 = {
+    light: light43,
+    dark: dark43
 };
-const light43 = {
+const light44 = {
     colors: {
         intent: {
             primary: {
@@ -6971,7 +7089,7 @@ const light43 = {
         }
     }
 };
-const dark43 = {
+const dark44 = {
     colors: {
         intent: {
             primary: {
@@ -7028,11 +7146,11 @@ const dark43 = {
         }
     }
 };
-const theme49 = {
-    light: light43,
-    dark: dark43
+const theme50 = {
+    light: light44,
+    dark: dark44
 };
-const light44 = {
+const light45 = {
     colors: {
         intent: {
             primary: {
@@ -7089,7 +7207,7 @@ const light44 = {
         }
     }
 };
-const dark44 = {
+const dark45 = {
     colors: {
         intent: {
             primary: {
@@ -7146,11 +7264,11 @@ const dark44 = {
         }
     }
 };
-const theme50 = {
-    light: light44,
-    dark: dark44
+const theme51 = {
+    light: light45,
+    dark: dark45
 };
-const light45 = {
+const light46 = {
     colors: {
         intent: {
             primary: {
@@ -7207,7 +7325,7 @@ const light45 = {
         }
     }
 };
-const dark45 = {
+const dark46 = {
     colors: {
         intent: {
             primary: {
@@ -7264,9 +7382,9 @@ const dark45 = {
         }
     }
 };
-const theme51 = {
-    light: light45,
-    dark: dark45
+const theme52 = {
+    light: light46,
+    dark: dark46
 };
 const pink1 = "#f6329b";
 const mint2 = "#5deab5";
@@ -7288,7 +7406,7 @@ const flesh = {
     800: "#36202e",
     900: "#251521"
 };
-const light46 = {
+const light47 = {
     colors: {
         intent: {
             primary: {
@@ -7345,7 +7463,7 @@ const light46 = {
         }
     }
 };
-const dark46 = {
+const dark47 = {
     colors: {
         intent: {
             primary: {
@@ -7402,11 +7520,11 @@ const dark46 = {
         }
     }
 };
-const theme52 = {
-    light: light46,
-    dark: dark46
-};
 const theme53 = {
+    light: light47,
+    dark: dark47
+};
+const theme54 = {
     light: {
         colors: {
             intent: {
@@ -7568,6 +7686,7 @@ const themeNames = [
     "slate-teal-ocean",
     "stone",
     "stone-orange-earth",
+    "stone-teal-oasis",
     "taupe",
     "taupe-olive-clay",
     "taupe-rose-blush",
@@ -7624,15 +7743,16 @@ const bundledThemes = {
     slateTealOcean: theme42,
     stone: theme43,
     stoneOrangeEarth: theme44,
-    taupe: theme45,
-    taupeOliveClay: theme46,
-    taupeRoseBlush: theme47,
-    tealRose: theme48,
-    velvet: theme49,
-    violetLime: theme50,
-    violetRoseDusk: theme51,
-    watermelon: theme52,
-    zinc: theme53
+    stoneTealOasis: theme45,
+    taupe: theme46,
+    taupeOliveClay: theme47,
+    taupeRoseBlush: theme48,
+    tealRose: theme49,
+    velvet: theme50,
+    violetLime: theme51,
+    violetRoseDusk: theme52,
+    watermelon: theme53,
+    zinc: theme54
 };
 const bundledThemeNames = Object.keys(bundledThemes);
 function getBundledTheme(name) {
@@ -7684,15 +7804,16 @@ const mod = {
     slateTealOcean: theme42,
     stone: theme43,
     stoneOrangeEarth: theme44,
-    taupe: theme45,
-    taupeOliveClay: theme46,
-    taupeRoseBlush: theme47,
-    tealRose: theme48,
-    velvet: theme49,
-    violetLime: theme50,
-    violetRoseDusk: theme51,
-    watermelon: theme52,
-    zinc: theme53,
+    stoneTealOasis: theme45,
+    taupe: theme46,
+    taupeOliveClay: theme47,
+    taupeRoseBlush: theme48,
+    tealRose: theme49,
+    velvet: theme50,
+    violetLime: theme51,
+    violetRoseDusk: theme52,
+    watermelon: theme53,
+    zinc: theme54,
     themeNames: themeNames,
     bundledThemes: bundledThemes,
     bundledThemeNames: bundledThemeNames,
