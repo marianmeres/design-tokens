@@ -1,4 +1,5 @@
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import {
 	evaluateColorExpression,
 	formatColor,
@@ -18,95 +19,106 @@ const evalTo = (
 
 // --- parsing ---
 
-Deno.test("parseColor - hex forms", () => {
-	assertEquals(formatColor(parseColor("#abc")!), "#aabbcc");
-	assertEquals(formatColor(parseColor("#AABBCC")!), "#aabbcc");
-	assertEquals(formatColor(parseColor("#ff000080")!), "rgba(255, 0, 0, 0.502)");
-	assertEquals(formatColor(parseColor("#f00f")!), "#ff0000");
+test("parseColor - hex forms", () => {
+	assert.deepStrictEqual(formatColor(parseColor("#abc")!), "#aabbcc");
+	assert.deepStrictEqual(formatColor(parseColor("#AABBCC")!), "#aabbcc");
+	assert.deepStrictEqual(
+		formatColor(parseColor("#ff000080")!),
+		"rgba(255, 0, 0, 0.502)",
+	);
+	assert.deepStrictEqual(formatColor(parseColor("#f00f")!), "#ff0000");
 });
 
-Deno.test("parseColor - rgb/rgba, legacy and modern syntax", () => {
-	assertEquals(formatColor(parseColor("rgb(255, 0, 0)")!), "#ff0000");
-	assertEquals(formatColor(parseColor("rgb(255 0 0)")!), "#ff0000");
-	assertEquals(
+test("parseColor - rgb/rgba, legacy and modern syntax", () => {
+	assert.deepStrictEqual(formatColor(parseColor("rgb(255, 0, 0)")!), "#ff0000");
+	assert.deepStrictEqual(formatColor(parseColor("rgb(255 0 0)")!), "#ff0000");
+	assert.deepStrictEqual(
 		formatColor(parseColor("rgba(255, 0, 0, 0.5)")!),
 		"rgba(255, 0, 0, 0.5)",
 	);
-	assertEquals(formatColor(parseColor("rgb(255 0 0 / 50%)")!), "rgba(255, 0, 0, 0.5)");
-	assertEquals(formatColor(parseColor("rgb(100%, 0%, 0%)")!), "#ff0000");
+	assert.deepStrictEqual(
+		formatColor(parseColor("rgb(255 0 0 / 50%)")!),
+		"rgba(255, 0, 0, 0.5)",
+	);
+	assert.deepStrictEqual(formatColor(parseColor("rgb(100%, 0%, 0%)")!), "#ff0000");
 });
 
-Deno.test("parseColor - hsl, both percentage and bare-number syntax", () => {
-	assertEquals(formatColor(parseColor("hsl(210, 50%, 40%)")!), "#336699");
-	assertEquals(formatColor(parseColor("hsl(210 50 40)")!), "#336699");
-	assertEquals(
+test("parseColor - hsl, both percentage and bare-number syntax", () => {
+	assert.deepStrictEqual(formatColor(parseColor("hsl(210, 50%, 40%)")!), "#336699");
+	assert.deepStrictEqual(formatColor(parseColor("hsl(210 50 40)")!), "#336699");
+	assert.deepStrictEqual(
 		formatColor(parseColor("hsl(210deg 50% 40% / .5)")!),
 		"rgba(51, 102, 153, 0.5)",
 	);
 });
 
-Deno.test("parseColor - named keywords", () => {
-	assertEquals(formatColor(parseColor("black")!), "#000000");
-	assertEquals(formatColor(parseColor("white")!), "#ffffff");
-	assertEquals(parseColor("transparent")!.a, 0);
+test("parseColor - named keywords", () => {
+	assert.deepStrictEqual(formatColor(parseColor("black")!), "#000000");
+	assert.deepStrictEqual(formatColor(parseColor("white")!), "#ffffff");
+	assert.deepStrictEqual(parseColor("transparent")!.a, 0);
 });
 
-Deno.test("parseColor - rejects values that are not statically resolvable", () => {
-	assertEquals(parseColor("currentColor"), null);
-	assertEquals(parseColor("var(--x)"), null);
-	assertEquals(parseColor("inherit"), null);
-	assertEquals(parseColor("#12345"), null);
-	assertEquals(parseColor("rgb(1, 2)"), null);
-	assertEquals(parseColor(""), null);
+test("parseColor - rejects values that are not statically resolvable", () => {
+	assert.deepStrictEqual(parseColor("currentColor"), null);
+	assert.deepStrictEqual(parseColor("var(--x)"), null);
+	assert.deepStrictEqual(parseColor("inherit"), null);
+	assert.deepStrictEqual(parseColor("#12345"), null);
+	assert.deepStrictEqual(parseColor("rgb(1, 2)"), null);
+	assert.deepStrictEqual(parseColor(""), null);
 });
 
 // The OKLab transfer functions are the whole basis of the hover/active
 // fallback, so pin them against published reference values rather than against
 // our own output.
-Deno.test("parseColor - OKLab transfer matches reference values", () => {
-	assertEquals(formatColor(parseColor("oklab(1 0 0)")!), "#ffffff");
-	assertEquals(formatColor(parseColor("oklab(0 0 0)")!), "#000000");
-	assertEquals(
+test("parseColor - OKLab transfer matches reference values", () => {
+	assert.deepStrictEqual(formatColor(parseColor("oklab(1 0 0)")!), "#ffffff");
+	assert.deepStrictEqual(formatColor(parseColor("oklab(0 0 0)")!), "#000000");
+	assert.deepStrictEqual(
 		formatColor(parseColor("oklab(0.6279554 0.2249316 0.1258463)")!),
 		"#ff0000",
 	);
-	assertEquals(
+	assert.deepStrictEqual(
 		formatColor(parseColor("oklab(0.8664396 -0.2338874 0.1794985)")!),
 		"#00ff00",
 	);
-	assertEquals(
+	assert.deepStrictEqual(
 		formatColor(parseColor("oklab(0.4520137 -0.0324547 -0.3115281)")!),
 		"#0000ff",
 	);
-	assertEquals(
+	assert.deepStrictEqual(
 		formatColor(parseColor("oklch(0.6279554 0.2576833 29.2338851)")!),
 		"#ff0000",
 	);
 });
 
-Deno.test("parseColor - OKLab round-trips sRGB colors losslessly", () => {
-	for (
-		const hex of ["#463947", "#14b8a6", "#e11d48", "#f59e0b", "#fafafa", "#18181b"]
-	) {
-		assertEquals(evalTo(`color-mix(in oklab, ${hex}, ${hex})`), hex);
+test("parseColor - OKLab round-trips sRGB colors losslessly", () => {
+	for (const hex of [
+		"#463947",
+		"#14b8a6",
+		"#e11d48",
+		"#f59e0b",
+		"#fafafa",
+		"#18181b",
+	]) {
+		assert.deepStrictEqual(evalTo(`color-mix(in oklab, ${hex}, ${hex})`), hex);
 	}
 });
 
 // --- mixing ---
 
-Deno.test("mixColors - 50/50 srgb", () => {
-	assertEquals(evalTo("color-mix(in srgb, red, blue)"), "#800080");
+test("mixColors - 50/50 srgb", () => {
+	assert.deepStrictEqual(evalTo("color-mix(in srgb, red, blue)"), "#800080");
 });
 
-Deno.test("mixColors - an omitted percentage is 100 minus the other", () => {
-	assertEquals(
+test("mixColors - an omitted percentage is 100 minus the other", () => {
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, red 25%, blue)"),
 		evalTo("color-mix(in srgb, red 25%, blue 75%)"),
 	);
 });
 
-Deno.test("mixColors - percentages summing under 100 scale the result alpha", () => {
-	assertEquals(
+test("mixColors - percentages summing under 100 scale the result alpha", () => {
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, red 30%, blue 30%)"),
 		"rgba(128, 0, 128, 0.6)",
 	);
@@ -114,39 +126,42 @@ Deno.test("mixColors - percentages summing under 100 scale the result alpha", ()
 
 // This is why theme `ring` values can be plain rgba(): mixing with
 // `transparent` is premultiplied, so only alpha changes.
-Deno.test("mixColors - mixing with transparent preserves the color and only lowers alpha", () => {
-	assertEquals(
+test("mixColors - mixing with transparent preserves the color and only lowers alpha", () => {
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, #463947 20%, transparent)"),
 		"rgba(70, 57, 71, 0.2)",
 	);
-	assertEquals(
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, red 50%, transparent)"),
 		"rgba(255, 0, 0, 0.5)",
 	);
 });
 
-Deno.test("mixColors - percentage may precede the color", () => {
-	assertEquals(
+test("mixColors - percentage may precede the color", () => {
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, 25% red, blue)"),
 		evalTo("color-mix(in srgb, red 25%, blue)"),
 	);
 });
 
-Deno.test("mixColors - two zero percentages are invalid", () => {
-	assertEquals(mixColors("srgb", parseColor("red")!, 0, parseColor("blue")!, 0), null);
-	assertEquals(evalTo("color-mix(in srgb, red 0%, blue 0%)"), null);
+test("mixColors - two zero percentages are invalid", () => {
+	assert.deepStrictEqual(
+		mixColors("srgb", parseColor("red")!, 0, parseColor("blue")!, 0),
+		null,
+	);
+	assert.deepStrictEqual(evalTo("color-mix(in srgb, red 0%, blue 0%)"), null);
 });
 
 // --- var() resolution ---
 
-Deno.test("evaluateColorExpression - resolves var() through a lookup", () => {
+test("evaluateColorExpression - resolves var() through a lookup", () => {
 	const tokens: Record<string, string> = {
 		"x-color-primary": "#27272a",
 		"x-color-background": "#fafafa",
 	};
 	const lookup = (n: string) => tokens[n];
 	// 0.15*0x27 + 0.85*0xfa = 218 = 0xda; blue channel rounds up to 0xdb
-	assertEquals(
+	assert.deepStrictEqual(
 		evalTo(
 			"color-mix(in srgb, var(--x-color-primary) 15%, var(--x-color-background))",
 			lookup,
@@ -155,43 +170,49 @@ Deno.test("evaluateColorExpression - resolves var() through a lookup", () => {
 	);
 });
 
-Deno.test("evaluateColorExpression - resolves chained var() references", () => {
+test("evaluateColorExpression - resolves chained var() references", () => {
 	const tokens: Record<string, string> = {
 		a: "#ff0000",
 		b: "var(--a)",
 		c: "color-mix(in srgb, var(--b), black)",
 	};
-	assertEquals(evalTo("var(--c)", (n) => tokens[n]), "#800000");
+	assert.deepStrictEqual(
+		evalTo("var(--c)", (n) => tokens[n]),
+		"#800000",
+	);
 });
 
-Deno.test("evaluateColorExpression - uses the var() fallback when undefined", () => {
-	assertEquals(evalTo("var(--nope, #ff0000)"), "#ff0000");
-	assertEquals(evalTo("var(--nope)"), null);
+test("evaluateColorExpression - uses the var() fallback when undefined", () => {
+	assert.deepStrictEqual(evalTo("var(--nope, #ff0000)"), "#ff0000");
+	assert.deepStrictEqual(evalTo("var(--nope)"), null);
 });
 
-Deno.test("evaluateColorExpression - reference cycles resolve to null, not a hang", () => {
+test("evaluateColorExpression - reference cycles resolve to null, not a hang", () => {
 	const tokens: Record<string, string> = {
 		a: "color-mix(in oklab, var(--b), black 10%)",
 		b: "color-mix(in oklab, var(--a), black 10%)",
 	};
-	assertEquals(evalTo("var(--a)", (n) => tokens[n]), null);
+	assert.deepStrictEqual(
+		evalTo("var(--a)", (n) => tokens[n]),
+		null,
+	);
 });
 
-Deno.test("evaluateColorExpression - unsupported interpolation spaces are left unresolved", () => {
+test("evaluateColorExpression - unsupported interpolation spaces are left unresolved", () => {
 	// Deliberate: approximating a hue-interpolated mix would be worse than
 	// omitting the fallback for that token.
-	assertEquals(evalTo("color-mix(in oklch, red, blue)"), null);
-	assertEquals(evalTo("color-mix(in hsl, red, blue)"), null);
-	assertEquals(evalTo("color-mix(in lab, red, blue)"), null);
+	assert.deepStrictEqual(evalTo("color-mix(in oklch, red, blue)"), null);
+	assert.deepStrictEqual(evalTo("color-mix(in hsl, red, blue)"), null);
+	assert.deepStrictEqual(evalTo("color-mix(in lab, red, blue)"), null);
 });
 
-Deno.test("evaluateColorExpression - unresolvable operands make the whole mix unresolvable", () => {
-	assertEquals(evalTo("color-mix(in srgb, currentColor, black)"), null);
-	assertEquals(evalTo("color-mix(in srgb, var(--undefined), black)"), null);
+test("evaluateColorExpression - unresolvable operands make the whole mix unresolvable", () => {
+	assert.deepStrictEqual(evalTo("color-mix(in srgb, currentColor, black)"), null);
+	assert.deepStrictEqual(evalTo("color-mix(in srgb, var(--undefined), black)"), null);
 });
 
-Deno.test("evaluateColorExpression - nested color-mix", () => {
-	assertEquals(
+test("evaluateColorExpression - nested color-mix", () => {
+	assert.deepStrictEqual(
 		evalTo("color-mix(in srgb, color-mix(in srgb, red, blue), black)"),
 		"#400040",
 	);
@@ -199,34 +220,37 @@ Deno.test("evaluateColorExpression - nested color-mix", () => {
 
 // --- serialization ---
 
-Deno.test("formatColor - opaque colors serialize as hex, translucent as legacy rgba()", () => {
-	assertEquals(formatColor({ r: 1, g: 0, b: 0, a: 1 }), "#ff0000");
-	assertEquals(formatColor({ r: 1, g: 0, b: 0, a: 0.25 }), "rgba(255, 0, 0, 0.25)");
+test("formatColor - opaque colors serialize as hex, translucent as legacy rgba()", () => {
+	assert.deepStrictEqual(formatColor({ r: 1, g: 0, b: 0, a: 1 }), "#ff0000");
+	assert.deepStrictEqual(
+		formatColor({ r: 1, g: 0, b: 0, a: 0.25 }),
+		"rgba(255, 0, 0, 0.25)",
+	);
 });
 
-Deno.test("formatColor - clamps out-of-gamut components", () => {
-	assertEquals(formatColor({ r: 1.4, g: -0.2, b: 0.5, a: 1 }), "#ff0080");
+test("formatColor - clamps out-of-gamut components", () => {
+	assert.deepStrictEqual(formatColor({ r: 1.4, g: -0.2, b: 0.5, a: 1 }), "#ff0080");
 });
 
 // --- rgba() authoring helper ---
 
-Deno.test("rgba - is exactly equivalent to mixing with transparent", () => {
-	assertEquals(
+test("rgba - is exactly equivalent to mixing with transparent", () => {
+	assert.deepStrictEqual(
 		rgba("#2563eb", 0.25),
 		evalTo("color-mix(in srgb, #2563eb 25%, transparent)"),
 	);
-	assertEquals(rgba("#2563eb", 0.25), "rgba(37, 99, 235, 0.25)");
+	assert.deepStrictEqual(rgba("#2563eb", 0.25), "rgba(37, 99, 235, 0.25)");
 });
 
-Deno.test("rgba - alpha 1 collapses back to hex", () => {
-	assertEquals(rgba("#2563eb", 1), "#2563eb");
+test("rgba - alpha 1 collapses back to hex", () => {
+	assert.deepStrictEqual(rgba("#2563eb", 1), "#2563eb");
 });
 
-Deno.test("rgba - throws on an unparseable color", () => {
-	assertThrows(() => rgba("not-a-color", 0.5), TypeError);
+test("rgba - throws on an unparseable color", () => {
+	assert.throws(() => rgba("not-a-color", 0.5), TypeError);
 });
 
-Deno.test("rgba - accepts non-hex inputs", () => {
-	assertEquals(rgba("red", 0.5), "rgba(255, 0, 0, 0.5)");
-	assert(rgba("hsl(210, 50%, 40%)", 0.5).startsWith("rgba(51, 102, 153"));
+test("rgba - accepts non-hex inputs", () => {
+	assert.deepStrictEqual(rgba("red", 0.5), "rgba(255, 0, 0, 0.5)");
+	assert.ok(rgba("hsl(210, 50%, 40%)", 0.5).startsWith("rgba(51, 102, 153"));
 });

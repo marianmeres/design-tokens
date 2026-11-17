@@ -19,12 +19,7 @@ export type ColorPair = {
 export type SingleColor = string | ColorValue;
 
 /** Known intent color keys */
-export type IntentColorKey =
-	| "primary"
-	| "accent"
-	| "destructive"
-	| "warning"
-	| "success";
+export type IntentColorKey = "primary" | "accent" | "destructive" | "warning" | "success";
 
 /** Known role color keys (paired, required) */
 export type RolePairedKey = "background" | "muted" | "surface";
@@ -41,29 +36,27 @@ export type RolePairedOptionalKey = "surface-1";
 export type RoleSingleKey = "foreground" | "border" | "input" | "ring";
 
 /** Helper: require known keys, allow additional */
-export type WithRequired<TRequired extends string, TValue> =
-	& Record<
-		TRequired,
-		TValue
-	>
-	& Record<string, TValue>;
+export type WithRequired<TRequired extends string, TValue> = Record<TRequired, TValue> &
+	Record<string, TValue>;
 
 /** Helper: partial known keys, allow additional */
-export type WithOptional<TKnown extends string, TValue> =
-	& Partial<
-		Record<TKnown, TValue>
-	>
-	& Record<string, TValue>;
+export type WithOptional<TKnown extends string, TValue> = Partial<
+	Record<TKnown, TValue>
+> &
+	Record<string, TValue>;
 
 /**
  * Helper: require some known keys, offer others as optional, and allow any
  * additional string keys. Used for collections like role.paired where certain
  * keys are mandatory and others are conventional but not required.
  */
-export type WithKnown<TRequired extends string, TOptional extends string, TValue> =
-	& Record<TRequired, TValue>
-	& Partial<Record<TOptional, TValue>>
-	& Record<string, TValue>;
+export type WithKnown<
+	TRequired extends string,
+	TOptional extends string,
+	TValue,
+> = Record<TRequired, TValue> &
+	Partial<Record<TOptional, TValue>> &
+	Record<string, TValue>;
 
 /**
  * Complete token schema for a single mode (light or dark). Completeness is

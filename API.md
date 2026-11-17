@@ -704,7 +704,7 @@ import "@marianmeres/design-tokens/css/mauve-teal.css";
 The default prefix on the published files is `stuic-` (i.e. tokens are named `--stuic-color-primary`, etc.). To regenerate the CSS files locally with a different prefix, set the `CSS_PREFIX` environment variable before running the build:
 
 ```bash
-CSS_PREFIX=app- deno task css:build
+CSS_PREFIX=app- pnpm run css:build
 ```
 
 Available files: `amber-olive-safari.css`, `blue-orange.css`, `cyan-red.css`, `mauve-teal.css`, `mist-indigo-fjord.css`, `taupe-rose-blush.css`, etc. (one per bundled theme).

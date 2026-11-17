@@ -1,4 +1,5 @@
-import { assert } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { parseColor, type Rgba } from "../src/color.ts";
 import { bundledThemes } from "../src/themes/mod.ts";
 import type { SingleColor, TokenSchema } from "../src/types.ts";
@@ -38,7 +39,7 @@ const contrast = (a: Rgba, b: Rgba): number => {
 	return (hi + 0.05) / (lo + 0.05);
 };
 
-Deno.test("bundled themes: border is visible on every fill layer, in both modes", () => {
+test("bundled themes: border is visible on every fill layer, in both modes", () => {
 	const failures: string[] = [];
 	let checked = 0;
 	for (const [name, theme] of Object.entries(bundledThemes)) {
@@ -64,11 +65,11 @@ Deno.test("bundled themes: border is visible on every fill layer, in both modes"
 			}
 		}
 	}
-	assert(checked > 0, "no theme x mode x layer combinations were checked");
-	assert(
+	assert.ok(checked > 0, "no theme x mode x layer combinations were checked");
+	assert.ok(
 		!failures.length,
-		`border contrast below ${FLOOR}:1 on ${failures.length} layer(s):\n  ${
-			failures.join("\n  ")
-		}`,
+		`border contrast below ${FLOOR}:1 on ${failures.length} layer(s):\n  ${failures.join(
+			"\n  ",
+		)}`,
 	);
 });

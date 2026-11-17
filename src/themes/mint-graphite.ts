@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Mint graphite — a muted pine green primary with a soft butter accent. Light
 // mode floats on mint-tinted paper; dark mode drops the tint entirely and sits

@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Disco — gold lamé and pink lasers. Light mode is daytime at the venue:
 // mirrorball silver (mauve neutrals) with gold-on-black buttons. Dark mode is

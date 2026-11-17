@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Nebula — a magenta gas cloud pierced by cyan starlight. Light mode floats
 // on a lilac haze (violet surfaces), dark mode sinks into deep-space indigo.

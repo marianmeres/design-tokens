@@ -1,4 +1,5 @@
-import { assert, assertEquals } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { generateCssTokens } from "../src/generate.ts";
 import { generateRebootBridge, generateThemedCss } from "../src/reboot-bridge.ts";
 import type { ThemeSchema, TokenSchema } from "../src/types.ts";
@@ -35,122 +36,131 @@ const PREFIX = "my-";
 
 // --- generateRebootBridge ---
 
-Deno.test("generateRebootBridge - maps primary to bs-link-color", () => {
+test("generateRebootBridge - maps primary to bs-link-color", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-link-color"], "var(--my-color-primary)");
+	assert.deepStrictEqual(bridge["bs-link-color"], "var(--my-color-primary)");
 });
 
-Deno.test("generateRebootBridge - generates RGB triplet for link color", () => {
+test("generateRebootBridge - generates RGB triplet for link color", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-link-color-rgb"], "13, 110, 253");
+	assert.deepStrictEqual(bridge["bs-link-color-rgb"], "13, 110, 253");
 });
 
-Deno.test("generateRebootBridge - maps background to bs-body-bg", () => {
+test("generateRebootBridge - maps background to bs-body-bg", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-body-bg"], "var(--my-color-background)");
-	assertEquals(bridge["bs-body-bg-rgb"], "255, 255, 255");
+	assert.deepStrictEqual(bridge["bs-body-bg"], "var(--my-color-background)");
+	assert.deepStrictEqual(bridge["bs-body-bg-rgb"], "255, 255, 255");
 });
 
-Deno.test("generateRebootBridge - maps background-foreground to bs-body-color", () => {
+test("generateRebootBridge - maps background-foreground to bs-body-color", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-body-color"], "var(--my-color-background-foreground)");
-	assertEquals(bridge["bs-body-color-rgb"], "33, 37, 41");
+	assert.deepStrictEqual(
+		bridge["bs-body-color"],
+		"var(--my-color-background-foreground)",
+	);
+	assert.deepStrictEqual(bridge["bs-body-color-rgb"], "33, 37, 41");
 });
 
-Deno.test("generateRebootBridge - maps destructive to bs-danger", () => {
+test("generateRebootBridge - maps destructive to bs-danger", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-danger"], "var(--my-color-destructive)");
+	assert.deepStrictEqual(bridge["bs-danger"], "var(--my-color-destructive)");
 });
 
-Deno.test("generateRebootBridge - maps semantic colors", () => {
+test("generateRebootBridge - maps semantic colors", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-primary"], "var(--my-color-primary)");
-	assertEquals(bridge["bs-warning"], "var(--my-color-warning)");
-	assertEquals(bridge["bs-success"], "var(--my-color-success)");
+	assert.deepStrictEqual(bridge["bs-primary"], "var(--my-color-primary)");
+	assert.deepStrictEqual(bridge["bs-warning"], "var(--my-color-warning)");
+	assert.deepStrictEqual(bridge["bs-success"], "var(--my-color-success)");
 });
 
-Deno.test("generateRebootBridge - maps border", () => {
+test("generateRebootBridge - maps border", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-border-color"], "var(--my-color-border)");
+	assert.deepStrictEqual(bridge["bs-border-color"], "var(--my-color-border)");
 });
 
-Deno.test("generateRebootBridge - maps muted to secondary", () => {
+test("generateRebootBridge - maps muted to secondary", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assertEquals(bridge["bs-secondary-bg"], "var(--my-color-muted)");
-	assertEquals(bridge["bs-secondary-color"], "var(--my-color-muted-foreground)");
+	assert.deepStrictEqual(bridge["bs-secondary-bg"], "var(--my-color-muted)");
+	assert.deepStrictEqual(
+		bridge["bs-secondary-color"],
+		"var(--my-color-muted-foreground)",
+	);
 });
 
-Deno.test("generateRebootBridge - link-hover uses primary-hover token", () => {
+test("generateRebootBridge - link-hover uses primary-hover token", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
 	// link-hover should reference the token var, not the raw color-mix value
-	assertEquals(bridge["bs-link-hover-color"], "var(--my-color-primary-hover)");
+	assert.deepStrictEqual(
+		bridge["bs-link-hover-color"],
+		"var(--my-color-primary-hover)",
+	);
 });
 
 // --- generateThemedCss ---
 
-Deno.test("generateThemedCss - contains both tokens and bridge vars", () => {
+test("generateThemedCss - contains both tokens and bridge vars", () => {
 	const themeSchema: ThemeSchema = { light: schema };
 	const css = generateThemedCss(themeSchema, PREFIX);
-	assert(css.includes("--my-color-primary:"));
-	assert(css.includes("--bs-link-color:"));
-	assert(css.includes("--bs-body-bg:"));
+	assert.ok(css.includes("--my-color-primary:"));
+	assert.ok(css.includes("--bs-link-color:"));
+	assert.ok(css.includes("--bs-body-bg:"));
 });
 
-Deno.test("generateThemedCss - dark mode section present when dark schema provided", () => {
+test("generateThemedCss - dark mode section present when dark schema provided", () => {
 	const themeSchema: ThemeSchema = {
 		light: schema,
 		dark: schema,
 	};
 	const css = generateThemedCss(themeSchema, PREFIX);
-	assert(css.includes(":root {"));
-	assert(css.includes(":root.dark {"));
+	assert.ok(css.includes(":root {"));
+	assert.ok(css.includes(":root.dark {"));
 	// Both sections should have bridge vars
 	const parts = css.split(":root.dark");
-	assert(parts[0].includes("--bs-link-color:"));
-	assert(parts[1].includes("--bs-link-color:"));
+	assert.ok(parts[0].includes("--bs-link-color:"));
+	assert.ok(parts[1].includes("--bs-link-color:"));
 });
 
 // --- legacy fallback ---
 
-Deno.test("generateThemedCss - defaults to the @supports fallback", () => {
+test("generateThemedCss - defaults to the @supports fallback", () => {
 	const css = generateThemedCss({ light: schema, dark: schema }, PREFIX);
-	assert(css.includes("@supports not (color: color-mix(in oklab, red, blue))"));
+	assert.ok(css.includes("@supports not (color: color-mix(in oklab, red, blue))"));
 	// Additive: the pre-fallback output is still a prefix of the new one.
 	const none = generateThemedCss({ light: schema, dark: schema }, PREFIX, {
 		fallback: "none",
 	});
-	assert(css.startsWith(none));
+	assert.ok(css.startsWith(none));
 });
 
-Deno.test("generateThemedCss - fallback 'static' emits zero color-mix", () => {
+test("generateThemedCss - fallback 'static' emits zero color-mix", () => {
 	const css = generateThemedCss({ light: schema, dark: schema }, PREFIX, {
 		fallback: "static",
 	});
-	assertEquals(css.includes("color-mix("), false);
+	assert.deepStrictEqual(css.includes("color-mix("), false);
 });
 
 // The gap documented on generateRebootBridge: -rgb companions are omitted when
 // the token is a color-mix() expression. Static mode closes it.
-Deno.test("generateRebootBridge - omits the -rgb companion for color-mix tokens", () => {
+test("generateRebootBridge - omits the -rgb companion for color-mix tokens", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assert(bridge["bs-link-hover-color"]);
-	assertEquals(bridge["bs-link-hover-color-rgb"], undefined);
+	assert.ok(bridge["bs-link-hover-color"]);
+	assert.deepStrictEqual(bridge["bs-link-hover-color-rgb"], undefined);
 });
 
-Deno.test("generateRebootBridge - static tokens restore the -rgb companion", () => {
+test("generateRebootBridge - static tokens restore the -rgb companion", () => {
 	const tokens = generateCssTokens(schema, PREFIX, { fallback: "static" });
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assert(bridge["bs-link-hover-color-rgb"]);
+	assert.ok(bridge["bs-link-hover-color-rgb"]);
 	// #0d6efd (13, 110, 253) mixed 10% toward black in oklab
-	assertEquals(bridge["bs-link-hover-color-rgb"], "10, 95, 220");
+	assert.deepStrictEqual(bridge["bs-link-hover-color-rgb"], "10, 95, 220");
 });

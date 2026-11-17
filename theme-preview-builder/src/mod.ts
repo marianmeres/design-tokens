@@ -3,8 +3,8 @@
 export * from "@marianmeres/vanilla";
 
 export { colors } from "../../src/colors.ts";
-export * as themes from "../../src/themes/mod.ts";
 export { generateCssTokens, toCssString } from "../../src/generate.ts";
+export * as themes from "../../src/themes/mod.ts";
 export type {
 	ColorPair,
 	ColorValue,
@@ -13,27 +13,21 @@ export type {
 	TokenSchema,
 } from "../../src/types.ts";
 
-import { colors } from "../../src/colors.ts";
 import { formatColor, parseColor, rgba } from "../../src/color.ts";
+import type { colors } from "../../src/colors.ts";
 import type { SingleColor, ThemeSchema } from "../../src/types.ts";
 
 type ColorsMap = typeof colors;
 
 /** Build a hex → name reverse map (e.g. "#2563eb" → "blue-600") */
-export function buildHexToNameMap(
-	c: ColorsMap,
-): Map<string, string> {
+export function buildHexToNameMap(c: ColorsMap): Map<string, string> {
 	const map = new Map<string, string>();
 	for (const [family, value] of Object.entries(c)) {
 		if (typeof value === "string") {
 			// black, white
 			map.set(value.toLowerCase(), family);
 		} else {
-			for (
-				const [shade, hex] of Object.entries(
-					value as Record<string, string>,
-				)
-			) {
+			for (const [shade, hex] of Object.entries(value as Record<string, string>)) {
 				if (!map.has(hex.toLowerCase())) {
 					map.set(hex.toLowerCase(), `${family}-${shade}`);
 				}
@@ -49,12 +43,8 @@ export function buildHexToNameMap(
  * and the older `color-mix(in srgb, #hex N%, transparent)` spelling. Returns null
  * for an opaque or unparseable value.
  */
-export function parseAlphaValue(
-	v: string,
-): { hex: string; percent: number } | null {
-	const m = v.match(
-		/color-mix\(in srgb,\s*(#[0-9a-fA-F]+)\s+(\d+)%,\s*transparent\)/,
-	);
+export function parseAlphaValue(v: string): { hex: string; percent: number } | null {
+	const m = v.match(/color-mix\(in srgb,\s*(#[0-9a-fA-F]+)\s+(\d+)%,\s*transparent\)/);
 	if (m) return { hex: m[1], percent: parseInt(m[2]) };
 	const c = parseColor(v);
 	if (!c || c.a >= 1) return null;
@@ -99,10 +89,7 @@ export function selectionForHex(
 }
 
 // Helper: format an opaque hex as a palette reference for TS export
-function hexRef(
-	hex: string,
-	hexToName: Map<string, string>,
-): string {
+function hexRef(hex: string, hexToName: Map<string, string>): string {
 	const sel = selectionForHex(hex, hexToName);
 	if (!sel) return `"${hex}"`;
 	if (sel.shade === null) return `colors.${sel.family}`;
@@ -110,20 +97,14 @@ function hexRef(
 }
 
 // Helper: format any color value for TS export; translucent ones become rgba(ref, a)
-function colorRef(
-	value: string,
-	hexToName: Map<string, string>,
-): string {
+function colorRef(value: string, hexToName: Map<string, string>): string {
 	const alpha = parseAlphaValue(value);
 	if (alpha) return `rgba(${hexRef(alpha.hex, hexToName)}, ${alpha.percent / 100})`;
 	return hexRef(value, hexToName);
 }
 
 // Helper: format a SingleColor for TS export
-function singleColorToTs(
-	val: SingleColor,
-	hexToName: Map<string, string>,
-): string {
+function singleColorToTs(val: SingleColor, hexToName: Map<string, string>): string {
 	if (typeof val === "string") return colorRef(val, hexToName);
 	const parts: string[] = [];
 	parts.push(`DEFAULT: ${colorRef(val.DEFAULT, hexToName)}`);
@@ -155,32 +136,22 @@ export function themeToTypeScript(
 		}
 
 		const pairedLines: string[] = [];
-		for (
-			const [key, pair] of Object.entries(
-				s.colors.role.paired,
-			)
-		) {
+		for (const [key, pair] of Object.entries(s.colors.role.paired)) {
 			const parts = [
 				`DEFAULT: ${colorRef(pair.DEFAULT, hexToName)}`,
 				`foreground: ${colorRef(pair.foreground, hexToName)}`,
 			];
 			const qkey = key.includes("-") ? `"${key}"` : key;
 			pairedLines.push(
-				`\t\t\t\t${qkey}: {\n\t\t\t\t\t${
-					parts.join(",\n\t\t\t\t\t")
-				},\n\t\t\t\t}`,
+				`\t\t\t\t${qkey}: {\n\t\t\t\t\t${parts.join(
+					",\n\t\t\t\t\t",
+				)},\n\t\t\t\t}`,
 			);
 		}
 
 		const singleLines: string[] = [];
-		for (
-			const [key, val] of Object.entries(
-				s.colors.role.single,
-			)
-		) {
-			singleLines.push(
-				`\t\t\t\t${key}: ${singleColorToTs(val, hexToName)}`,
-			);
+		for (const [key, val] of Object.entries(s.colors.role.single)) {
+			singleLines.push(`\t\t\t\t${key}: ${singleColorToTs(val, hexToName)}`);
 		}
 
 		return `const ${mode} = {

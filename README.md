@@ -1,5 +1,6 @@
 # @marianmeres/design-tokens
 
+[![NPM](https://img.shields.io/npm/v/@marianmeres/design-tokens)](https://www.npmjs.com/package/@marianmeres/design-tokens)
 [![JSR](https://jsr.io/badges/@marianmeres/design-tokens)](https://jsr.io/@marianmeres/design-tokens)
 [![License](https://img.shields.io/github/license/marianmeres/design-tokens)](LICENSE)
 
@@ -20,6 +21,10 @@ Generated themes work everywhere. Derived tokens use `color-mix()`, which needs
 consumer could patch downstream.
 
 ## Install
+
+```sh
+npm install @marianmeres/design-tokens
+```
 
 ```sh
 deno add jsr:@marianmeres/design-tokens
@@ -309,6 +314,27 @@ See [API.md](API.md) for the complete API documentation.
 
 See [src/types.ts](src/types.ts) for the full type definitions (`TokenSchema`,
 `ThemeSchema`, `ColorPair`, `ColorValue`, etc.).
+
+## Development
+
+Node LTS (`.node-version`), pnpm, Biome, `node:test`. The source is erasable-only
+TypeScript that Node runs directly; `dist/` is built only for publishing to npm. JSR is
+served the `.ts` source (`jsr.json`).
+
+| Command                             | Does                                                          |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `pnpm install`                      | installs the dev tooling                                      |
+| `pnpm test` / `pnpm run test:watch` | `node --test` over `tests/**/*.test.ts`                       |
+| `pnpm run test:deno`                | the same suite on Deno, resolved as JSR consumers see it      |
+| `pnpm run typecheck`                | `tsc --noEmit` over `src`, `tests`, `scripts` and the preview |
+| `pnpm run lint` / `pnpm run format` | `biome check .` read-only / with `--write`                    |
+| `pnpm run ci`                       | typecheck + lint + test, what CI runs                         |
+| `pnpm run build`                    | `tsc -p tsconfig.build.json` → `dist/`, plus `css/`           |
+| `pnpm run css:build`                | regenerates `css/*.css` (`CSS_PREFIX` sets the prefix)        |
+| `pnpm run themes:build`             | regenerates the `src/themes/mod.ts` barrel                    |
+| `pnpm run preview:build`            | bundles the theme preview builder                             |
+| `pnpm run jsr:check`                | `deno publish --dry-run` with the `package.json` version      |
+| `pnpm run rp` / `pnpm run rpm`      | patch / minor release, then publish to npm and JSR            |
 
 ## License
 

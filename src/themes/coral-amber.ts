@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Coral amber — terracotta brick primary with a warm gold accent on peach-cream
 // surfaces. Neither signature color exists in the bundled palette (Tailwind's

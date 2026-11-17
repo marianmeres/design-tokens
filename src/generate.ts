@@ -1,3 +1,4 @@
+import { evaluateColorExpression, formatColor, type VarLookup } from "./color.ts";
 import type {
 	ColorPair,
 	ColorValue,
@@ -6,7 +7,6 @@ import type {
 	ThemeSchema,
 	TokenSchema,
 } from "./types.ts";
-import { evaluateColorExpression, formatColor, type VarLookup } from "./color.ts";
 
 /**
  * How to serve engines that lack `color-mix()` (Chrome/Edge < 111,
@@ -347,9 +347,12 @@ function deriveColorMixStates(
 	cssVarRef: string,
 	strategy: MixStrategy,
 ): { hover: string; active: string } {
-	const target = strategy.kind === "contrast"
-		? strategy.mode === "light" ? "black" : "white"
-		: strategy.ref;
+	const target =
+		strategy.kind === "contrast"
+			? strategy.mode === "light"
+				? "black"
+				: "white"
+			: strategy.ref;
 	return {
 		hover: `color-mix(in oklab, ${cssVarRef}, ${target} 10%)`,
 		active: `color-mix(in oklab, ${cssVarRef}, ${target} 20%)`,
@@ -399,10 +402,10 @@ function generatePairedColorTokens(
 	tokens[`${prefix}color-${key}-hover`] = pair.hover ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-active`] = pair.active ?? pair.DEFAULT;
 	tokens[`${prefix}color-${key}-foreground`] = pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-hover`] = pair.foregroundHover ??
-		pair.foreground;
-	tokens[`${prefix}color-${key}-foreground-active`] = pair.foregroundActive ??
-		pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-hover`] =
+		pair.foregroundHover ?? pair.foreground;
+	tokens[`${prefix}color-${key}-foreground-active`] =
+		pair.foregroundActive ?? pair.foreground;
 }
 
 /** Generate color tokens for a single color */
@@ -439,9 +442,8 @@ export function generateCssTokens(
 	prefix: string,
 	options: GenerateOptions | "light" | "dark" = {},
 ): GeneratedTokens {
-	const opts: GenerateOptions = typeof options === "string"
-		? { mode: options }
-		: options;
+	const opts: GenerateOptions =
+		typeof options === "string" ? { mode: options } : options;
 	const mode = opts.mode ?? "light";
 	const deriveStates = opts.deriveStates ?? true;
 	const surfaceContrast = opts.surfaceForegroundContrast ?? 50;
@@ -559,10 +561,7 @@ function getBaseColor(key: string): string {
  * Tokens are grouped by their base color name and separated by blank lines
  * for readability.
  */
-export function toCssString(
-	tokens: GeneratedTokens,
-	selector = ":root",
-): string {
+export function toCssString(tokens: GeneratedTokens, selector = ":root"): string {
 	const keys = Object.keys(tokens);
 	if (keys.length === 0) return `${selector} {\n}\n`;
 
@@ -679,10 +678,11 @@ export function generateThemeCss(
 		if (fallbackBlock) blocks.push(fallbackBlock);
 	}
 
-	let css =
-		(!cssLayer && prettierIgnore
+	let css = (
+		!cssLayer && prettierIgnore
 			? blocks.map((b) => PRETTIER_IGNORE_PREFIX + b)
-			: blocks).join("\n");
+			: blocks
+	).join("\n");
 
 	if (cssLayer) {
 		css = `@layer ${cssLayer} {\n${indent(css)}}\n`;

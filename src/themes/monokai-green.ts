@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Monokai Green — Monokai's bright lime green primary with orange accent
 // Approximation of classic Monokai palette to Tailwind colors

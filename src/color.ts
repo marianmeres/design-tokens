@@ -193,17 +193,18 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 	const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
 	const m = l - c / 2;
 	const seg = Math.floor(h / 60) % 6;
-	const rgb: [number, number, number] = seg === 0
-		? [c, x, 0]
-		: seg === 1
-		? [x, c, 0]
-		: seg === 2
-		? [0, c, x]
-		: seg === 3
-		? [0, x, c]
-		: seg === 4
-		? [x, 0, c]
-		: [c, 0, x];
+	const rgb: [number, number, number] =
+		seg === 0
+			? [c, x, 0]
+			: seg === 1
+				? [x, c, 0]
+				: seg === 2
+					? [0, c, x]
+					: seg === 3
+						? [0, x, c]
+						: seg === 4
+							? [x, 0, c]
+							: [c, 0, x];
 	return [rgb[0] + m, rgb[1] + m, rgb[2] + m];
 }
 
@@ -228,7 +229,10 @@ export function parseColor(value: string): Rgba | null {
 		let hex = input.slice(1);
 		if (!/^[0-9a-fA-F]+$/.test(hex)) return null;
 		if (hex.length === 3 || hex.length === 4) {
-			hex = hex.split("").map((c) => c + c).join("");
+			hex = hex
+				.split("")
+				.map((c) => c + c)
+				.join("");
 		}
 		if (hex.length !== 6 && hex.length !== 8) return null;
 		return {

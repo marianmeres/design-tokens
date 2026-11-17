@@ -1,4 +1,6 @@
-import { join } from "@std/path";
+import { execFileSync } from "node:child_process";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 const THEMES_DIR = "src/themes";
 const MOD_FILE = join(THEMES_DIR, "mod.ts");
@@ -11,9 +13,9 @@ function toCamelCase(s: string): string {
 // Discover theme files (exclude mod.ts and _-prefixed internals)
 const entries: { kebab: string; camel: string; jsdoc: string }[] = [];
 
-for await (const entry of Deno.readDir(THEMES_DIR)) {
+for (const entry of await readdir(THEMES_DIR, { withFileTypes: true })) {
 	if (
-		!entry.isFile ||
+		!entry.isFile() ||
 		!entry.name.endsWith(".ts") ||
 		entry.name === "mod.ts" ||
 		entry.name.startsWith("_")
@@ -25,7 +27,7 @@ for await (const entry of Deno.readDir(THEMES_DIR)) {
 	const camel = toCamelCase(kebab);
 
 	// Extract JSDoc above `export default`
-	const content = await Deno.readTextFile(join(THEMES_DIR, entry.name));
+	const content = await readFile(join(THEMES_DIR, entry.name), "utf8");
 	const match = content.match(/(\/\*\*[^]*?\*\/)\s*\nexport default/);
 	const jsdoc = match?.[1] ?? `/** ${kebab} theme. */`;
 
@@ -57,9 +59,7 @@ const lines: string[] = [
 
 for (const { kebab, camel, jsdoc } of entries) {
 	lines.push(`${jsdoc}`);
-	lines.push(
-		`export { default as ${camel} } from "./${kebab}.ts";`,
-	);
+	lines.push(`export { default as ${camel} } from "./${kebab}.ts";`);
 }
 
 // Build a camelCase import + registry map inline so the registry has no
@@ -81,9 +81,7 @@ for (const { kebab } of entries) {
 lines.push(`] as const;`);
 
 lines.push(``);
-lines.push(
-	`/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */`,
-);
+lines.push(`/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */`);
 lines.push(`export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {`);
 for (const { camel } of entries) {
 	lines.push(`\t${camel}: ${camel}_,`);
@@ -91,9 +89,7 @@ for (const { camel } of entries) {
 lines.push(`};`);
 
 lines.push(``);
-lines.push(
-	`/** All bundled theme names (camelCase). */`,
-);
+lines.push(`/** All bundled theme names (camelCase). */`);
 lines.push(
 	`export const bundledThemeNames: readonly string[] = Object.keys(bundledThemes);`,
 );
@@ -102,19 +98,17 @@ lines.push(``);
 lines.push(
 	`/** Look up a bundled theme by camelCase name. Returns undefined if unknown. */`,
 );
-lines.push(
-	`export function getBundledTheme(name: string): ThemeSchema | undefined {`,
-);
+lines.push(`export function getBundledTheme(name: string): ThemeSchema | undefined {`);
 lines.push(`\treturn bundledThemes[name];`);
 lines.push(`}`);
 lines.push(``);
 
-await Deno.writeTextFile(MOD_FILE, lines.join("\n"));
+await writeFile(MOD_FILE, lines.join("\n"));
 
-// Format with deno fmt
-const cmd = new Deno.Command("deno", { args: ["fmt", MOD_FILE] });
-await cmd.output();
+// Format with Biome (`check`, not just `format`: it also sorts the imports, so the
+// generated file passes `pnpm run lint` as written)
+execFileSync("pnpm", ["exec", "biome", "check", "--write", MOD_FILE], {
+	stdio: "inherit",
+});
 
-console.log(
-	`Generated ${MOD_FILE} with ${entries.length} themes.`,
-);
+console.log(`Generated ${MOD_FILE} with ${entries.length} themes.`);

@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Electric Lemonade — the cocktail: blue curaçao over lemon. Cobalt primary
 // with a lime twist; light mode is poured over lemon-cream surfaces, dark

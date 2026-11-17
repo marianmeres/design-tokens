@@ -1,8 +1,9 @@
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { generateThemeCss } from "../src/generate.ts";
 import { mergeThemeSchema } from "../src/merge.ts";
-import type { ThemeSchema, ThemeSchemaOverrides } from "../src/types.ts";
 import { bundledThemeNames, getBundledTheme } from "../src/themes/mod.ts";
+import type { ThemeSchema, ThemeSchemaOverrides } from "../src/types.ts";
 
 const PREFIX = "my-";
 
@@ -65,9 +66,7 @@ const base: ThemeSchema = {
 };
 
 function danglingRefs(css: string): string[] {
-	const declared = new Set(
-		[...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]),
-	);
+	const declared = new Set([...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]));
 	const referenced = new Set(
 		[...css.matchAll(/var\(--([a-z0-9-]+)\)/g)].map((m) => m[1]),
 	);
@@ -76,11 +75,11 @@ function danglingRefs(css: string): string[] {
 
 // --- identity / round-trip ---
 
-Deno.test("mergeThemeSchema - empty overrides round-trip all bundled themes byte-identically", () => {
+test("mergeThemeSchema - empty overrides round-trip all bundled themes byte-identically", () => {
 	for (const name of bundledThemeNames) {
 		const theme = getBundledTheme(name)!;
 		const merged = mergeThemeSchema(theme, {});
-		assertEquals(
+		assert.deepStrictEqual(
 			generateThemeCss(merged, "stuic-", { prettierIgnore: true }),
 			generateThemeCss(theme, "stuic-", { prettierIgnore: true }),
 			name,
@@ -88,14 +87,14 @@ Deno.test("mergeThemeSchema - empty overrides round-trip all bundled themes byte
 	}
 });
 
-Deno.test("mergeThemeSchema - absent and empty override modes yield the base mode unchanged", () => {
+test("mergeThemeSchema - absent and empty override modes yield the base mode unchanged", () => {
 	// The `dark: {}` scaffold shape: harmless here, base dark survives intact.
 	const merged = mergeThemeSchema(base, { dark: {} });
-	assertEquals(merged.light, base.light);
-	assertEquals(merged.dark, base.dark);
+	assert.deepStrictEqual(merged.light, base.light);
+	assert.deepStrictEqual(merged.dark, base.dark);
 });
 
-Deno.test("mergeThemeSchema - never mutates the base", () => {
+test("mergeThemeSchema - never mutates the base", () => {
 	const snapshot = JSON.stringify(base);
 	const merged = mergeThemeSchema(base, {
 		light: {
@@ -106,12 +105,12 @@ Deno.test("mergeThemeSchema - never mutates the base", () => {
 	});
 	merged.light.colors.intent.primary.DEFAULT = "#000000";
 	merged.light.colors.role.paired.muted.DEFAULT = "#000000";
-	assertEquals(JSON.stringify(base), snapshot);
+	assert.deepStrictEqual(JSON.stringify(base), snapshot);
 });
 
 // --- leaf replacement semantics ---
 
-Deno.test("mergeThemeSchema - replaces a whole ColorPair; base's explicit states are gone, not inherited", () => {
+test("mergeThemeSchema - replaces a whole ColorPair; base's explicit states are gone, not inherited", () => {
 	const merged = mergeThemeSchema(base, {
 		light: {
 			colors: {
@@ -120,21 +119,26 @@ Deno.test("mergeThemeSchema - replaces a whole ColorPair; base's explicit states
 		},
 	});
 	const primary = merged.light.colors.intent.primary;
-	assertEquals(primary, { DEFAULT: "#4f46e5", foreground: "#ffffff" });
-	assertEquals(primary.hover, undefined);
-	assertEquals(primary.foregroundHover, undefined);
+	assert.deepStrictEqual(primary, { DEFAULT: "#4f46e5", foreground: "#ffffff" });
+	assert.deepStrictEqual(primary.hover, undefined);
+	assert.deepStrictEqual(primary.foregroundHover, undefined);
 	// Untouched siblings survive.
-	assertEquals(merged.light.colors.intent.accent, base.light.colors.intent.accent);
+	assert.deepStrictEqual(
+		merged.light.colors.intent.accent,
+		base.light.colors.intent.accent,
+	);
 });
 
-Deno.test("mergeThemeSchema - role.single ColorValue → ColorValue replaces (stale hover gone)", () => {
+test("mergeThemeSchema - role.single ColorValue → ColorValue replaces (stale hover gone)", () => {
 	const merged = mergeThemeSchema(base, {
 		light: { colors: { role: { single: { border: { DEFAULT: "#cccccc" } } } } },
 	});
-	assertEquals(merged.light.colors.role.single.border, { DEFAULT: "#cccccc" });
+	assert.deepStrictEqual(merged.light.colors.role.single.border, {
+		DEFAULT: "#cccccc",
+	});
 });
 
-Deno.test("mergeThemeSchema - role.single string ↔ ColorValue swaps cleanly in both directions", () => {
+test("mergeThemeSchema - role.single string ↔ ColorValue swaps cleanly in both directions", () => {
 	const toObject = mergeThemeSchema(base, {
 		light: {
 			colors: {
@@ -144,7 +148,7 @@ Deno.test("mergeThemeSchema - role.single string ↔ ColorValue swaps cleanly in
 			},
 		},
 	});
-	assertEquals(toObject.light.colors.role.single.foreground, {
+	assert.deepStrictEqual(toObject.light.colors.role.single.foreground, {
 		DEFAULT: "#111111",
 		hover: "#222222",
 	});
@@ -152,12 +156,12 @@ Deno.test("mergeThemeSchema - role.single string ↔ ColorValue swaps cleanly in
 	const toString = mergeThemeSchema(base, {
 		light: { colors: { role: { single: { border: "#cccccc" } } } },
 	});
-	assertEquals(toString.light.colors.role.single.border, "#cccccc");
+	assert.deepStrictEqual(toString.light.colors.role.single.border, "#cccccc");
 });
 
 // --- typo protection ---
 
-Deno.test("mergeThemeSchema - typo'd key in an override literal is a compile error (TS2561)", () => {
+test("mergeThemeSchema - typo'd key in an override literal is a compile error (TS2561)", () => {
 	const overrides: ThemeSchemaOverrides = {
 		light: {
 			colors: {
@@ -171,64 +175,62 @@ Deno.test("mergeThemeSchema - typo'd key in an override literal is a compile err
 			},
 		},
 	};
-	assertThrows(() => mergeThemeSchema(base, overrides));
+	assert.throws(() => mergeThemeSchema(base, overrides));
 });
 
-Deno.test("mergeThemeSchema - a key the base does not have throws at runtime (JSON path)", () => {
+test("mergeThemeSchema - a key the base does not have throws at runtime (JSON path)", () => {
 	const overrides = JSON.parse(
 		`{"light":{"colors":{"intent":{"primry":{"DEFAULT":"#4f46e5","foreground":"#ffffff"}}}}}`,
 	) as ThemeSchemaOverrides;
-	assertThrows(
+	assert.throws(
 		() => mergeThemeSchema(base, overrides),
-		Error,
-		`"light.colors.intent.primry" does not exist in the base theme`,
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"light.colors.intent.primry" does not exist in the base theme`,
+			),
 	);
 });
 
-Deno.test("mergeThemeSchema - unknown container keys throw with their path", () => {
-	assertThrows(
-		() =>
-			mergeThemeSchema(
-				base,
-				JSON.parse(`{"lite":{}}`) as ThemeSchemaOverrides,
-			),
-		Error,
-		`unknown key "overrides.lite"`,
+test("mergeThemeSchema - unknown container keys throw with their path", () => {
+	assert.throws(
+		() => mergeThemeSchema(base, JSON.parse(`{"lite":{}}`) as ThemeSchemaOverrides),
+		(e: unknown) =>
+			e instanceof Error && e.message.includes(`unknown key "overrides.lite"`),
 	);
-	assertThrows(
+	assert.throws(
 		() =>
 			mergeThemeSchema(
 				base,
 				JSON.parse(`{"light":{"colours":{}}}`) as ThemeSchemaOverrides,
 			),
-		Error,
-		`unknown key "light.colours"`,
+		(e: unknown) =>
+			e instanceof Error && e.message.includes(`unknown key "light.colours"`),
 	);
 });
 
-Deno.test("mergeThemeSchema - prototype-chain key names cannot bypass the no-minting guard", () => {
+test("mergeThemeSchema - prototype-chain key names cannot bypass the no-minting guard", () => {
 	// `in` would see these on Object.prototype; the guard must use own keys
 	// only ("__proto__" would additionally fire the real setter on Node).
-	for (
-		const hostile of [
-			`{"light":{"colors":{"intent":{"constructor":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
-			`{"light":{"colors":{"role":{"single":{"toString":"#123456"}}}}}`,
-			`{"light":{"colors":{"intent":{"__proto__":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
-		]
-	) {
-		assertThrows(
+	for (const hostile of [
+		`{"light":{"colors":{"intent":{"constructor":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+		`{"light":{"colors":{"role":{"single":{"toString":"#123456"}}}}}`,
+		`{"light":{"colors":{"intent":{"__proto__":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+	]) {
+		assert.throws(
 			() => mergeThemeSchema(base, JSON.parse(hostile) as ThemeSchemaOverrides),
-			Error,
-			"does not exist in the base theme",
+			(e: unknown) =>
+				e instanceof Error &&
+				e.message.includes("does not exist in the base theme"),
 		);
 	}
 });
 
 // --- mode edge cases ---
 
-Deno.test("mergeThemeSchema - dark overrides against a light-only base throw", () => {
+test("mergeThemeSchema - dark overrides against a light-only base throw", () => {
 	const lightOnly: ThemeSchema = { light: base.light };
-	assertThrows(
+	assert.throws(
 		() =>
 			mergeThemeSchema(lightOnly, {
 				dark: {
@@ -239,19 +241,19 @@ Deno.test("mergeThemeSchema - dark overrides against a light-only base throw", (
 					},
 				},
 			}),
-		Error,
-		"base theme has no dark mode",
+		(e: unknown) =>
+			e instanceof Error && e.message.includes("base theme has no dark mode"),
 	);
 });
 
-Deno.test("mergeThemeSchema - empty dark override against a light-only base is a no-op, not an error", () => {
+test("mergeThemeSchema - empty dark override against a light-only base is a no-op, not an error", () => {
 	const lightOnly: ThemeSchema = { light: base.light };
 	const merged = mergeThemeSchema(lightOnly, { dark: {} });
-	assertEquals(merged.light, base.light);
-	assert(!("dark" in merged));
+	assert.deepStrictEqual(merged.light, base.light);
+	assert.ok(!("dark" in merged));
 });
 
-Deno.test("mergeThemeSchema - light-only base without dark overrides merges fine and stays light-only", () => {
+test("mergeThemeSchema - light-only base without dark overrides merges fine and stays light-only", () => {
 	const lightOnly: ThemeSchema = { light: base.light };
 	const merged = mergeThemeSchema(lightOnly, {
 		light: {
@@ -260,12 +262,12 @@ Deno.test("mergeThemeSchema - light-only base without dark overrides merges fine
 			},
 		},
 	});
-	assert(!("dark" in merged));
+	assert.ok(!("dark" in merged));
 });
 
 // --- merged output quality ---
 
-Deno.test("mergeThemeSchema - merged output has zero dangling var refs (audit)", () => {
+test("mergeThemeSchema - merged output has zero dangling var refs (audit)", () => {
 	const merged = mergeThemeSchema(getBundledTheme("amberOliveSafari")!, {
 		light: {
 			colors: {
@@ -274,11 +276,11 @@ Deno.test("mergeThemeSchema - merged output has zero dangling var refs (audit)",
 		},
 	});
 	const css = generateThemeCss(merged, "stuic-");
-	assert(css.includes("#4f46e5"));
-	assertEquals(danglingRefs(css), []);
+	assert.ok(css.includes("#4f46e5"));
+	assert.deepStrictEqual(danglingRefs(css), []);
 });
 
-Deno.test("mergeThemeSchema - overriding an override-typed leaf still generates with the chosen prefix", () => {
+test("mergeThemeSchema - overriding an override-typed leaf still generates with the chosen prefix", () => {
 	const merged = mergeThemeSchema(base, {
 		dark: {
 			colors: {
@@ -291,7 +293,7 @@ Deno.test("mergeThemeSchema - overriding an override-typed leaf still generates 
 		},
 	});
 	const css = generateThemeCss(merged, PREFIX);
-	assert(css.includes(":root.dark"));
-	assert(css.includes("#000000"));
-	assertEquals(danglingRefs(css), []);
+	assert.ok(css.includes(":root.dark"));
+	assert.ok(css.includes("#000000"));
+	assert.deepStrictEqual(danglingRefs(css), []);
 });
