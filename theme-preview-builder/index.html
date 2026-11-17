@@ -1168,13 +1168,13 @@
 				color: #6b7280;
 			}
 
-			.ring-row {
+			.alpha-row {
 				display: flex;
 				align-items: center;
 				gap: 0.35rem;
 				margin-bottom: 0.3rem;
 			}
-			.ring-row label {
+			.alpha-row label {
 				width: 7rem;
 				font-family: ui-monospace, "SF Mono", Monaco, monospace;
 				font-size: 0.7rem;
@@ -1183,23 +1183,23 @@
 				padding-right: 0.35rem;
 				color: #555;
 			}
-			.ring-row select {
+			.alpha-row select {
 				font-size: 0.7rem;
 				padding: 0.15rem 0.25rem;
 				border: 1px solid #d1d5db;
 				border-radius: 3px;
 				background: white;
 			}
-			.ring-row .family-select {
+			.alpha-row .family-select {
 				width: 6rem;
 			}
-			.ring-row .shade-select {
+			.alpha-row .shade-select {
 				width: 4rem;
 			}
-			.ring-row input[type="range"] {
+			.alpha-row input[type="range"] {
 				width: 4rem;
 			}
-			.ring-row .percent-label {
+			.alpha-row .percent-label {
 				font-size: 0.7rem;
 				color: #888;
 				width: 2rem;
@@ -1754,19 +1754,20 @@
 			</div>
 		</template>
 
-		<!-- The ring row: family + shade + an opacity range (ring is a color-mix). -->
-		<template id="tpl-ring-row">
-			<div class="ring-row">
-				<label>ring</label>
+		<!-- A translucent color row: family + shade + an opacity range. Used for
+		     `border` and `ring`, which themes spell as rgba(<color>, alpha). -->
+		<template id="tpl-alpha-row">
+			<div class="alpha-row">
+				<label data-ref="label"></label>
 				<select
 					class="family-select"
 					data-ref="family"
-					data-on="change:ringChange"
+					data-on="change:alphaChange"
 				></select>
 				<select
 					class="shade-select"
 					data-ref="shade"
-					data-on="change:ringChange"
+					data-on="change:alphaChange"
 				></select>
 				<input
 					type="range"
@@ -1774,7 +1775,7 @@
 					max="50"
 					value="20"
 					data-ref="range"
-					data-on="input:ringChange"
+					data-on="input:alphaChange"
 				/>
 				<span class="percent-label" data-ref="percent">20%</span>
 				<span class="color-chip" data-ref="chip"></span>
@@ -1785,8 +1786,8 @@
 
 		<script type="module">
 			import {
+				buildAlphaValue,
 				buildHexToNameMap,
-				buildRingValue,
 				colors,
 				createView,
 				delegate,
@@ -1795,7 +1796,7 @@
 				hexForSelection,
 				mount,
 				observable,
-				parseRingValue,
+				parseAlphaValue,
 				reactTo,
 				refs,
 				selectionForHex,
@@ -1853,6 +1854,9 @@
 				"surface-1",
 			];
 			const PREFIX = "dt-";
+			// `border` is the foreground at this opacity, in both modes, so it shows
+			// on every fill layer (page, muted, surface, surface-1).
+			const BORDER_ALPHA = 15;
 
 			const hexToName = buildHexToNameMap(colors);
 
@@ -1867,7 +1871,6 @@
 					},
 					single: {
 						foreground: 900,
-						border: 300,
 						input: 50,
 						inputHover: 100,
 					},
@@ -1881,7 +1884,6 @@
 					},
 					single: {
 						foreground: 50,
-						border: 700,
 						input: 900,
 						inputHover: 800,
 					},
@@ -1976,7 +1978,10 @@
 					m.colors.role.single.foreground =
 						c[preset.single.foreground];
 					m.colors.role.single.border = {
-						DEFAULT: c[preset.single.border],
+						DEFAULT: buildAlphaValue(
+							c[preset.single.foreground],
+							BORDER_ALPHA,
+						),
 					};
 					const input =
 						m.colors.role.single.input &&
@@ -2083,13 +2088,13 @@
 				});
 			}
 
-			/** The ring row — ring is a `color-mix(... transparent)`, so it adds an
-			 *  opacity slider on top of the family/shade pick. */
-			function createRingRow({ schema, onSet, mode }) {
-				const path = "colors.role.single.ring";
+			/** A translucent color row (`border`, `ring`) — an opacity slider on top
+			 *  of the family/shade pick; writes `rgba(<hex>, alpha)`. */
+			function createAlphaRow({ schema, onSet, mode, label, path }) {
 				return createView((track) => {
-					const el = fromTemplate("tpl-ring-row");
+					const el = fromTemplate("tpl-alpha-row");
 					const r = refs(el);
+					r.label.textContent = label;
 					populateFamily(r.family);
 					populateShade(r.shade);
 
@@ -2101,10 +2106,10 @@
 						const percent = parseInt(r.range.value);
 						r.percent.textContent = percent + "%";
 						if (hex)
-							onSet(mode, path, buildRingValue(hex, percent));
+							onSet(mode, path, buildAlphaValue(hex, percent));
 					};
 
-					track(delegate(el, { ringChange: commit }));
+					track(delegate(el, { alphaChange: commit }));
 
 					track(
 						schema.subscribe(() => {
@@ -2113,11 +2118,12 @@
 								typeof raw === "string"
 									? raw
 									: (raw?.DEFAULT ?? "");
-							const parsed = parseRingValue(str);
+							const parsed = parseAlphaValue(str);
 							if (parsed) {
 								applySelection(r, parsed.hex);
 								r.range.value = String(parsed.percent);
 								r.percent.textContent = parsed.percent + "%";
+								r.chip.style.background = str;
 							} else {
 								applySelection(r, str || null);
 							}
@@ -2225,12 +2231,13 @@
 							"foreground",
 							"colors.role.single.foreground",
 						);
-						row(
-							fsTrack,
-							rows,
-							"border",
-							"colors.role.single.border.DEFAULT",
-						);
+						mount(fsTrack, rows, createAlphaRow, {
+							schema,
+							onSet: setColor,
+							mode,
+							label: "border",
+							path: "colors.role.single.border.DEFAULT",
+						});
 						row(
 							fsTrack,
 							rows,
@@ -2243,10 +2250,12 @@
 							"input-hover",
 							"colors.role.single.input.hover",
 						);
-						mount(fsTrack, rows, createRingRow, {
+						mount(fsTrack, rows, createAlphaRow, {
 							schema,
 							onSet: setColor,
 							mode,
+							label: "ring",
+							path: "colors.role.single.ring",
 						});
 					},
 				);

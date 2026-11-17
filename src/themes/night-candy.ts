@@ -81,7 +81,7 @@ const light = {
 			single: {
 				foreground: dawn[900],
 				border: {
-					DEFAULT: dawn[300],
+					DEFAULT: rgba(dawn[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -139,7 +139,7 @@ const dark = {
 			single: {
 				foreground: night[50],
 				border: {
-					DEFAULT: night[700],
+					DEFAULT: rgba(night[50], 0.15),
 				},
 				input: {
 					DEFAULT: night[900],

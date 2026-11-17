@@ -78,7 +78,7 @@ const light = {
 			single: {
 				foreground: rind[900],
 				border: {
-					DEFAULT: rind[300],
+					DEFAULT: rgba(rind[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -136,7 +136,7 @@ const dark = {
 			single: {
 				foreground: flesh[50],
 				border: {
-					DEFAULT: flesh[700],
+					DEFAULT: rgba(flesh[50], 0.15),
 				},
 				input: {
 					DEFAULT: flesh[900],

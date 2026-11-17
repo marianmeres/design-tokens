@@ -51,7 +51,7 @@ const light = {
 			single: {
 				foreground: colors.stone[900],
 				border: {
-					DEFAULT: colors.stone[300],
+					DEFAULT: rgba(colors.stone[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.stone[50],
@@ -109,7 +109,7 @@ const dark = {
 			single: {
 				foreground: colors.stone[50],
 				border: {
-					DEFAULT: colors.stone[700],
+					DEFAULT: rgba(colors.stone[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.stone[900],

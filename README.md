@@ -47,19 +47,15 @@ const theme: ThemeSchema = {
 					muted: { DEFAULT: "#f5f5f5", foreground: "#737373" },
 					surface: { DEFAULT: "#e5e5e5", foreground: "#171717" },
 					// Optional extra elevation (all bundled themes include it).
-					// Also the correct hairline/divider color for content drawn
-					// *on* a surface — it sits one step from `surface` in both
-					// light and dark, so it always contrasts (unlike `border`).
 					"surface-1": { DEFAULT: "#d4d4d4", foreground: "#171717" },
 				},
 				single: {
 					foreground: "#171717",
-					// Hairline calibrated against the page background / muted
-					// layer. It may deliberately coincide with a `surface` step
-					// (in several dark themes `border` == `surface`), so use it to
-					// outline a card *against* the page — not as a divider drawn
-					// *on* a surface. Use `surface-1` for on-surface dividers.
-					border: { DEFAULT: "#d4d4d4" },
+					// A translucent tint of the foreground, so it shows on every
+					// fill layer (page, muted, surface, surface-1): as a card
+					// outline and as a divider drawn on a surface alike. All
+					// bundled themes use the foreground at 15%, in both modes.
+					border: { DEFAULT: "rgba(23, 23, 23, 0.15)" },
 					input: { DEFAULT: "#ffffff" },
 					ring: "rgba(37, 99, 235, 0.25)",
 				},
@@ -129,7 +125,7 @@ const myTheme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.slate[900],
-					border: { DEFAULT: colors.slate[300] },
+					border: { DEFAULT: rgba(colors.slate[900], 0.15) },
 					input: { DEFAULT: colors.slate[50], hover: colors.slate[100] },
 					ring: rgba(colors.blue[600], 0.25),
 				},
@@ -149,6 +145,12 @@ The `rgba()` helper is the `color-mix()`-free way to write a translucent tint. I
 exactly equivalent to `color-mix(in srgb, <color> 25%, transparent)` — mixing with
 `transparent` is premultiplied, so only alpha changes — but it needs no modern-browser
 support and it keeps your schema free of expressions the generator has to work around.
+
+`border` is written this way on purpose. A solid border picked from the same ladder as
+the fills inevitably equals one of them in some mode, and a divider drawn on that layer
+disappears. A translucent foreground tint contrasts with whatever it is painted on. It is
+translucent, though: two overlapping borders read darker, and a fill painted in `border`
+shows what is under it.
 
 ## Overriding a bundled theme
 

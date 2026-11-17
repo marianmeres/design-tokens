@@ -48,7 +48,7 @@ const light = {
 			single: {
 				foreground: colors.olive[900],
 				border: {
-					DEFAULT: colors.olive[300],
+					DEFAULT: rgba(colors.olive[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.olive[50],
@@ -106,7 +106,7 @@ const dark = {
 			single: {
 				foreground: colors.olive[50],
 				border: {
-					DEFAULT: colors.olive[600],
+					DEFAULT: rgba(colors.olive[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.olive[900],

@@ -48,7 +48,7 @@ const light = {
 			single: {
 				foreground: colors.taupe[900],
 				border: {
-					DEFAULT: colors.taupe[300],
+					DEFAULT: rgba(colors.taupe[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.taupe[50],
@@ -106,7 +106,7 @@ const dark = {
 			single: {
 				foreground: colors.taupe[50],
 				border: {
-					DEFAULT: colors.taupe[700],
+					DEFAULT: rgba(colors.taupe[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.taupe[900],

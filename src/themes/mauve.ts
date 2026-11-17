@@ -30,7 +30,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.mauve[900],
-					border: { DEFAULT: colors.mauve[300] },
+					border: { DEFAULT: rgba(colors.mauve[900], 0.15) },
 					input: { DEFAULT: colors.mauve[50], hover: colors.mauve[100] },
 					ring: rgba(colors.mauve[800], 0.2),
 				},
@@ -64,7 +64,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.mauve[50],
-					border: { DEFAULT: colors.mauve[700] },
+					border: { DEFAULT: rgba(colors.mauve[50], 0.15) },
 					input: { DEFAULT: colors.mauve[900], hover: colors.mauve[800] },
 					ring: rgba(colors.mauve[200], 0.25),
 				},

@@ -1,3 +1,455 @@
+const NAMED = {
+    transparent: "#00000000",
+    black: "#000000",
+    silver: "#c0c0c0",
+    gray: "#808080",
+    grey: "#808080",
+    white: "#ffffff",
+    maroon: "#800000",
+    red: "#ff0000",
+    purple: "#800080",
+    fuchsia: "#ff00ff",
+    magenta: "#ff00ff",
+    green: "#008000",
+    lime: "#00ff00",
+    olive: "#808000",
+    yellow: "#ffff00",
+    navy: "#000080",
+    blue: "#0000ff",
+    teal: "#008080",
+    aqua: "#00ffff",
+    cyan: "#00ffff",
+    orange: "#ffa500"
+};
+const clamp01 = (n)=>n < 0 ? 0 : n > 1 ? 1 : n;
+function splitTopLevel(input, separator) {
+    const out = [];
+    let depth = 0;
+    let cur = "";
+    for (const ch of input){
+        if (ch === "(") depth++;
+        else if (ch === ")") depth--;
+        if (ch === separator && depth === 0) {
+            out.push(cur.trim());
+            cur = "";
+        } else {
+            cur += ch;
+        }
+    }
+    out.push(cur.trim());
+    return out;
+}
+function splitWhitespace(input) {
+    const out = [];
+    let depth = 0;
+    let cur = "";
+    for (const ch of input){
+        if (ch === "(") depth++;
+        else if (ch === ")") depth--;
+        if (/\s/.test(ch) && depth === 0) {
+            if (cur) out.push(cur);
+            cur = "";
+        } else {
+            cur += ch;
+        }
+    }
+    if (cur) out.push(cur);
+    return out;
+}
+function unwrapFn(input, name) {
+    const lower = input.toLowerCase();
+    if (!lower.startsWith(name + "(") || !input.endsWith(")")) return null;
+    const inner = input.slice(name.length + 1, -1);
+    let depth = 0;
+    for (const ch of inner){
+        if (ch === "(") depth++;
+        else if (ch === ")") {
+            depth--;
+            if (depth < 0) return null;
+        }
+    }
+    return depth === 0 ? inner : null;
+}
+function parseNumeric(token, pctBasis) {
+    const t = token.trim().toLowerCase();
+    if (t === "none") return 0;
+    if (t.endsWith("%")) {
+        const n = Number(t.slice(0, -1));
+        return Number.isFinite(n) ? n / 100 * pctBasis : null;
+    }
+    const n = Number(t);
+    return Number.isFinite(n) ? n : null;
+}
+function parseAngle(token) {
+    const t = token.trim().toLowerCase();
+    if (t === "none") return 0;
+    const m = t.match(/^([+-]?[\d.]+)(deg|rad|grad|turn)?$/);
+    if (!m) return null;
+    const n = Number(m[1]);
+    if (!Number.isFinite(n)) return null;
+    switch(m[2]){
+        case "rad":
+            return n * 180 / Math.PI;
+        case "grad":
+            return n * 0.9;
+        case "turn":
+            return n * 360;
+        default:
+            return n;
+    }
+}
+function normalizeFnArgs(inner) {
+    const slash = splitTopLevel(inner, "/");
+    if (slash.length === 2) {
+        const parts = splitWhitespace(slash[0]);
+        return parts.length === 3 ? {
+            parts,
+            alpha: slash[1]
+        } : null;
+    }
+    if (slash.length > 2) return null;
+    const commas = splitTopLevel(inner, ",");
+    if (commas.length === 3) return {
+        parts: commas,
+        alpha: null
+    };
+    if (commas.length === 4) {
+        return {
+            parts: commas.slice(0, 3),
+            alpha: commas[3]
+        };
+    }
+    if (commas.length === 1) {
+        const parts = splitWhitespace(inner);
+        if (parts.length === 3) return {
+            parts,
+            alpha: null
+        };
+    }
+    return null;
+}
+function parseAlpha(token) {
+    if (token === null) return 1;
+    const n = parseNumeric(token, 1);
+    return n === null ? null : clamp01(n);
+}
+function hslToRgb(h, s, l) {
+    h = (h % 360 + 360) % 360;
+    s = clamp01(s);
+    l = clamp01(l);
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(h / 60 % 2 - 1));
+    const m = l - c / 2;
+    const seg = Math.floor(h / 60) % 6;
+    const rgb = seg === 0 ? [
+        c,
+        x,
+        0
+    ] : seg === 1 ? [
+        x,
+        c,
+        0
+    ] : seg === 2 ? [
+        0,
+        c,
+        x
+    ] : seg === 3 ? [
+        0,
+        x,
+        c
+    ] : seg === 4 ? [
+        x,
+        0,
+        c
+    ] : [
+        c,
+        0,
+        x
+    ];
+    return [
+        rgb[0] + m,
+        rgb[1] + m,
+        rgb[2] + m
+    ];
+}
+function parseColor(value) {
+    const input = value.trim();
+    if (!input) return null;
+    const named = NAMED[input.toLowerCase()];
+    if (named) return parseColor(named);
+    if (input.startsWith("#")) {
+        let hex = input.slice(1);
+        if (!/^[0-9a-fA-F]+$/.test(hex)) return null;
+        if (hex.length === 3 || hex.length === 4) {
+            hex = hex.split("").map((c)=>c + c).join("");
+        }
+        if (hex.length !== 6 && hex.length !== 8) return null;
+        return {
+            r: parseInt(hex.slice(0, 2), 16) / 255,
+            g: parseInt(hex.slice(2, 4), 16) / 255,
+            b: parseInt(hex.slice(4, 6), 16) / 255,
+            a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+        };
+    }
+    for (const name of [
+        "rgba",
+        "rgb"
+    ]){
+        const inner = unwrapFn(input, name);
+        if (inner === null) continue;
+        const args = normalizeFnArgs(inner);
+        if (!args) return null;
+        const [r, g, b] = args.parts.map((p)=>parseNumeric(p, 255));
+        const a = parseAlpha(args.alpha);
+        if (r === null || g === null || b === null || a === null) return null;
+        return {
+            r: clamp01(r / 255),
+            g: clamp01(g / 255),
+            b: clamp01(b / 255),
+            a
+        };
+    }
+    for (const name of [
+        "hsla",
+        "hsl"
+    ]){
+        const inner = unwrapFn(input, name);
+        if (inner === null) continue;
+        const args = normalizeFnArgs(inner);
+        if (!args) return null;
+        const h = parseAngle(args.parts[0]);
+        const s = parseNumeric(args.parts[1], 1);
+        const l = parseNumeric(args.parts[2], 1);
+        const a = parseAlpha(args.alpha);
+        if (h === null || s === null || l === null || a === null) return null;
+        const sNorm = args.parts[1].trim().endsWith("%") ? s : s / 100;
+        const lNorm = args.parts[2].trim().endsWith("%") ? l : l / 100;
+        const [r, g, b] = hslToRgb(h, sNorm, lNorm);
+        return {
+            r: clamp01(r),
+            g: clamp01(g),
+            b: clamp01(b),
+            a
+        };
+    }
+    const oklabInner = unwrapFn(input, "oklab");
+    if (oklabInner !== null) {
+        const args = normalizeFnArgs(oklabInner);
+        if (!args) return null;
+        const L = parseNumeric(args.parts[0], 1);
+        const A = parseNumeric(args.parts[1], 0.4);
+        const B = parseNumeric(args.parts[2], 0.4);
+        const alpha = parseAlpha(args.alpha);
+        if (L === null || A === null || B === null || alpha === null) return null;
+        return {
+            ...oklabToSrgb(L, A, B),
+            a: alpha
+        };
+    }
+    const oklchInner = unwrapFn(input, "oklch");
+    if (oklchInner !== null) {
+        const args = normalizeFnArgs(oklchInner);
+        if (!args) return null;
+        const L = parseNumeric(args.parts[0], 1);
+        const C = parseNumeric(args.parts[1], 0.4);
+        const H = parseAngle(args.parts[2]);
+        const alpha = parseAlpha(args.alpha);
+        if (L === null || C === null || H === null || alpha === null) return null;
+        const rad = H * Math.PI / 180;
+        return {
+            ...oklabToSrgb(L, C * Math.cos(rad), C * Math.sin(rad)),
+            a: alpha
+        };
+    }
+    return null;
+}
+function formatColor(color) {
+    const to255 = (n)=>Math.round(clamp01(n) * 255);
+    const r = to255(color.r);
+    const g = to255(color.g);
+    const b = to255(color.b);
+    const a = clamp01(color.a);
+    if (a >= 0.9995) {
+        return "#" + [
+            r,
+            g,
+            b
+        ].map((n)=>n.toString(16).padStart(2, "0")).join("");
+    }
+    return `rgba(${r}, ${g}, ${b}, ${Number(a.toFixed(3))})`;
+}
+const toLinear = (c)=>c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+const toGamma = (c)=>c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+function srgbToOklab(r, g, b) {
+    const lr = toLinear(r);
+    const lg = toLinear(g);
+    const lb = toLinear(b);
+    const l = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb;
+    const m = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb;
+    const s = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb;
+    const l_ = Math.cbrt(l);
+    const m_ = Math.cbrt(m);
+    const s_ = Math.cbrt(s);
+    return [
+        0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_,
+        1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_,
+        0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_
+    ];
+}
+function oklabToSrgb(L, A, B) {
+    const l_ = L + 0.3963377774 * A + 0.2158037573 * B;
+    const m_ = L - 0.1055613458 * A - 0.0638541728 * B;
+    const s_ = L - 0.0894841775 * A - 1.291485548 * B;
+    const l = l_ * l_ * l_;
+    const m = m_ * m_ * m_;
+    const s = s_ * s_ * s_;
+    const lr = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    const lg = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    const lb = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
+    return {
+        r: clamp01(toGamma(lr)),
+        g: clamp01(toGamma(lg)),
+        b: clamp01(toGamma(lb))
+    };
+}
+function toSpace(color, space) {
+    switch(space){
+        case "srgb":
+            return [
+                color.r,
+                color.g,
+                color.b
+            ];
+        case "srgb-linear":
+            return [
+                toLinear(color.r),
+                toLinear(color.g),
+                toLinear(color.b)
+            ];
+        case "oklab":
+            return srgbToOklab(color.r, color.g, color.b);
+    }
+}
+function fromSpace(coords, space) {
+    switch(space){
+        case "srgb":
+            return {
+                r: clamp01(coords[0]),
+                g: clamp01(coords[1]),
+                b: clamp01(coords[2])
+            };
+        case "srgb-linear":
+            return {
+                r: clamp01(toGamma(coords[0])),
+                g: clamp01(toGamma(coords[1])),
+                b: clamp01(toGamma(coords[2]))
+            };
+        case "oklab":
+            return oklabToSrgb(coords[0], coords[1], coords[2]);
+    }
+}
+function mixColors(space, c1, p1, c2, p2) {
+    let a1;
+    let a2;
+    if (p1 === null && p2 === null) {
+        a1 = 50;
+        a2 = 50;
+    } else if (p1 === null) {
+        a2 = p2;
+        a1 = 100 - a2;
+    } else if (p2 === null) {
+        a1 = p1;
+        a2 = 100 - a1;
+    } else {
+        a1 = p1;
+        a2 = p2;
+    }
+    a1 = Math.max(0, Math.min(100, a1));
+    a2 = Math.max(0, Math.min(100, a2));
+    const sum = a1 + a2;
+    if (sum === 0) return null;
+    const w1 = a1 / sum;
+    const w2 = a2 / sum;
+    const alphaMultiplier = sum < 100 ? sum / 100 : 1;
+    const s1 = toSpace(c1, space);
+    const s2 = toSpace(c2, space);
+    const alpha = w1 * c1.a + w2 * c2.a;
+    const coords = [
+        0,
+        1,
+        2
+    ].map((i)=>{
+        const mixed = w1 * s1[i] * c1.a + w2 * s2[i] * c2.a;
+        return alpha === 0 ? 0 : mixed / alpha;
+    });
+    return {
+        ...fromSpace(coords, space),
+        a: clamp01(alpha * alphaMultiplier)
+    };
+}
+function splitColorAndPct(arg) {
+    const tokens = splitWhitespace(arg);
+    const colorTokens = [];
+    let pct = null;
+    for (const token of tokens){
+        if (pct === null && /^[+-]?(\d+\.?\d*|\.\d+)%$/.test(token)) {
+            pct = Number(token.slice(0, -1));
+        } else {
+            colorTokens.push(token);
+        }
+    }
+    return {
+        color: colorTokens.join(" "),
+        pct
+    };
+}
+function evaluateColorExpression(expr, lookup = ()=>undefined) {
+    return evaluate(expr, lookup, new Set());
+}
+function evaluate(expr, lookup, seen) {
+    const input = expr.trim();
+    if (!input) return null;
+    const varInner = unwrapFn(input, "var");
+    if (varInner !== null) {
+        const args = splitTopLevel(varInner, ",");
+        const name = args[0].trim().replace(/^--/, "");
+        const fallback = args.length > 1 ? args.slice(1).join(",").trim() : null;
+        if (seen.has(name)) return null;
+        const value = lookup(name);
+        if (value === undefined) {
+            return fallback === null ? null : evaluate(fallback, lookup, seen);
+        }
+        const next = new Set(seen);
+        next.add(name);
+        return evaluate(value, lookup, next);
+    }
+    const mixInner = unwrapFn(input, "color-mix");
+    if (mixInner !== null) {
+        const args = splitTopLevel(mixInner, ",");
+        if (args.length !== 3) return null;
+        const spaceTokens = splitWhitespace(args[0]);
+        if (spaceTokens.length !== 2 || spaceTokens[0].toLowerCase() !== "in") {
+            return null;
+        }
+        const space = spaceTokens[1].toLowerCase();
+        if (space !== "srgb" && space !== "srgb-linear" && space !== "oklab") return null;
+        const left = splitColorAndPct(args[1]);
+        const right = splitColorAndPct(args[2]);
+        const c1 = evaluate(left.color, lookup, seen);
+        const c2 = evaluate(right.color, lookup, seen);
+        if (!c1 || !c2) return null;
+        return mixColors(space, c1, left.pct, c2, right.pct);
+    }
+    return parseColor(input);
+}
+function rgba(color, alpha) {
+    const parsed = parseColor(color);
+    if (!parsed) throw new TypeError(`Unparseable color: ${color}`);
+    return formatColor({
+        ...parsed,
+        a: clamp01(parsed.a * alpha)
+    });
+}
 const MAX_UPDATE_DEPTH = 1000;
 const Scheduler = (()=>{
     const queues = {
@@ -627,458 +1079,6 @@ const colors = {
         950: "#4c0519"
     }
 };
-const NAMED = {
-    transparent: "#00000000",
-    black: "#000000",
-    silver: "#c0c0c0",
-    gray: "#808080",
-    grey: "#808080",
-    white: "#ffffff",
-    maroon: "#800000",
-    red: "#ff0000",
-    purple: "#800080",
-    fuchsia: "#ff00ff",
-    magenta: "#ff00ff",
-    green: "#008000",
-    lime: "#00ff00",
-    olive: "#808000",
-    yellow: "#ffff00",
-    navy: "#000080",
-    blue: "#0000ff",
-    teal: "#008080",
-    aqua: "#00ffff",
-    cyan: "#00ffff",
-    orange: "#ffa500"
-};
-const clamp01 = (n)=>n < 0 ? 0 : n > 1 ? 1 : n;
-function splitTopLevel(input, separator) {
-    const out = [];
-    let depth = 0;
-    let cur = "";
-    for (const ch of input){
-        if (ch === "(") depth++;
-        else if (ch === ")") depth--;
-        if (ch === separator && depth === 0) {
-            out.push(cur.trim());
-            cur = "";
-        } else {
-            cur += ch;
-        }
-    }
-    out.push(cur.trim());
-    return out;
-}
-function splitWhitespace(input) {
-    const out = [];
-    let depth = 0;
-    let cur = "";
-    for (const ch of input){
-        if (ch === "(") depth++;
-        else if (ch === ")") depth--;
-        if (/\s/.test(ch) && depth === 0) {
-            if (cur) out.push(cur);
-            cur = "";
-        } else {
-            cur += ch;
-        }
-    }
-    if (cur) out.push(cur);
-    return out;
-}
-function unwrapFn(input, name) {
-    const lower = input.toLowerCase();
-    if (!lower.startsWith(name + "(") || !input.endsWith(")")) return null;
-    const inner = input.slice(name.length + 1, -1);
-    let depth = 0;
-    for (const ch of inner){
-        if (ch === "(") depth++;
-        else if (ch === ")") {
-            depth--;
-            if (depth < 0) return null;
-        }
-    }
-    return depth === 0 ? inner : null;
-}
-function parseNumeric(token, pctBasis) {
-    const t = token.trim().toLowerCase();
-    if (t === "none") return 0;
-    if (t.endsWith("%")) {
-        const n = Number(t.slice(0, -1));
-        return Number.isFinite(n) ? n / 100 * pctBasis : null;
-    }
-    const n = Number(t);
-    return Number.isFinite(n) ? n : null;
-}
-function parseAngle(token) {
-    const t = token.trim().toLowerCase();
-    if (t === "none") return 0;
-    const m = t.match(/^([+-]?[\d.]+)(deg|rad|grad|turn)?$/);
-    if (!m) return null;
-    const n = Number(m[1]);
-    if (!Number.isFinite(n)) return null;
-    switch(m[2]){
-        case "rad":
-            return n * 180 / Math.PI;
-        case "grad":
-            return n * 0.9;
-        case "turn":
-            return n * 360;
-        default:
-            return n;
-    }
-}
-function normalizeFnArgs(inner) {
-    const slash = splitTopLevel(inner, "/");
-    if (slash.length === 2) {
-        const parts = splitWhitespace(slash[0]);
-        return parts.length === 3 ? {
-            parts,
-            alpha: slash[1]
-        } : null;
-    }
-    if (slash.length > 2) return null;
-    const commas = splitTopLevel(inner, ",");
-    if (commas.length === 3) return {
-        parts: commas,
-        alpha: null
-    };
-    if (commas.length === 4) {
-        return {
-            parts: commas.slice(0, 3),
-            alpha: commas[3]
-        };
-    }
-    if (commas.length === 1) {
-        const parts = splitWhitespace(inner);
-        if (parts.length === 3) return {
-            parts,
-            alpha: null
-        };
-    }
-    return null;
-}
-function parseAlpha(token) {
-    if (token === null) return 1;
-    const n = parseNumeric(token, 1);
-    return n === null ? null : clamp01(n);
-}
-function hslToRgb(h, s, l) {
-    h = (h % 360 + 360) % 360;
-    s = clamp01(s);
-    l = clamp01(l);
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs(h / 60 % 2 - 1));
-    const m = l - c / 2;
-    const seg = Math.floor(h / 60) % 6;
-    const rgb = seg === 0 ? [
-        c,
-        x,
-        0
-    ] : seg === 1 ? [
-        x,
-        c,
-        0
-    ] : seg === 2 ? [
-        0,
-        c,
-        x
-    ] : seg === 3 ? [
-        0,
-        x,
-        c
-    ] : seg === 4 ? [
-        x,
-        0,
-        c
-    ] : [
-        c,
-        0,
-        x
-    ];
-    return [
-        rgb[0] + m,
-        rgb[1] + m,
-        rgb[2] + m
-    ];
-}
-function parseColor(value) {
-    const input = value.trim();
-    if (!input) return null;
-    const named = NAMED[input.toLowerCase()];
-    if (named) return parseColor(named);
-    if (input.startsWith("#")) {
-        let hex = input.slice(1);
-        if (!/^[0-9a-fA-F]+$/.test(hex)) return null;
-        if (hex.length === 3 || hex.length === 4) {
-            hex = hex.split("").map((c)=>c + c).join("");
-        }
-        if (hex.length !== 6 && hex.length !== 8) return null;
-        return {
-            r: parseInt(hex.slice(0, 2), 16) / 255,
-            g: parseInt(hex.slice(2, 4), 16) / 255,
-            b: parseInt(hex.slice(4, 6), 16) / 255,
-            a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
-        };
-    }
-    for (const name of [
-        "rgba",
-        "rgb"
-    ]){
-        const inner = unwrapFn(input, name);
-        if (inner === null) continue;
-        const args = normalizeFnArgs(inner);
-        if (!args) return null;
-        const [r, g, b] = args.parts.map((p)=>parseNumeric(p, 255));
-        const a = parseAlpha(args.alpha);
-        if (r === null || g === null || b === null || a === null) return null;
-        return {
-            r: clamp01(r / 255),
-            g: clamp01(g / 255),
-            b: clamp01(b / 255),
-            a
-        };
-    }
-    for (const name of [
-        "hsla",
-        "hsl"
-    ]){
-        const inner = unwrapFn(input, name);
-        if (inner === null) continue;
-        const args = normalizeFnArgs(inner);
-        if (!args) return null;
-        const h = parseAngle(args.parts[0]);
-        const s = parseNumeric(args.parts[1], 1);
-        const l = parseNumeric(args.parts[2], 1);
-        const a = parseAlpha(args.alpha);
-        if (h === null || s === null || l === null || a === null) return null;
-        const sNorm = args.parts[1].trim().endsWith("%") ? s : s / 100;
-        const lNorm = args.parts[2].trim().endsWith("%") ? l : l / 100;
-        const [r, g, b] = hslToRgb(h, sNorm, lNorm);
-        return {
-            r: clamp01(r),
-            g: clamp01(g),
-            b: clamp01(b),
-            a
-        };
-    }
-    const oklabInner = unwrapFn(input, "oklab");
-    if (oklabInner !== null) {
-        const args = normalizeFnArgs(oklabInner);
-        if (!args) return null;
-        const L = parseNumeric(args.parts[0], 1);
-        const A = parseNumeric(args.parts[1], 0.4);
-        const B = parseNumeric(args.parts[2], 0.4);
-        const alpha = parseAlpha(args.alpha);
-        if (L === null || A === null || B === null || alpha === null) return null;
-        return {
-            ...oklabToSrgb(L, A, B),
-            a: alpha
-        };
-    }
-    const oklchInner = unwrapFn(input, "oklch");
-    if (oklchInner !== null) {
-        const args = normalizeFnArgs(oklchInner);
-        if (!args) return null;
-        const L = parseNumeric(args.parts[0], 1);
-        const C = parseNumeric(args.parts[1], 0.4);
-        const H = parseAngle(args.parts[2]);
-        const alpha = parseAlpha(args.alpha);
-        if (L === null || C === null || H === null || alpha === null) return null;
-        const rad = H * Math.PI / 180;
-        return {
-            ...oklabToSrgb(L, C * Math.cos(rad), C * Math.sin(rad)),
-            a: alpha
-        };
-    }
-    return null;
-}
-function formatColor(color) {
-    const to255 = (n)=>Math.round(clamp01(n) * 255);
-    const r = to255(color.r);
-    const g = to255(color.g);
-    const b = to255(color.b);
-    const a = clamp01(color.a);
-    if (a >= 0.9995) {
-        return "#" + [
-            r,
-            g,
-            b
-        ].map((n)=>n.toString(16).padStart(2, "0")).join("");
-    }
-    return `rgba(${r}, ${g}, ${b}, ${Number(a.toFixed(3))})`;
-}
-const toLinear = (c)=>c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-const toGamma = (c)=>c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
-function srgbToOklab(r, g, b) {
-    const lr = toLinear(r);
-    const lg = toLinear(g);
-    const lb = toLinear(b);
-    const l = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb;
-    const m = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb;
-    const s = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb;
-    const l_ = Math.cbrt(l);
-    const m_ = Math.cbrt(m);
-    const s_ = Math.cbrt(s);
-    return [
-        0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_,
-        1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_,
-        0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_
-    ];
-}
-function oklabToSrgb(L, A, B) {
-    const l_ = L + 0.3963377774 * A + 0.2158037573 * B;
-    const m_ = L - 0.1055613458 * A - 0.0638541728 * B;
-    const s_ = L - 0.0894841775 * A - 1.291485548 * B;
-    const l = l_ * l_ * l_;
-    const m = m_ * m_ * m_;
-    const s = s_ * s_ * s_;
-    const lr = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
-    const lg = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
-    const lb = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
-    return {
-        r: clamp01(toGamma(lr)),
-        g: clamp01(toGamma(lg)),
-        b: clamp01(toGamma(lb))
-    };
-}
-function toSpace(color, space) {
-    switch(space){
-        case "srgb":
-            return [
-                color.r,
-                color.g,
-                color.b
-            ];
-        case "srgb-linear":
-            return [
-                toLinear(color.r),
-                toLinear(color.g),
-                toLinear(color.b)
-            ];
-        case "oklab":
-            return srgbToOklab(color.r, color.g, color.b);
-    }
-}
-function fromSpace(coords, space) {
-    switch(space){
-        case "srgb":
-            return {
-                r: clamp01(coords[0]),
-                g: clamp01(coords[1]),
-                b: clamp01(coords[2])
-            };
-        case "srgb-linear":
-            return {
-                r: clamp01(toGamma(coords[0])),
-                g: clamp01(toGamma(coords[1])),
-                b: clamp01(toGamma(coords[2]))
-            };
-        case "oklab":
-            return oklabToSrgb(coords[0], coords[1], coords[2]);
-    }
-}
-function mixColors(space, c1, p1, c2, p2) {
-    let a1;
-    let a2;
-    if (p1 === null && p2 === null) {
-        a1 = 50;
-        a2 = 50;
-    } else if (p1 === null) {
-        a2 = p2;
-        a1 = 100 - a2;
-    } else if (p2 === null) {
-        a1 = p1;
-        a2 = 100 - a1;
-    } else {
-        a1 = p1;
-        a2 = p2;
-    }
-    a1 = Math.max(0, Math.min(100, a1));
-    a2 = Math.max(0, Math.min(100, a2));
-    const sum = a1 + a2;
-    if (sum === 0) return null;
-    const w1 = a1 / sum;
-    const w2 = a2 / sum;
-    const alphaMultiplier = sum < 100 ? sum / 100 : 1;
-    const s1 = toSpace(c1, space);
-    const s2 = toSpace(c2, space);
-    const alpha = w1 * c1.a + w2 * c2.a;
-    const coords = [
-        0,
-        1,
-        2
-    ].map((i)=>{
-        const mixed = w1 * s1[i] * c1.a + w2 * s2[i] * c2.a;
-        return alpha === 0 ? 0 : mixed / alpha;
-    });
-    return {
-        ...fromSpace(coords, space),
-        a: clamp01(alpha * alphaMultiplier)
-    };
-}
-function splitColorAndPct(arg) {
-    const tokens = splitWhitespace(arg);
-    const colorTokens = [];
-    let pct = null;
-    for (const token of tokens){
-        if (pct === null && /^[+-]?(\d+\.?\d*|\.\d+)%$/.test(token)) {
-            pct = Number(token.slice(0, -1));
-        } else {
-            colorTokens.push(token);
-        }
-    }
-    return {
-        color: colorTokens.join(" "),
-        pct
-    };
-}
-function evaluateColorExpression(expr, lookup = ()=>undefined) {
-    return evaluate(expr, lookup, new Set());
-}
-function evaluate(expr, lookup, seen) {
-    const input = expr.trim();
-    if (!input) return null;
-    const varInner = unwrapFn(input, "var");
-    if (varInner !== null) {
-        const args = splitTopLevel(varInner, ",");
-        const name = args[0].trim().replace(/^--/, "");
-        const fallback = args.length > 1 ? args.slice(1).join(",").trim() : null;
-        if (seen.has(name)) return null;
-        const value = lookup(name);
-        if (value === undefined) {
-            return fallback === null ? null : evaluate(fallback, lookup, seen);
-        }
-        const next = new Set(seen);
-        next.add(name);
-        return evaluate(value, lookup, next);
-    }
-    const mixInner = unwrapFn(input, "color-mix");
-    if (mixInner !== null) {
-        const args = splitTopLevel(mixInner, ",");
-        if (args.length !== 3) return null;
-        const spaceTokens = splitWhitespace(args[0]);
-        if (spaceTokens.length !== 2 || spaceTokens[0].toLowerCase() !== "in") {
-            return null;
-        }
-        const space = spaceTokens[1].toLowerCase();
-        if (space !== "srgb" && space !== "srgb-linear" && space !== "oklab") return null;
-        const left = splitColorAndPct(args[1]);
-        const right = splitColorAndPct(args[2]);
-        const c1 = evaluate(left.color, lookup, seen);
-        const c2 = evaluate(right.color, lookup, seen);
-        if (!c1 || !c2) return null;
-        return mixColors(space, c1, left.pct, c2, right.pct);
-    }
-    return parseColor(input);
-}
-function rgba(color, alpha) {
-    const parsed = parseColor(color);
-    if (!parsed) throw new TypeError(`Unparseable color: ${color}`);
-    return formatColor({
-        ...parsed,
-        a: clamp01(parsed.a * alpha)
-    });
-}
 const light = {
     colors: {
         intent: {
@@ -1125,7 +1125,7 @@ const light = {
             single: {
                 foreground: colors.olive[900],
                 border: {
-                    DEFAULT: colors.olive[300]
+                    DEFAULT: rgba(colors.olive[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.olive[50],
@@ -1182,7 +1182,7 @@ const dark = {
             single: {
                 foreground: colors.olive[50],
                 border: {
-                    DEFAULT: colors.olive[600]
+                    DEFAULT: rgba(colors.olive[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.olive[900],
@@ -1243,7 +1243,7 @@ const light1 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1300,7 +1300,7 @@ const dark1 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -1382,7 +1382,7 @@ const light2 = {
             single: {
                 foreground: cream[900],
                 border: {
-                    DEFAULT: cream[300]
+                    DEFAULT: rgba(cream[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1439,7 +1439,7 @@ const dark2 = {
             single: {
                 foreground: roast[50],
                 border: {
-                    DEFAULT: roast[700]
+                    DEFAULT: rgba(roast[50], 0.15)
                 },
                 input: {
                     DEFAULT: roast[900],
@@ -1500,7 +1500,7 @@ const light3 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1557,7 +1557,7 @@ const dark3 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -1618,7 +1618,7 @@ const light4 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1675,7 +1675,7 @@ const dark4 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -1736,7 +1736,7 @@ const light5 = {
             single: {
                 foreground: colors.mauve[900],
                 border: {
-                    DEFAULT: colors.mauve[300]
+                    DEFAULT: rgba(colors.mauve[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1793,7 +1793,7 @@ const dark5 = {
             single: {
                 foreground: colors.violet[50],
                 border: {
-                    DEFAULT: colors.violet[800]
+                    DEFAULT: rgba(colors.violet[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.violet[950],
@@ -1854,7 +1854,7 @@ const light6 = {
             single: {
                 foreground: colors.yellow[950],
                 border: {
-                    DEFAULT: colors.yellow[300]
+                    DEFAULT: rgba(colors.yellow[950], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -1911,7 +1911,7 @@ const dark6 = {
             single: {
                 foreground: colors.sky[50],
                 border: {
-                    DEFAULT: colors.sky[800]
+                    DEFAULT: rgba(colors.sky[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.sky[950],
@@ -1972,7 +1972,7 @@ const light7 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.amber[50],
@@ -2029,7 +2029,7 @@ const dark7 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[600]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -2090,7 +2090,7 @@ const light8 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2147,7 +2147,7 @@ const dark8 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -2208,7 +2208,7 @@ const light9 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2265,7 +2265,7 @@ const dark9 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -2327,7 +2327,7 @@ const theme10 = {
                 single: {
                     foreground: colors.gray[900],
                     border: {
-                        DEFAULT: colors.gray[300]
+                        DEFAULT: rgba(colors.gray[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.gray[50],
@@ -2384,7 +2384,7 @@ const theme10 = {
                 single: {
                     foreground: colors.gray[50],
                     border: {
-                        DEFAULT: colors.gray[700]
+                        DEFAULT: rgba(colors.gray[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.gray[900],
@@ -2444,7 +2444,7 @@ const light10 = {
             single: {
                 foreground: colors.teal[950],
                 border: {
-                    DEFAULT: colors.teal[300]
+                    DEFAULT: rgba(colors.teal[950], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2501,7 +2501,7 @@ const dark10 = {
             single: {
                 foreground: colors.teal[50],
                 border: {
-                    DEFAULT: colors.teal[800]
+                    DEFAULT: rgba(colors.teal[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.teal[950],
@@ -2562,7 +2562,7 @@ const light11 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2619,7 +2619,7 @@ const dark11 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -2680,7 +2680,7 @@ const light12 = {
             single: {
                 foreground: colors.zinc[900],
                 border: {
-                    DEFAULT: colors.zinc[300]
+                    DEFAULT: rgba(colors.zinc[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2737,7 +2737,7 @@ const dark12 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.zinc[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.zinc[950],
@@ -2799,7 +2799,7 @@ const theme14 = {
                 single: {
                     foreground: colors.mauve[900],
                     border: {
-                        DEFAULT: colors.mauve[300]
+                        DEFAULT: rgba(colors.mauve[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.mauve[50],
@@ -2856,7 +2856,7 @@ const theme14 = {
                 single: {
                     foreground: colors.mauve[50],
                     border: {
-                        DEFAULT: colors.mauve[700]
+                        DEFAULT: rgba(colors.mauve[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.mauve[900],
@@ -2914,7 +2914,7 @@ const light13 = {
             single: {
                 foreground: colors.mauve[900],
                 border: {
-                    DEFAULT: colors.mauve[300]
+                    DEFAULT: rgba(colors.mauve[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -2971,7 +2971,7 @@ const dark13 = {
             single: {
                 foreground: colors.mauve[50],
                 border: {
-                    DEFAULT: colors.mauve[700]
+                    DEFAULT: rgba(colors.mauve[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.mauve[950],
@@ -3032,7 +3032,7 @@ const light14 = {
             single: {
                 foreground: colors.mauve[900],
                 border: {
-                    DEFAULT: colors.mauve[300]
+                    DEFAULT: rgba(colors.mauve[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -3089,7 +3089,7 @@ const dark14 = {
             single: {
                 foreground: colors.mauve[50],
                 border: {
-                    DEFAULT: colors.mauve[700]
+                    DEFAULT: rgba(colors.mauve[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.mauve[900],
@@ -3171,7 +3171,7 @@ const light15 = {
             single: {
                 foreground: paper[900],
                 border: {
-                    DEFAULT: paper[300]
+                    DEFAULT: rgba(paper[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -3228,7 +3228,7 @@ const dark15 = {
             single: {
                 foreground: graphite[50],
                 border: {
-                    DEFAULT: graphite[700]
+                    DEFAULT: rgba(graphite[50], 0.15)
                 },
                 input: {
                     DEFAULT: graphite[900],
@@ -3290,7 +3290,7 @@ const theme18 = {
                 single: {
                     foreground: colors.mist[900],
                     border: {
-                        DEFAULT: colors.mist[300]
+                        DEFAULT: rgba(colors.mist[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.mist[50],
@@ -3347,7 +3347,7 @@ const theme18 = {
                 single: {
                     foreground: colors.mist[50],
                     border: {
-                        DEFAULT: colors.mist[700]
+                        DEFAULT: rgba(colors.mist[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.mist[900],
@@ -3405,7 +3405,7 @@ const light16 = {
             single: {
                 foreground: colors.mist[900],
                 border: {
-                    DEFAULT: colors.mist[300]
+                    DEFAULT: rgba(colors.mist[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -3462,7 +3462,7 @@ const dark16 = {
             single: {
                 foreground: colors.mist[50],
                 border: {
-                    DEFAULT: colors.mist[700]
+                    DEFAULT: rgba(colors.mist[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.mist[900],
@@ -3523,7 +3523,7 @@ const light17 = {
             single: {
                 foreground: colors.mist[900],
                 border: {
-                    DEFAULT: colors.mist[300]
+                    DEFAULT: rgba(colors.mist[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -3580,7 +3580,7 @@ const dark17 = {
             single: {
                 foreground: colors.mist[50],
                 border: {
-                    DEFAULT: colors.mist[700]
+                    DEFAULT: rgba(colors.mist[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.mist[950],
@@ -3641,7 +3641,7 @@ const light18 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[50],
@@ -3698,7 +3698,7 @@ const dark18 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -3759,7 +3759,7 @@ const light19 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[50],
@@ -3816,7 +3816,7 @@ const dark19 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -3877,7 +3877,7 @@ const light20 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[50],
@@ -3934,7 +3934,7 @@ const dark20 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -3995,7 +3995,7 @@ const light21 = {
             single: {
                 foreground: colors.violet[950],
                 border: {
-                    DEFAULT: colors.violet[300]
+                    DEFAULT: rgba(colors.violet[950], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4052,7 +4052,7 @@ const dark21 = {
             single: {
                 foreground: colors.indigo[50],
                 border: {
-                    DEFAULT: colors.indigo[800]
+                    DEFAULT: rgba(colors.indigo[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.indigo[950],
@@ -4134,7 +4134,7 @@ const light22 = {
             single: {
                 foreground: dawn[900],
                 border: {
-                    DEFAULT: dawn[300]
+                    DEFAULT: rgba(dawn[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4191,7 +4191,7 @@ const dark22 = {
             single: {
                 foreground: night[50],
                 border: {
-                    DEFAULT: night[700]
+                    DEFAULT: rgba(night[50], 0.15)
                 },
                 input: {
                     DEFAULT: night[900],
@@ -4252,7 +4252,7 @@ const light23 = {
             single: {
                 foreground: colors.slate[900],
                 border: {
-                    DEFAULT: colors.slate[300]
+                    DEFAULT: rgba(colors.slate[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4309,7 +4309,7 @@ const dark23 = {
             single: {
                 foreground: colors.slate[50],
                 border: {
-                    DEFAULT: colors.slate[700]
+                    DEFAULT: rgba(colors.slate[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.slate[900],
@@ -4371,7 +4371,7 @@ const theme27 = {
                 single: {
                     foreground: colors.olive[900],
                     border: {
-                        DEFAULT: colors.olive[300]
+                        DEFAULT: rgba(colors.olive[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.olive[50],
@@ -4428,7 +4428,7 @@ const theme27 = {
                 single: {
                     foreground: colors.olive[50],
                     border: {
-                        DEFAULT: colors.olive[700]
+                        DEFAULT: rgba(colors.olive[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.olive[900],
@@ -4486,7 +4486,7 @@ const light24 = {
             single: {
                 foreground: colors.olive[900],
                 border: {
-                    DEFAULT: colors.olive[300]
+                    DEFAULT: rgba(colors.olive[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.olive[50],
@@ -4543,7 +4543,7 @@ const dark24 = {
             single: {
                 foreground: colors.olive[50],
                 border: {
-                    DEFAULT: colors.olive[600]
+                    DEFAULT: rgba(colors.olive[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.olive[900],
@@ -4604,7 +4604,7 @@ const light25 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.amber[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4661,7 +4661,7 @@ const dark25 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[950],
@@ -4722,7 +4722,7 @@ const light26 = {
             single: {
                 foreground: colors.teal[950],
                 border: {
-                    DEFAULT: colors.teal[300]
+                    DEFAULT: rgba(colors.teal[950], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4779,7 +4779,7 @@ const dark26 = {
             single: {
                 foreground: colors.teal[50],
                 border: {
-                    DEFAULT: colors.teal[800]
+                    DEFAULT: rgba(colors.teal[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.teal[950],
@@ -4840,7 +4840,7 @@ const light27 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -4897,7 +4897,7 @@ const dark27 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -4958,7 +4958,7 @@ const light28 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5015,7 +5015,7 @@ const dark28 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -5076,7 +5076,7 @@ const light29 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5133,7 +5133,7 @@ const dark29 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -5194,7 +5194,7 @@ const light30 = {
             single: {
                 foreground: colors.slate[900],
                 border: {
-                    DEFAULT: colors.slate[300]
+                    DEFAULT: rgba(colors.slate[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5251,7 +5251,7 @@ const dark30 = {
             single: {
                 foreground: colors.slate[50],
                 border: {
-                    DEFAULT: colors.slate[700]
+                    DEFAULT: rgba(colors.slate[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.slate[900],
@@ -5312,7 +5312,7 @@ const light31 = {
             single: {
                 foreground: colors.slate[900],
                 border: {
-                    DEFAULT: colors.slate[300]
+                    DEFAULT: rgba(colors.slate[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5369,7 +5369,7 @@ const dark31 = {
             single: {
                 foreground: colors.slate[50],
                 border: {
-                    DEFAULT: colors.slate[700]
+                    DEFAULT: rgba(colors.slate[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.slate[900],
@@ -5430,7 +5430,7 @@ const light32 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5487,7 +5487,7 @@ const dark32 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -5548,7 +5548,7 @@ const light33 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5605,7 +5605,7 @@ const dark33 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -5666,7 +5666,7 @@ const light34 = {
             single: {
                 foreground: colors.slate[900],
                 border: {
-                    DEFAULT: colors.slate[300]
+                    DEFAULT: rgba(colors.slate[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5723,7 +5723,7 @@ const dark34 = {
             single: {
                 foreground: colors.slate[50],
                 border: {
-                    DEFAULT: colors.slate[700]
+                    DEFAULT: rgba(colors.slate[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.slate[900],
@@ -5784,7 +5784,7 @@ const light35 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5841,7 +5841,7 @@ const dark35 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -5902,7 +5902,7 @@ const light36 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -5959,7 +5959,7 @@ const dark36 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[900],
@@ -6020,7 +6020,7 @@ const light37 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -6077,7 +6077,7 @@ const dark37 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -6138,7 +6138,7 @@ const light38 = {
             single: {
                 foreground: colors.slate[900],
                 border: {
-                    DEFAULT: colors.slate[300]
+                    DEFAULT: rgba(colors.slate[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -6195,7 +6195,7 @@ const dark38 = {
             single: {
                 foreground: colors.slate[50],
                 border: {
-                    DEFAULT: colors.slate[700]
+                    DEFAULT: rgba(colors.slate[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.slate[950],
@@ -6257,7 +6257,7 @@ const theme43 = {
                 single: {
                     foreground: colors.stone[900],
                     border: {
-                        DEFAULT: colors.stone[300]
+                        DEFAULT: rgba(colors.stone[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.stone[50],
@@ -6314,7 +6314,7 @@ const theme43 = {
                 single: {
                     foreground: colors.stone[50],
                     border: {
-                        DEFAULT: colors.stone[700]
+                        DEFAULT: rgba(colors.stone[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.stone[900],
@@ -6372,7 +6372,7 @@ const light39 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[50],
@@ -6429,7 +6429,7 @@ const dark39 = {
             single: {
                 foreground: colors.stone[100],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[100], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[950],
@@ -6490,7 +6490,7 @@ const light40 = {
             single: {
                 foreground: colors.stone[900],
                 border: {
-                    DEFAULT: colors.stone[300]
+                    DEFAULT: rgba(colors.stone[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -6547,7 +6547,7 @@ const dark40 = {
             single: {
                 foreground: colors.stone[50],
                 border: {
-                    DEFAULT: colors.stone[700]
+                    DEFAULT: rgba(colors.stone[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.stone[950],
@@ -6609,7 +6609,7 @@ const theme46 = {
                 single: {
                     foreground: colors.taupe[900],
                     border: {
-                        DEFAULT: colors.taupe[300]
+                        DEFAULT: rgba(colors.taupe[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.taupe[50],
@@ -6666,7 +6666,7 @@ const theme46 = {
                 single: {
                     foreground: colors.taupe[50],
                     border: {
-                        DEFAULT: colors.taupe[700]
+                        DEFAULT: rgba(colors.taupe[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.taupe[900],
@@ -6724,7 +6724,7 @@ const light41 = {
             single: {
                 foreground: colors.taupe[900],
                 border: {
-                    DEFAULT: colors.taupe[300]
+                    DEFAULT: rgba(colors.taupe[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.taupe[50],
@@ -6781,7 +6781,7 @@ const dark41 = {
             single: {
                 foreground: colors.taupe[50],
                 border: {
-                    DEFAULT: colors.taupe[700]
+                    DEFAULT: rgba(colors.taupe[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.taupe[900],
@@ -6842,7 +6842,7 @@ const light42 = {
             single: {
                 foreground: colors.taupe[900],
                 border: {
-                    DEFAULT: colors.taupe[300]
+                    DEFAULT: rgba(colors.taupe[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -6899,7 +6899,7 @@ const dark42 = {
             single: {
                 foreground: colors.taupe[50],
                 border: {
-                    DEFAULT: colors.taupe[700]
+                    DEFAULT: rgba(colors.taupe[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.taupe[900],
@@ -6960,7 +6960,7 @@ const light43 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -7017,7 +7017,7 @@ const dark43 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -7078,7 +7078,7 @@ const light44 = {
             single: {
                 foreground: colors.rose[950],
                 border: {
-                    DEFAULT: colors.rose[300]
+                    DEFAULT: rgba(colors.rose[950], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -7135,7 +7135,7 @@ const dark44 = {
             single: {
                 foreground: colors.rose[50],
                 border: {
-                    DEFAULT: colors.rose[800]
+                    DEFAULT: rgba(colors.rose[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.rose[950],
@@ -7196,7 +7196,7 @@ const light45 = {
             single: {
                 foreground: colors.neutral[900],
                 border: {
-                    DEFAULT: colors.neutral[300]
+                    DEFAULT: rgba(colors.neutral[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -7253,7 +7253,7 @@ const dark45 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.neutral[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.neutral[900],
@@ -7314,7 +7314,7 @@ const light46 = {
             single: {
                 foreground: colors.zinc[900],
                 border: {
-                    DEFAULT: colors.zinc[300]
+                    DEFAULT: rgba(colors.zinc[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -7371,7 +7371,7 @@ const dark46 = {
             single: {
                 foreground: colors.neutral[50],
                 border: {
-                    DEFAULT: colors.zinc[700]
+                    DEFAULT: rgba(colors.neutral[50], 0.15)
                 },
                 input: {
                     DEFAULT: colors.zinc[950],
@@ -7452,7 +7452,7 @@ const light47 = {
             single: {
                 foreground: rind[900],
                 border: {
-                    DEFAULT: rind[300]
+                    DEFAULT: rgba(rind[900], 0.15)
                 },
                 input: {
                     DEFAULT: colors.white,
@@ -7509,7 +7509,7 @@ const dark47 = {
             single: {
                 foreground: flesh[50],
                 border: {
-                    DEFAULT: flesh[700]
+                    DEFAULT: rgba(flesh[50], 0.15)
                 },
                 input: {
                     DEFAULT: flesh[900],
@@ -7571,7 +7571,7 @@ const theme54 = {
                 single: {
                     foreground: colors.zinc[900],
                     border: {
-                        DEFAULT: colors.zinc[300]
+                        DEFAULT: rgba(colors.zinc[900], 0.15)
                     },
                     input: {
                         DEFAULT: colors.zinc[50],
@@ -7628,7 +7628,7 @@ const theme54 = {
                 single: {
                     foreground: colors.zinc[50],
                     border: {
-                        DEFAULT: colors.zinc[700]
+                        DEFAULT: rgba(colors.zinc[50], 0.15)
                     },
                     input: {
                         DEFAULT: colors.zinc[900],
@@ -8060,16 +8060,24 @@ function buildHexToNameMap(c) {
     }
     return map;
 }
-function parseRingValue(v) {
+function parseAlphaValue(v) {
     const m = v.match(/color-mix\(in srgb,\s*(#[0-9a-fA-F]+)\s+(\d+)%,\s*transparent\)/);
-    if (!m) return null;
-    return {
+    if (m) return {
         hex: m[1],
         percent: parseInt(m[2])
     };
+    const c = parseColor(v);
+    if (!c || c.a >= 1) return null;
+    return {
+        hex: formatColor({
+            ...c,
+            a: 1
+        }),
+        percent: Math.round(c.a * 100)
+    };
 }
-function buildRingValue(hex, percent) {
-    return `color-mix(in srgb, ${hex} ${percent}%, transparent)`;
+function buildAlphaValue(hex, percent) {
+    return rgba(hex, percent / 100);
 }
 function hexForSelection(c, family, shade) {
     if (family === "black") return c.black;
@@ -8095,21 +8103,19 @@ function selectionForHex(hex, hexToName) {
         shade: parseInt(name.substring(idx + 1))
     };
 }
-function colorRef(hex, hexToName) {
+function hexRef(hex, hexToName) {
     const sel = selectionForHex(hex, hexToName);
     if (!sel) return `"${hex}"`;
     if (sel.shade === null) return `colors.${sel.family}`;
     return `colors.${sel.family}[${sel.shade}]`;
 }
+function colorRef(value, hexToName) {
+    const alpha = parseAlphaValue(value);
+    if (alpha) return `rgba(${hexRef(alpha.hex, hexToName)}, ${alpha.percent / 100})`;
+    return hexRef(value, hexToName);
+}
 function singleColorToTs(val, hexToName) {
-    if (typeof val === "string") {
-        const ring = parseRingValue(val);
-        if (ring) {
-            const ref = colorRef(ring.hex, hexToName);
-            return `\`color-mix(in srgb, \${${ref}} ${ring.percent}%, transparent)\``;
-        }
-        return colorRef(val, hexToName);
-    }
+    if (typeof val === "string") return colorRef(val, hexToName);
     const parts = [];
     parts.push(`DEFAULT: ${colorRef(val.DEFAULT, hexToName)}`);
     if (val.hover) parts.push(`hover: ${colorRef(val.hover, hexToName)}`);
@@ -8163,6 +8169,7 @@ ${singleLines.join(",\n")},
     const darkTs = schema.dark ? modeToTs("dark") : "";
     let out = `import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 ${lightTs}
 `;
@@ -8174,8 +8181,8 @@ ${lightTs}
 }
 export { mod as themes };
 export { buildHexToNameMap as buildHexToNameMap };
-export { parseRingValue as parseRingValue };
-export { buildRingValue as buildRingValue };
+export { parseAlphaValue as parseAlphaValue };
+export { buildAlphaValue as buildAlphaValue };
 export { hexForSelection as hexForSelection };
 export { selectionForHex as selectionForHex };
 export { themeToTypeScript as themeToTypeScript };

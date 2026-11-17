@@ -52,7 +52,7 @@ const light = {
 			single: {
 				foreground: colors.yellow[950],
 				border: {
-					DEFAULT: colors.yellow[300],
+					DEFAULT: rgba(colors.yellow[950], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -110,7 +110,7 @@ const dark = {
 			single: {
 				foreground: colors.sky[50],
 				border: {
-					DEFAULT: colors.sky[800],
+					DEFAULT: rgba(colors.sky[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.sky[950],

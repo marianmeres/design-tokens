@@ -14,6 +14,7 @@ export type {
 } from "../../src/types.ts";
 
 import { colors } from "../../src/colors.ts";
+import { formatColor, parseColor, rgba } from "../../src/color.ts";
 import type { SingleColor, ThemeSchema } from "../../src/types.ts";
 
 type ColorsMap = typeof colors;
@@ -42,20 +43,27 @@ export function buildHexToNameMap(
 	return map;
 }
 
-/** Parse a color-mix ring value into base hex + percentage */
-export function parseRingValue(
+/**
+ * Parse a translucent color (`border`, `ring`) into its opaque base hex + alpha
+ * percentage. Reads what the `rgba()` schema helper emits — `rgba(r, g, b, a)` —
+ * and the older `color-mix(in srgb, #hex N%, transparent)` spelling. Returns null
+ * for an opaque or unparseable value.
+ */
+export function parseAlphaValue(
 	v: string,
 ): { hex: string; percent: number } | null {
 	const m = v.match(
 		/color-mix\(in srgb,\s*(#[0-9a-fA-F]+)\s+(\d+)%,\s*transparent\)/,
 	);
-	if (!m) return null;
-	return { hex: m[1], percent: parseInt(m[2]) };
+	if (m) return { hex: m[1], percent: parseInt(m[2]) };
+	const c = parseColor(v);
+	if (!c || c.a >= 1) return null;
+	return { hex: formatColor({ ...c, a: 1 }), percent: Math.round(c.a * 100) };
 }
 
-/** Build a ring color-mix value */
-export function buildRingValue(hex: string, percent: number): string {
-	return `color-mix(in srgb, ${hex} ${percent}%, transparent)`;
+/** Build a translucent value the way theme schemas spell it (`rgba()`, never `color-mix()`). */
+export function buildAlphaValue(hex: string, percent: number): string {
+	return rgba(hex, percent / 100);
 }
 
 /** Get hex for a family+shade selection */
@@ -90,8 +98,8 @@ export function selectionForHex(
 	};
 }
 
-// Helper: format a single color value reference for TS export
-function colorRef(
+// Helper: format an opaque hex as a palette reference for TS export
+function hexRef(
 	hex: string,
 	hexToName: Map<string, string>,
 ): string {
@@ -101,20 +109,22 @@ function colorRef(
 	return `colors.${sel.family}[${sel.shade}]`;
 }
 
+// Helper: format any color value for TS export; translucent ones become rgba(ref, a)
+function colorRef(
+	value: string,
+	hexToName: Map<string, string>,
+): string {
+	const alpha = parseAlphaValue(value);
+	if (alpha) return `rgba(${hexRef(alpha.hex, hexToName)}, ${alpha.percent / 100})`;
+	return hexRef(value, hexToName);
+}
+
 // Helper: format a SingleColor for TS export
 function singleColorToTs(
 	val: SingleColor,
 	hexToName: Map<string, string>,
 ): string {
-	if (typeof val === "string") {
-		// Check if it's a color-mix (ring)
-		const ring = parseRingValue(val);
-		if (ring) {
-			const ref = colorRef(ring.hex, hexToName);
-			return `\`color-mix(in srgb, \${${ref}} ${ring.percent}%, transparent)\``;
-		}
-		return colorRef(val, hexToName);
-	}
+	if (typeof val === "string") return colorRef(val, hexToName);
 	const parts: string[] = [];
 	parts.push(`DEFAULT: ${colorRef(val.DEFAULT, hexToName)}`);
 	if (val.hover) parts.push(`hover: ${colorRef(val.hover, hexToName)}`);
@@ -195,6 +205,7 @@ ${singleLines.join(",\n")},
 
 	let out = `import type { ThemeSchema } from "../types.ts";
 import { colors } from "../colors.ts";
+import { rgba } from "../color.ts";
 
 ${lightTs}
 `;
