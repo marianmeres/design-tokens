@@ -1,45 +1,46 @@
-import { assertEquals } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { hexToRgb, hexToRgbTriplet } from "../src/utils.ts";
 
-Deno.test("hexToRgb - 6-digit hex with #", () => {
-	assertEquals(hexToRgb("#0d6efd"), [13, 110, 253]);
+test("hexToRgb - 6-digit hex with #", () => {
+	assert.deepStrictEqual(hexToRgb("#0d6efd"), [13, 110, 253]);
 });
 
-Deno.test("hexToRgb - 6-digit hex without #", () => {
-	assertEquals(hexToRgb("0d6efd"), [13, 110, 253]);
+test("hexToRgb - 6-digit hex without #", () => {
+	assert.deepStrictEqual(hexToRgb("0d6efd"), [13, 110, 253]);
 });
 
-Deno.test("hexToRgb - 3-digit hex", () => {
-	assertEquals(hexToRgb("#abc"), [170, 187, 204]);
+test("hexToRgb - 3-digit hex", () => {
+	assert.deepStrictEqual(hexToRgb("#abc"), [170, 187, 204]);
 });
 
-Deno.test("hexToRgb - 3-digit hex without #", () => {
-	assertEquals(hexToRgb("abc"), [170, 187, 204]);
+test("hexToRgb - 3-digit hex without #", () => {
+	assert.deepStrictEqual(hexToRgb("abc"), [170, 187, 204]);
 });
 
-Deno.test("hexToRgb - black", () => {
-	assertEquals(hexToRgb("#000000"), [0, 0, 0]);
+test("hexToRgb - black", () => {
+	assert.deepStrictEqual(hexToRgb("#000000"), [0, 0, 0]);
 });
 
-Deno.test("hexToRgb - white", () => {
-	assertEquals(hexToRgb("#ffffff"), [255, 255, 255]);
+test("hexToRgb - white", () => {
+	assert.deepStrictEqual(hexToRgb("#ffffff"), [255, 255, 255]);
 });
 
-Deno.test("hexToRgb - invalid input returns null", () => {
-	assertEquals(hexToRgb("not-a-color"), null);
-	assertEquals(hexToRgb("#gg0000"), null);
-	assertEquals(hexToRgb(""), null);
-	assertEquals(hexToRgb("#12345"), null);
+test("hexToRgb - invalid input returns null", () => {
+	assert.deepStrictEqual(hexToRgb("not-a-color"), null);
+	assert.deepStrictEqual(hexToRgb("#gg0000"), null);
+	assert.deepStrictEqual(hexToRgb(""), null);
+	assert.deepStrictEqual(hexToRgb("#12345"), null);
 });
 
-Deno.test("hexToRgbTriplet - valid hex", () => {
-	assertEquals(hexToRgbTriplet("#0d6efd"), "13, 110, 253");
+test("hexToRgbTriplet - valid hex", () => {
+	assert.deepStrictEqual(hexToRgbTriplet("#0d6efd"), "13, 110, 253");
 });
 
-Deno.test("hexToRgbTriplet - 3-digit hex", () => {
-	assertEquals(hexToRgbTriplet("#abc"), "170, 187, 204");
+test("hexToRgbTriplet - 3-digit hex", () => {
+	assert.deepStrictEqual(hexToRgbTriplet("#abc"), "170, 187, 204");
 });
 
-Deno.test("hexToRgbTriplet - invalid returns null", () => {
-	assertEquals(hexToRgbTriplet("not-a-color"), null);
+test("hexToRgbTriplet - invalid returns null", () => {
+	assert.deepStrictEqual(hexToRgbTriplet("not-a-color"), null);
 });

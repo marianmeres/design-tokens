@@ -1,4 +1,5 @@
-import { assert, assertEquals } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import {
 	bundledThemeNames,
 	bundledThemes,
@@ -6,32 +7,32 @@ import {
 	themeNames,
 } from "../src/themes/mod.ts";
 
-Deno.test("bundledThemeNames does not leak themeNames or ThemeSchema exports", () => {
-	assert(!bundledThemeNames.includes("themeNames"));
-	assert(!bundledThemeNames.includes("ThemeSchema"));
+test("bundledThemeNames does not leak themeNames or ThemeSchema exports", () => {
+	assert.ok(!bundledThemeNames.includes("themeNames"));
+	assert.ok(!bundledThemeNames.includes("ThemeSchema"));
 });
 
-Deno.test("bundledThemeNames matches kebab-case themeNames count", () => {
-	assertEquals(bundledThemeNames.length, themeNames.length);
+test("bundledThemeNames matches kebab-case themeNames count", () => {
+	assert.deepStrictEqual(bundledThemeNames.length, themeNames.length);
 });
 
-Deno.test("bundledThemes contains a known theme (gray) with required intent keys", () => {
+test("bundledThemes contains a known theme (gray) with required intent keys", () => {
 	const gray = bundledThemes["gray"];
-	assert(gray);
-	assert(gray.light.colors.intent.primary);
-	assert(gray.light.colors.intent.accent);
+	assert.ok(gray);
+	assert.ok(gray.light.colors.intent.primary);
+	assert.ok(gray.light.colors.intent.accent);
 });
 
-Deno.test("getBundledTheme returns undefined for unknown name", () => {
-	assertEquals(getBundledTheme("nonexistent"), undefined);
+test("getBundledTheme returns undefined for unknown name", () => {
+	assert.deepStrictEqual(getBundledTheme("nonexistent"), undefined);
 });
 
-Deno.test("getBundledTheme returns a ThemeSchema for a known name", () => {
+test("getBundledTheme returns a ThemeSchema for a known name", () => {
 	const t = getBundledTheme("gray");
-	assert(t);
-	assert(t.light);
+	assert.ok(t);
+	assert.ok(t.light);
 });
 
-Deno.test("getBundledTheme does not treat 'themeNames' as a theme", () => {
-	assertEquals(getBundledTheme("themeNames"), undefined);
+test("getBundledTheme does not treat 'themeNames' as a theme", () => {
+	assert.deepStrictEqual(getBundledTheme("themeNames"), undefined);
 });

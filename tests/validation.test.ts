@@ -1,4 +1,5 @@
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { generateCssTokens, generateThemeCss } from "../src/generate.ts";
 import type { ThemeSchema, TokenSchema } from "../src/types.ts";
 
@@ -31,7 +32,7 @@ const completeMode: TokenSchema = {
 
 // --- class (a): missing containers throw naming the path ---
 
-Deno.test("validation - each missing container is named, not a TypeError", () => {
+test("validation - each missing container is named, not a TypeError", () => {
 	const cases: [unknown, string][] = [
 		[{}, `"colors" is missing`],
 		[{ colors: {} }, `"colors.intent" is missing`],
@@ -46,49 +47,44 @@ Deno.test("validation - each missing container is named, not a TypeError", () =>
 		],
 	];
 	for (const [schema, expected] of cases) {
-		assertThrows(
+		assert.throws(
 			() => generateCssTokens(schema as TokenSchema, "my-"),
-			Error,
-			expected,
+			(e: unknown) => e instanceof Error && e.message.includes(expected),
 		);
 	}
 });
 
-Deno.test("validation - generateThemeCss names the mode the error came from", () => {
-	assertThrows(
+test("validation - generateThemeCss names the mode the error came from", () => {
+	assert.throws(
 		() => generateThemeCss({ light: {} } as ThemeSchema, "my-"),
-		Error,
-		`[light] Invalid TokenSchema: "colors" is missing`,
+		(e: unknown) => e instanceof Error && e.message.includes(`[light] Invalid TokenSchema: "colors" is missing`),
 	);
 	// The scaffolds' `dark: {}` shape — used to throw `…(reading 'intent')`
 	// the moment `light` was filled in.
-	assertThrows(
+	assert.throws(
 		() =>
 			generateThemeCss(
 				{ light: completeMode, dark: {} } as ThemeSchema,
 				"my-",
 			),
-		Error,
-		`[dark] Invalid TokenSchema: "colors" is missing`,
+		(e: unknown) => e instanceof Error && e.message.includes(`[dark] Invalid TokenSchema: "colors" is missing`),
 	);
 });
 
-Deno.test("validation - a nullish theme names the ThemeSchema shape", () => {
-	assertThrows(
+test("validation - a nullish theme names the ThemeSchema shape", () => {
+	assert.throws(
 		() => generateThemeCss({} as ThemeSchema, "my-"),
-		Error,
-		"Invalid ThemeSchema",
+		(e: unknown) => e instanceof Error && e.message.includes("Invalid ThemeSchema"),
 	);
-	assertThrows(
+	assert.throws(
 		() => generateThemeCss(null as unknown as ThemeSchema, "my-"),
-		Error,
-		"Invalid ThemeSchema",
+		(e: unknown) => e instanceof Error && e.message.includes("Invalid ThemeSchema"),
 	);
 });
 
 // --- class (b): broken leaves throw naming path + key, in every fallback mode ---
 
-Deno.test("validation - a ColorPair missing foreground names the path and key", () => {
+test("validation - a ColorPair missing foreground names the path and key", () => {
 	const schema = {
 		...completeMode,
 		colors: {
@@ -97,47 +93,43 @@ Deno.test("validation - a ColorPair missing foreground names the path and key", 
 		},
 	} as unknown as TokenSchema;
 	for (const fallback of ["none", "static"] as const) {
-		assertThrows(
+		assert.throws(
 			() => generateCssTokens(schema, "my-", { fallback }),
-			Error,
-			`"colors.intent.primary" must declare a string "foreground" (got undefined)`,
+			(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary" must declare a string "foreground" (got undefined)`),
 		);
 	}
 });
 
-Deno.test("validation - non-string leaves are named with their actual value", () => {
+test("validation - non-string leaves are named with their actual value", () => {
 	const withBadDefault = structuredClone(completeMode) as unknown as {
 		colors: { intent: Record<string, unknown> };
 	};
 	withBadDefault.colors.intent.primary = { DEFAULT: 5, foreground: "#fff" };
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(withBadDefault as unknown as TokenSchema, "my-"),
-		Error,
-		`"colors.intent.primary" must declare a string "DEFAULT" (got 5)`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary" must declare a string "DEFAULT" (got 5)`),
 	);
 
 	const withNullSingle = structuredClone(completeMode) as unknown as {
 		colors: { role: { single: Record<string, unknown> } };
 	};
 	withNullSingle.colors.role.single.border = null;
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(withNullSingle as unknown as TokenSchema, "my-"),
-		Error,
-		`"colors.role.single.border" must be a string or an object with a string "DEFAULT" (got null)`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border" must be a string or an object with a string "DEFAULT" (got null)`),
 	);
 
 	const withEmptySingle = structuredClone(completeMode) as unknown as {
 		colors: { role: { single: Record<string, unknown> } };
 	};
 	withEmptySingle.colors.role.single.border = {};
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(withEmptySingle as unknown as TokenSchema, "my-"),
-		Error,
-		`"colors.role.single.border" must be a string or an object`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border" must be a string or an object`),
 	);
 });
 
-Deno.test("validation - non-string optional state fields are rejected, null is tolerated", () => {
+test("validation - non-string optional state fields are rejected, null is tolerated", () => {
 	const withState = (state: unknown): TokenSchema => {
 		const s = structuredClone(completeMode) as unknown as {
 			colors: { intent: Record<string, unknown> };
@@ -152,55 +144,50 @@ Deno.test("validation - non-string optional state fields are rejected, null is t
 	// A number would emit `--x: 5;`; an object would emit `--x: [object Object];`
 	// — or crash the static resolver with `value.includes is not a function`.
 	for (const bad of [5, {}, [], true]) {
-		assertThrows(
+		assert.throws(
 			() => generateCssTokens(withState(bad), "my-"),
-			Error,
-			`"colors.intent.primary.hover" must be a string when present`,
+			(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary.hover" must be a string when present`),
 		);
 	}
 	// Through generateThemeCss (default "supports" fallback, where the crash
 	// used to surface) the error carries the mode prefix.
-	assertThrows(
+	assert.throws(
 		() => generateThemeCss({ light: withState(5) }, "my-"),
-		Error,
-		`[light] Invalid TokenSchema: "colors.intent.primary.hover"`,
+		(e: unknown) => e instanceof Error && e.message.includes(`[light] Invalid TokenSchema: "colors.intent.primary.hover"`),
 	);
 	// `null` degrades via `??` everywhere, so it stays legal — and the output
 	// record stays all-strings.
 	const tokens = generateCssTokens(withState(null), "my-");
-	assertEquals(tokens["my-color-primary-hover"].includes("color-mix("), true);
+	assert.deepStrictEqual(tokens["my-color-primary-hover"].includes("color-mix("), true);
 
 	// Same guard on role single object states.
 	const singleBad = structuredClone(completeMode) as unknown as {
 		colors: { role: { single: Record<string, unknown> } };
 	};
 	singleBad.colors.role.single.border = { DEFAULT: "#d4d4d8", hover: 42 };
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(singleBad as unknown as TokenSchema, "my-"),
-		Error,
-		`"colors.role.single.border.hover" must be a string when present`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border.hover" must be a string when present`),
 	);
 });
 
 // --- class (c): the two operands ---
 
-Deno.test("validation - sparse schema with intents but no background throws pointing at mergeThemeSchema", () => {
+test("validation - sparse schema with intents but no background throws pointing at mergeThemeSchema", () => {
 	const sparse = {
 		colors: { intent: { primary: P }, role: { paired: {}, single: {} } },
 	} as unknown as TokenSchema;
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(sparse, "my-"),
-		Error,
-		`"colors.role.paired.background" is required`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.paired.background" is required`),
 	);
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(sparse, "my-"),
-		Error,
-		"mergeThemeSchema",
+		(e: unknown) => e instanceof Error && e.message.includes("mergeThemeSchema"),
 	);
 });
 
-Deno.test("validation - derivable role keys without single.foreground throw naming it", () => {
+test("validation - derivable role keys without single.foreground throw naming it", () => {
 	const schema = {
 		colors: {
 			intent: {},
@@ -210,17 +197,16 @@ Deno.test("validation - derivable role keys without single.foreground throw nami
 			},
 		},
 	} as unknown as TokenSchema;
-	assertThrows(
+	assert.throws(
 		() => generateCssTokens(schema, "my-"),
-		Error,
-		`"colors.role.single.foreground" is required`,
+		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.foreground" is required`),
 	);
 	// deriveStates: false suppresses the derivation, so nothing dangles.
 	const tokens = generateCssTokens(schema, "my-", { deriveStates: false });
-	assertEquals(tokens["my-color-muted-hover"], "#eee");
+	assert.deepStrictEqual(tokens["my-color-muted-hover"], "#eee");
 });
 
-Deno.test("validation - explicit hover+active on every role key needs no single.foreground", () => {
+test("validation - explicit hover+active on every role key needs no single.foreground", () => {
 	// Precision check: the operand rule must mirror the actual derivation
 	// condition, not just key presence — nothing here references foreground.
 	const schema = {
@@ -241,11 +227,11 @@ Deno.test("validation - explicit hover+active on every role key needs no single.
 		},
 	} as unknown as TokenSchema;
 	const tokens = generateCssTokens(schema, "my-");
-	assertEquals(tokens["my-color-muted-hover"], "#ddd");
-	assert(tokens["my-color-surface-primary"]);
+	assert.deepStrictEqual(tokens["my-color-muted-hover"], "#ddd");
+	assert.ok(tokens["my-color-surface-primary"]);
 });
 
-Deno.test("validation - a three-intent schema with both operands present still generates", () => {
+test("validation - a three-intent schema with both operands present still generates", () => {
 	const threeIntents = {
 		colors: {
 			intent: {
@@ -257,18 +243,18 @@ Deno.test("validation - a three-intent schema with both operands present still g
 		},
 	} as unknown as TokenSchema;
 	const css = generateThemeCss({ light: threeIntents } as ThemeSchema, "my-");
-	assert(css.includes("--my-color-primary:"));
-	assert(!css.includes("--my-color-warning:"));
+	assert.ok(css.includes("--my-color-primary:"));
+	assert.ok(!css.includes("--my-color-warning:"));
 
 	// And it stands alone: no declared-vs-referenced gap.
 	const declared = new Set(
 		[...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]),
 	);
 	const referenced = [...css.matchAll(/var\(--([a-z0-9-]+)\)/g)].map((m) => m[1]);
-	assertEquals(referenced.filter((r) => !declared.has(r)), []);
+	assert.deepStrictEqual(referenced.filter((r) => !declared.has(r)), []);
 });
 
-Deno.test("validation - a complete schema is unaffected in every mode/options combination", () => {
+test("validation - a complete schema is unaffected in every mode/options combination", () => {
 	for (const deriveStates of [true, false]) {
 		for (const fallback of ["none", "static"] as const) {
 			for (const mode of ["light", "dark"] as const) {
@@ -277,7 +263,7 @@ Deno.test("validation - a complete schema is unaffected in every mode/options co
 					deriveStates,
 					fallback,
 				});
-				assert(Object.keys(tokens).length > 0);
+				assert.ok(Object.keys(tokens).length > 0);
 			}
 		}
 	}
