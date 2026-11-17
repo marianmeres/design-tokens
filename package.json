@@ -1,6 +1,6 @@
 {
   "name": "@marianmeres/design-tokens",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "description": "CSS custom property generator for design token systems: a light/dark color schema in, CSS variables out, with hover/active states derived via color-mix() and a precomputed fallback for older engines. Optional Bootstrap Reboot bridge, 55 bundled themes, pre-built CSS.",
   "license": "MIT",
   "author": "Marian Meres",
