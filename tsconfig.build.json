@@ -1,0 +1,12 @@
+{
+	// `pnpm run build`: emits src/ to dist/ (ESM + .d.ts); the build script then copies
+	// css/ to dist/css/. That is all that gets published to npm.
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"rootDir": "src",
+		"outDir": "dist",
+		"declaration": true
+	},
+	"include": ["src"]
+}

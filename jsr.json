@@ -1,0 +1,26 @@
+{
+  "name": "@marianmeres/design-tokens",
+  "exports": {
+    ".": "./src/mod.ts",
+    "./reboot": "./src/reboot-bridge.ts",
+    "./themes": "./src/themes/mod.ts"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "css/*.css",
+      "tests/**/*.ts",
+      "scripts/**/*.ts",
+      "theme-preview-builder/index.html",
+      "theme-preview-builder/src/**/*.ts",
+      "theme-preview-builder/dist/bundle.js",
+      "index.html",
+      "README.md",
+      "API.md",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "LICENSE",
+      ".editorconfig"
+    ]
+  }
+}

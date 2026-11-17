@@ -1,0 +1,94 @@
+{
+  "name": "@marianmeres/design-tokens",
+  "version": "1.22.0",
+  "description": "CSS custom property generator for design token systems: a light/dark color schema in, CSS variables out, with hover/active states derived via color-mix() and a precomputed fallback for older engines. Optional Bootstrap Reboot bridge, 55 bundled themes, pre-built CSS.",
+  "license": "MIT",
+  "author": "Marian Meres",
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/mod.js",
+  "types": "./dist/mod.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/mod.d.ts",
+      "import": "./dist/mod.js"
+    },
+    "./reboot-bridge": {
+      "types": "./dist/reboot-bridge.d.ts",
+      "import": "./dist/reboot-bridge.js"
+    },
+    "./themes/mod": {
+      "types": "./dist/themes/mod.d.ts",
+      "import": "./dist/themes/mod.js"
+    },
+    "./reboot": {
+      "types": "./dist/reboot-bridge.d.ts",
+      "import": "./dist/reboot-bridge.js"
+    },
+    "./themes": {
+      "types": "./dist/themes/mod.d.ts",
+      "import": "./dist/themes/mod.js"
+    },
+    "./css/*": "./dist/css/*"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "API.md",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marianmeres/design-tokens.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marianmeres/design-tokens/issues"
+  },
+  "homepage": "https://github.com/marianmeres/design-tokens#readme",
+  "keywords": [
+    "design-tokens",
+    "css-variables",
+    "css-custom-properties",
+    "theme",
+    "theming",
+    "dark-mode",
+    "color-mix",
+    "color-palette",
+    "bootstrap",
+    "reboot"
+  ],
+  "scripts": {
+    "build": "pnpm run clean && tsc -p tsconfig.build.json && cp -R css dist/css",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "test:watch": "node --test --watch \"tests/**/*.test.ts\"",
+    "test:deno": "deno test --no-lock --config jsr.json tests/",
+    "jsr:check": "deno publish --dry-run --allow-dirty --set-version \"$npm_package_version\"",
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm test",
+    "prepublishOnly": "pnpm run ci && pnpm run build",
+    "themes:build": "node scripts/build-themes-mod.ts",
+    "css:build": "node scripts/build-css.ts",
+    "preview:build": "bundle --root theme-preview-builder/src --outdir theme-preview-builder/dist",
+    "preview:dev": "bundle --root theme-preview-builder/src --outdir theme-preview-builder/dist --watch --watch-dir src",
+    "release": "npx --yes @marianmeres/release@^2.2.0 --before-commit \"pnpm run preview:build\"",
+    "publish:jsr": "pnpm run test:deno && deno publish --set-version \"$npm_package_version\"",
+    "publish:all": "pnpm publish && pnpm run publish:jsr",
+    "rp": "pnpm run release -y && pnpm run publish:all",
+    "rpm": "pnpm run release minor -y && pnpm run publish:all"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.8",
+    "@marianmeres/bundle": "^1.0.0",
+    "@marianmeres/vanilla": "^1.10.0",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}

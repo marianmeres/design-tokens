@@ -1,4 +1,6 @@
-import { join } from "@std/path";
+import { execFileSync } from "node:child_process";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 const THEMES_DIR = "src/themes";
 const MOD_FILE = join(THEMES_DIR, "mod.ts");
@@ -11,9 +13,9 @@ function toCamelCase(s: string): string {
 // Discover theme files (exclude mod.ts and _-prefixed internals)
 const entries: { kebab: string; camel: string; jsdoc: string }[] = [];
 
-for await (const entry of Deno.readDir(THEMES_DIR)) {
+for (const entry of await readdir(THEMES_DIR, { withFileTypes: true })) {
 	if (
-		!entry.isFile ||
+		!entry.isFile() ||
 		!entry.name.endsWith(".ts") ||
 		entry.name === "mod.ts" ||
 		entry.name.startsWith("_")
@@ -25,7 +27,7 @@ for await (const entry of Deno.readDir(THEMES_DIR)) {
 	const camel = toCamelCase(kebab);
 
 	// Extract JSDoc above `export default`
-	const content = await Deno.readTextFile(join(THEMES_DIR, entry.name));
+	const content = await readFile(join(THEMES_DIR, entry.name), "utf8");
 	const match = content.match(/(\/\*\*[^]*?\*\/)\s*\nexport default/);
 	const jsdoc = match?.[1] ?? `/** ${kebab} theme. */`;
 
@@ -109,11 +111,11 @@ lines.push(`\treturn bundledThemes[name];`);
 lines.push(`}`);
 lines.push(``);
 
-await Deno.writeTextFile(MOD_FILE, lines.join("\n"));
+await writeFile(MOD_FILE, lines.join("\n"));
 
-// Format with deno fmt
-const cmd = new Deno.Command("deno", { args: ["fmt", MOD_FILE] });
-await cmd.output();
+// Format with Biome (`check`, not just `format`: it also sorts the imports, so the
+// generated file passes `pnpm run lint` as written)
+execFileSync("pnpm", ["exec", "biome", "check", "--write", MOD_FILE], { stdio: "inherit" });
 
 console.log(
 	`Generated ${MOD_FILE} with ${entries.length} themes.`,
