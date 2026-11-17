@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { generateThemeCss } from "../src/generate.ts";
 import { mergeThemeSchema } from "../src/merge.ts";
-import type { ThemeSchema, ThemeSchemaOverrides } from "../src/types.ts";
 import { bundledThemeNames, getBundledTheme } from "../src/themes/mod.ts";
+import type { ThemeSchema, ThemeSchemaOverrides } from "../src/types.ts";
 
 const PREFIX = "my-";
 
@@ -66,9 +66,7 @@ const base: ThemeSchema = {
 };
 
 function danglingRefs(css: string): string[] {
-	const declared = new Set(
-		[...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]),
-	);
+	const declared = new Set([...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]));
 	const referenced = new Set(
 		[...css.matchAll(/var\(--([a-z0-9-]+)\)/g)].map((m) => m[1]),
 	);
@@ -125,14 +123,19 @@ test("mergeThemeSchema - replaces a whole ColorPair; base's explicit states are 
 	assert.deepStrictEqual(primary.hover, undefined);
 	assert.deepStrictEqual(primary.foregroundHover, undefined);
 	// Untouched siblings survive.
-	assert.deepStrictEqual(merged.light.colors.intent.accent, base.light.colors.intent.accent);
+	assert.deepStrictEqual(
+		merged.light.colors.intent.accent,
+		base.light.colors.intent.accent,
+	);
 });
 
 test("mergeThemeSchema - role.single ColorValue → ColorValue replaces (stale hover gone)", () => {
 	const merged = mergeThemeSchema(base, {
 		light: { colors: { role: { single: { border: { DEFAULT: "#cccccc" } } } } },
 	});
-	assert.deepStrictEqual(merged.light.colors.role.single.border, { DEFAULT: "#cccccc" });
+	assert.deepStrictEqual(merged.light.colors.role.single.border, {
+		DEFAULT: "#cccccc",
+	});
 });
 
 test("mergeThemeSchema - role.single string ↔ ColorValue swaps cleanly in both directions", () => {
@@ -181,18 +184,19 @@ test("mergeThemeSchema - a key the base does not have throws at runtime (JSON pa
 	) as ThemeSchemaOverrides;
 	assert.throws(
 		() => mergeThemeSchema(base, overrides),
-		(e: unknown) => e instanceof Error && e.message.includes(`"light.colors.intent.primry" does not exist in the base theme`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"light.colors.intent.primry" does not exist in the base theme`,
+			),
 	);
 });
 
 test("mergeThemeSchema - unknown container keys throw with their path", () => {
 	assert.throws(
-		() =>
-			mergeThemeSchema(
-				base,
-				JSON.parse(`{"lite":{}}`) as ThemeSchemaOverrides,
-			),
-		(e: unknown) => e instanceof Error && e.message.includes(`unknown key "overrides.lite"`),
+		() => mergeThemeSchema(base, JSON.parse(`{"lite":{}}`) as ThemeSchemaOverrides),
+		(e: unknown) =>
+			e instanceof Error && e.message.includes(`unknown key "overrides.lite"`),
 	);
 	assert.throws(
 		() =>
@@ -200,23 +204,24 @@ test("mergeThemeSchema - unknown container keys throw with their path", () => {
 				base,
 				JSON.parse(`{"light":{"colours":{}}}`) as ThemeSchemaOverrides,
 			),
-		(e: unknown) => e instanceof Error && e.message.includes(`unknown key "light.colours"`),
+		(e: unknown) =>
+			e instanceof Error && e.message.includes(`unknown key "light.colours"`),
 	);
 });
 
 test("mergeThemeSchema - prototype-chain key names cannot bypass the no-minting guard", () => {
 	// `in` would see these on Object.prototype; the guard must use own keys
 	// only ("__proto__" would additionally fire the real setter on Node).
-	for (
-		const hostile of [
-			`{"light":{"colors":{"intent":{"constructor":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
-			`{"light":{"colors":{"role":{"single":{"toString":"#123456"}}}}}`,
-			`{"light":{"colors":{"intent":{"__proto__":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
-		]
-	) {
+	for (const hostile of [
+		`{"light":{"colors":{"intent":{"constructor":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+		`{"light":{"colors":{"role":{"single":{"toString":"#123456"}}}}}`,
+		`{"light":{"colors":{"intent":{"__proto__":{"DEFAULT":"#f00","foreground":"#fff"}}}}}`,
+	]) {
 		assert.throws(
 			() => mergeThemeSchema(base, JSON.parse(hostile) as ThemeSchemaOverrides),
-			(e: unknown) => e instanceof Error && e.message.includes("does not exist in the base theme"),
+			(e: unknown) =>
+				e instanceof Error &&
+				e.message.includes("does not exist in the base theme"),
 		);
 	}
 });
@@ -236,7 +241,8 @@ test("mergeThemeSchema - dark overrides against a light-only base throw", () => 
 					},
 				},
 			}),
-		(e: unknown) => e instanceof Error && e.message.includes("base theme has no dark mode"),
+		(e: unknown) =>
+			e instanceof Error && e.message.includes("base theme has no dark mode"),
 	);
 });
 

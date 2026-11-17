@@ -22,7 +22,10 @@ const evalTo = (
 test("parseColor - hex forms", () => {
 	assert.deepStrictEqual(formatColor(parseColor("#abc")!), "#aabbcc");
 	assert.deepStrictEqual(formatColor(parseColor("#AABBCC")!), "#aabbcc");
-	assert.deepStrictEqual(formatColor(parseColor("#ff000080")!), "rgba(255, 0, 0, 0.502)");
+	assert.deepStrictEqual(
+		formatColor(parseColor("#ff000080")!),
+		"rgba(255, 0, 0, 0.502)",
+	);
 	assert.deepStrictEqual(formatColor(parseColor("#f00f")!), "#ff0000");
 });
 
@@ -33,7 +36,10 @@ test("parseColor - rgb/rgba, legacy and modern syntax", () => {
 		formatColor(parseColor("rgba(255, 0, 0, 0.5)")!),
 		"rgba(255, 0, 0, 0.5)",
 	);
-	assert.deepStrictEqual(formatColor(parseColor("rgb(255 0 0 / 50%)")!), "rgba(255, 0, 0, 0.5)");
+	assert.deepStrictEqual(
+		formatColor(parseColor("rgb(255 0 0 / 50%)")!),
+		"rgba(255, 0, 0, 0.5)",
+	);
 	assert.deepStrictEqual(formatColor(parseColor("rgb(100%, 0%, 0%)")!), "#ff0000");
 });
 
@@ -86,9 +92,14 @@ test("parseColor - OKLab transfer matches reference values", () => {
 });
 
 test("parseColor - OKLab round-trips sRGB colors losslessly", () => {
-	for (
-		const hex of ["#463947", "#14b8a6", "#e11d48", "#f59e0b", "#fafafa", "#18181b"]
-	) {
+	for (const hex of [
+		"#463947",
+		"#14b8a6",
+		"#e11d48",
+		"#f59e0b",
+		"#fafafa",
+		"#18181b",
+	]) {
 		assert.deepStrictEqual(evalTo(`color-mix(in oklab, ${hex}, ${hex})`), hex);
 	}
 });
@@ -134,7 +145,10 @@ test("mixColors - percentage may precede the color", () => {
 });
 
 test("mixColors - two zero percentages are invalid", () => {
-	assert.deepStrictEqual(mixColors("srgb", parseColor("red")!, 0, parseColor("blue")!, 0), null);
+	assert.deepStrictEqual(
+		mixColors("srgb", parseColor("red")!, 0, parseColor("blue")!, 0),
+		null,
+	);
 	assert.deepStrictEqual(evalTo("color-mix(in srgb, red 0%, blue 0%)"), null);
 });
 
@@ -162,7 +176,10 @@ test("evaluateColorExpression - resolves chained var() references", () => {
 		b: "var(--a)",
 		c: "color-mix(in srgb, var(--b), black)",
 	};
-	assert.deepStrictEqual(evalTo("var(--c)", (n) => tokens[n]), "#800000");
+	assert.deepStrictEqual(
+		evalTo("var(--c)", (n) => tokens[n]),
+		"#800000",
+	);
 });
 
 test("evaluateColorExpression - uses the var() fallback when undefined", () => {
@@ -175,7 +192,10 @@ test("evaluateColorExpression - reference cycles resolve to null, not a hang", (
 		a: "color-mix(in oklab, var(--b), black 10%)",
 		b: "color-mix(in oklab, var(--a), black 10%)",
 	};
-	assert.deepStrictEqual(evalTo("var(--a)", (n) => tokens[n]), null);
+	assert.deepStrictEqual(
+		evalTo("var(--a)", (n) => tokens[n]),
+		null,
+	);
 });
 
 test("evaluateColorExpression - unsupported interpolation spaces are left unresolved", () => {
@@ -202,7 +222,10 @@ test("evaluateColorExpression - nested color-mix", () => {
 
 test("formatColor - opaque colors serialize as hex, translucent as legacy rgba()", () => {
 	assert.deepStrictEqual(formatColor({ r: 1, g: 0, b: 0, a: 1 }), "#ff0000");
-	assert.deepStrictEqual(formatColor({ r: 1, g: 0, b: 0, a: 0.25 }), "rgba(255, 0, 0, 0.25)");
+	assert.deepStrictEqual(
+		formatColor({ r: 1, g: 0, b: 0, a: 0.25 }),
+		"rgba(255, 0, 0, 0.25)",
+	);
 });
 
 test("formatColor - clamps out-of-gamut components", () => {

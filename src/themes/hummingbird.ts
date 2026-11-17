@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Hummingbird — watermelon's brand colors perched on peacock's surfaces.
 // Anna's hummingbird wears exactly this: iridescent teal plumage with a

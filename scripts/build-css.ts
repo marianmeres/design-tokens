@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { bundledThemes } from "../src/themes/mod.ts";
 import { generateThemeCss } from "../src/generate.ts";
+import { bundledThemes } from "../src/themes/mod.ts";
 
 const PREFIX = process.env.CSS_PREFIX ?? "stuic-";
 const OUT_DIR = "css";

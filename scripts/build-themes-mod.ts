@@ -59,9 +59,7 @@ const lines: string[] = [
 
 for (const { kebab, camel, jsdoc } of entries) {
 	lines.push(`${jsdoc}`);
-	lines.push(
-		`export { default as ${camel} } from "./${kebab}.ts";`,
-	);
+	lines.push(`export { default as ${camel} } from "./${kebab}.ts";`);
 }
 
 // Build a camelCase import + registry map inline so the registry has no
@@ -83,9 +81,7 @@ for (const { kebab } of entries) {
 lines.push(`] as const;`);
 
 lines.push(``);
-lines.push(
-	`/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */`,
-);
+lines.push(`/** Map of all bundled themes keyed by camelCase name. Safe to iterate. */`);
 lines.push(`export const bundledThemes: Readonly<Record<string, ThemeSchema>> = {`);
 for (const { camel } of entries) {
 	lines.push(`\t${camel}: ${camel}_,`);
@@ -93,9 +89,7 @@ for (const { camel } of entries) {
 lines.push(`};`);
 
 lines.push(``);
-lines.push(
-	`/** All bundled theme names (camelCase). */`,
-);
+lines.push(`/** All bundled theme names (camelCase). */`);
 lines.push(
 	`export const bundledThemeNames: readonly string[] = Object.keys(bundledThemes);`,
 );
@@ -104,9 +98,7 @@ lines.push(``);
 lines.push(
 	`/** Look up a bundled theme by camelCase name. Returns undefined if unknown. */`,
 );
-lines.push(
-	`export function getBundledTheme(name: string): ThemeSchema | undefined {`,
-);
+lines.push(`export function getBundledTheme(name: string): ThemeSchema | undefined {`);
 lines.push(`\treturn bundledThemes[name];`);
 lines.push(`}`);
 lines.push(``);
@@ -115,8 +107,8 @@ await writeFile(MOD_FILE, lines.join("\n"));
 
 // Format with Biome (`check`, not just `format`: it also sorts the imports, so the
 // generated file passes `pnpm run lint` as written)
-execFileSync("pnpm", ["exec", "biome", "check", "--write", MOD_FILE], { stdio: "inherit" });
+execFileSync("pnpm", ["exec", "biome", "check", "--write", MOD_FILE], {
+	stdio: "inherit",
+});
 
-console.log(
-	`Generated ${MOD_FILE} with ${entries.length} themes.`,
-);
+console.log(`Generated ${MOD_FILE} with ${entries.length} themes.`);

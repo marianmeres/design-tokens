@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Night candy — highlighter lime and bubblegum pink on a midnight indigo. The
 // theme is dark-first: dark mode is the real design, light mode is its daylight

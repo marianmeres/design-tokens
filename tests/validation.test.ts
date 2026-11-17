@@ -57,17 +57,17 @@ test("validation - each missing container is named, not a TypeError", () => {
 test("validation - generateThemeCss names the mode the error came from", () => {
 	assert.throws(
 		() => generateThemeCss({ light: {} } as ThemeSchema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`[light] Invalid TokenSchema: "colors" is missing`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(`[light] Invalid TokenSchema: "colors" is missing`),
 	);
 	// The scaffolds' `dark: {}` shape — used to throw `…(reading 'intent')`
 	// the moment `light` was filled in.
 	assert.throws(
-		() =>
-			generateThemeCss(
-				{ light: completeMode, dark: {} } as ThemeSchema,
-				"my-",
-			),
-		(e: unknown) => e instanceof Error && e.message.includes(`[dark] Invalid TokenSchema: "colors" is missing`),
+		() => generateThemeCss({ light: completeMode, dark: {} } as ThemeSchema, "my-"),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(`[dark] Invalid TokenSchema: "colors" is missing`),
 	);
 });
 
@@ -95,7 +95,11 @@ test("validation - a ColorPair missing foreground names the path and key", () =>
 	for (const fallback of ["none", "static"] as const) {
 		assert.throws(
 			() => generateCssTokens(schema, "my-", { fallback }),
-			(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary" must declare a string "foreground" (got undefined)`),
+			(e: unknown) =>
+				e instanceof Error &&
+				e.message.includes(
+					`"colors.intent.primary" must declare a string "foreground" (got undefined)`,
+				),
 		);
 	}
 });
@@ -107,7 +111,11 @@ test("validation - non-string leaves are named with their actual value", () => {
 	withBadDefault.colors.intent.primary = { DEFAULT: 5, foreground: "#fff" };
 	assert.throws(
 		() => generateCssTokens(withBadDefault as unknown as TokenSchema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary" must declare a string "DEFAULT" (got 5)`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"colors.intent.primary" must declare a string "DEFAULT" (got 5)`,
+			),
 	);
 
 	const withNullSingle = structuredClone(completeMode) as unknown as {
@@ -116,7 +124,11 @@ test("validation - non-string leaves are named with their actual value", () => {
 	withNullSingle.colors.role.single.border = null;
 	assert.throws(
 		() => generateCssTokens(withNullSingle as unknown as TokenSchema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border" must be a string or an object with a string "DEFAULT" (got null)`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"colors.role.single.border" must be a string or an object with a string "DEFAULT" (got null)`,
+			),
 	);
 
 	const withEmptySingle = structuredClone(completeMode) as unknown as {
@@ -125,7 +137,11 @@ test("validation - non-string leaves are named with their actual value", () => {
 	withEmptySingle.colors.role.single.border = {};
 	assert.throws(
 		() => generateCssTokens(withEmptySingle as unknown as TokenSchema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border" must be a string or an object`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"colors.role.single.border" must be a string or an object`,
+			),
 	);
 });
 
@@ -146,14 +162,22 @@ test("validation - non-string optional state fields are rejected, null is tolera
 	for (const bad of [5, {}, [], true]) {
 		assert.throws(
 			() => generateCssTokens(withState(bad), "my-"),
-			(e: unknown) => e instanceof Error && e.message.includes(`"colors.intent.primary.hover" must be a string when present`),
+			(e: unknown) =>
+				e instanceof Error &&
+				e.message.includes(
+					`"colors.intent.primary.hover" must be a string when present`,
+				),
 		);
 	}
 	// Through generateThemeCss (default "supports" fallback, where the crash
 	// used to surface) the error carries the mode prefix.
 	assert.throws(
 		() => generateThemeCss({ light: withState(5) }, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`[light] Invalid TokenSchema: "colors.intent.primary.hover"`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`[light] Invalid TokenSchema: "colors.intent.primary.hover"`,
+			),
 	);
 	// `null` degrades via `??` everywhere, so it stays legal — and the output
 	// record stays all-strings.
@@ -167,7 +191,11 @@ test("validation - non-string optional state fields are rejected, null is tolera
 	singleBad.colors.role.single.border = { DEFAULT: "#d4d4d8", hover: 42 };
 	assert.throws(
 		() => generateCssTokens(singleBad as unknown as TokenSchema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.border.hover" must be a string when present`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(
+				`"colors.role.single.border.hover" must be a string when present`,
+			),
 	);
 });
 
@@ -179,7 +207,9 @@ test("validation - sparse schema with intents but no background throws pointing 
 	} as unknown as TokenSchema;
 	assert.throws(
 		() => generateCssTokens(sparse, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.paired.background" is required`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(`"colors.role.paired.background" is required`),
 	);
 	assert.throws(
 		() => generateCssTokens(sparse, "my-"),
@@ -199,7 +229,9 @@ test("validation - derivable role keys without single.foreground throw naming it
 	} as unknown as TokenSchema;
 	assert.throws(
 		() => generateCssTokens(schema, "my-"),
-		(e: unknown) => e instanceof Error && e.message.includes(`"colors.role.single.foreground" is required`),
+		(e: unknown) =>
+			e instanceof Error &&
+			e.message.includes(`"colors.role.single.foreground" is required`),
 	);
 	// deriveStates: false suppresses the derivation, so nothing dangles.
 	const tokens = generateCssTokens(schema, "my-", { deriveStates: false });
@@ -247,11 +279,12 @@ test("validation - a three-intent schema with both operands present still genera
 	assert.ok(!css.includes("--my-color-warning:"));
 
 	// And it stands alone: no declared-vs-referenced gap.
-	const declared = new Set(
-		[...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]),
-	);
+	const declared = new Set([...css.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) => m[1]));
 	const referenced = [...css.matchAll(/var\(--([a-z0-9-]+)\)/g)].map((m) => m[1]);
-	assert.deepStrictEqual(referenced.filter((r) => !declared.has(r)), []);
+	assert.deepStrictEqual(
+		referenced.filter((r) => !declared.has(r)),
+		[],
+	);
 });
 
 test("validation - a complete schema is unaffected in every mode/options combination", () => {

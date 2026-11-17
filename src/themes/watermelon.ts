@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Watermelon — fresh mint rind around a hot pink heart. The two brand colors
 // are used verbatim (no palette approximation). Surfaces carry the fruit's

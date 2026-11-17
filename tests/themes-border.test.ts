@@ -68,8 +68,8 @@ test("bundled themes: border is visible on every fill layer, in both modes", () 
 	assert.ok(checked > 0, "no theme x mode x layer combinations were checked");
 	assert.ok(
 		!failures.length,
-		`border contrast below ${FLOOR}:1 on ${failures.length} layer(s):\n  ${
-			failures.join("\n  ")
-		}`,
+		`border contrast below ${FLOOR}:1 on ${failures.length} layer(s):\n  ${failures.join(
+			"\n  ",
+		)}`,
 	);
 });

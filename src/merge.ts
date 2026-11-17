@@ -35,9 +35,7 @@ function replaceLeaves<T>(
 	path: string,
 ): void {
 	if (!isPlainObject(source)) {
-		throw new Error(
-			`Invalid ThemeSchemaOverrides: "${path}" must be an object.`,
-		);
+		throw new Error(`Invalid ThemeSchemaOverrides: "${path}" must be an object.`);
 	}
 	for (const [key, leaf] of Object.entries(source)) {
 		// Object.hasOwn, not `in`: the prototype chain would let keys like
@@ -46,9 +44,9 @@ function replaceLeaves<T>(
 		if (!Object.hasOwn(target, key)) {
 			throw new Error(
 				`Invalid ThemeSchemaOverrides: "${path}.${key}" does not exist ` +
-					`in the base theme (base has: ${
-						Object.keys(target).join(", ")
-					}). Overrides replace existing keys only — to introduce a ` +
+					`in the base theme (base has: ${Object.keys(target).join(
+						", ",
+					)}). Overrides replace existing keys only — to introduce a ` +
 					`new key, author it on the base schema object.`,
 			);
 		}

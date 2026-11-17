@@ -79,19 +79,13 @@ test("generateCssTokens - intent colors derive hover/active toward white in dark
 
 test("generateCssTokens - role paired colors derive hover/active toward foreground", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX);
-	assert.ok(
-		tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"),
-	);
-	assert.ok(
-		tokens["my-color-muted-active"].includes("var(--my-color-foreground) 20%"),
-	);
+	assert.ok(tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"));
+	assert.ok(tokens["my-color-muted-active"].includes("var(--my-color-foreground) 20%"));
 });
 
 test("generateCssTokens - role paired colors stay foreground-targeted in dark mode", () => {
 	const tokens = generateCssTokens(minimalSchema, PREFIX, "dark");
-	assert.ok(
-		tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"),
-	);
+	assert.ok(tokens["my-color-muted-hover"].includes("var(--my-color-foreground) 10%"));
 	// Role bucket must never use black/white targets — guards against
 	// accidental cross-bucket regression.
 	assert.ok(!tokens["my-color-muted-hover"].includes("black"));
@@ -115,12 +109,8 @@ test("generateCssTokens - role single object colors derive toward foreground", (
 		},
 	};
 	const tokens = generateCssTokens(schema, PREFIX);
-	assert.ok(
-		tokens["my-color-input-hover"].includes("var(--my-color-foreground) 10%"),
-	);
-	assert.ok(
-		tokens["my-color-input-active"].includes("var(--my-color-foreground) 20%"),
-	);
+	assert.ok(tokens["my-color-input-hover"].includes("var(--my-color-foreground) 10%"));
+	assert.ok(tokens["my-color-input-active"].includes("var(--my-color-foreground) 20%"));
 });
 
 test("generateCssTokens - uses explicit hover/active when provided", () => {
@@ -150,16 +140,8 @@ test("generateCssTokens - generates surface-intent tokens", () => {
 	assert.ok(tokens["my-color-surface-primary-foreground"]);
 	assert.ok(tokens["my-color-surface-primary-border"]);
 	// Verify surface tokens reference the prefix correctly
-	assert.ok(
-		tokens["my-color-surface-primary"].includes(
-			"var(--my-color-primary)",
-		),
-	);
-	assert.ok(
-		tokens["my-color-surface-primary"].includes(
-			"var(--my-color-background)",
-		),
-	);
+	assert.ok(tokens["my-color-surface-primary"].includes("var(--my-color-primary)"));
+	assert.ok(tokens["my-color-surface-primary"].includes("var(--my-color-background)"));
 });
 
 test("generateCssTokens - generates role paired tokens", () => {
@@ -454,9 +436,10 @@ test("generateThemeCss - prettierIgnore with cssLayer + dark still emits a singl
 
 /** Every `--x: value;` declaration in a CSS string, as a [name, value] list. */
 function declarations(css: string): [string, string][] {
-	return [...css.matchAll(/^\s*--([\w-]+):\s*(.+);$/gm)].map((
-		m,
-	) => [m[1], m[2].trim()]);
+	return [...css.matchAll(/^\s*--([\w-]+):\s*(.+);$/gm)].map((m) => [
+		m[1],
+		m[2].trim(),
+	]);
 }
 
 /** The declarations inside the `@supports not (...)` block, if present. */
@@ -479,7 +462,10 @@ test("generateThemeCss - fallback defaults to 'supports'", () => {
 test("generateThemeCss - the @supports guard is a negated declaration test", () => {
 	const css = generateThemeCss(themeSchema, PREFIX);
 	const guard = css.match(/@supports[^{]*/)![0].trim();
-	assert.deepStrictEqual(guard, "@supports not (color: color-mix(in oklab, red, blue))");
+	assert.deepStrictEqual(
+		guard,
+		"@supports not (color: color-mix(in oklab, red, blue))",
+	);
 });
 
 test("generateThemeCss - fallback 'none' leaves output byte-identical to the pre-fallback generator", () => {
@@ -546,12 +532,20 @@ test("generateThemeCss - the @supports block covers every color-mix token, and n
 	const base = css.slice(0, css.indexOf("@supports not "));
 
 	const mixTokens = new Set(
-		declarations(base).filter(([, v]) => v.includes("color-mix(")).map(([k]) => k),
+		declarations(base)
+			.filter(([, v]) => v.includes("color-mix("))
+			.map(([k]) => k),
 	);
 	const fallbackTokens = new Set(declarations(block).map(([k]) => k));
 
-	assert.deepStrictEqual([...mixTokens].filter((k) => !fallbackTokens.has(k)), []);
-	assert.deepStrictEqual([...fallbackTokens].filter((k) => !mixTokens.has(k)), []);
+	assert.deepStrictEqual(
+		[...mixTokens].filter((k) => !fallbackTokens.has(k)),
+		[],
+	);
+	assert.deepStrictEqual(
+		[...fallbackTokens].filter((k) => !mixTokens.has(k)),
+		[],
+	);
 	assert.ok(mixTokens.size > 0);
 });
 

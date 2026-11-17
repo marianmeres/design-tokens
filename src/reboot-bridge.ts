@@ -7,13 +7,13 @@
  * @module
  */
 
-import type { GeneratedTokens, ThemeSchema } from "./types.ts";
 import {
-	generateCssTokens,
 	type GenerateThemeOptions,
+	generateCssTokens,
 	staticFallbackCss,
 	toCssString,
 } from "./generate.ts";
+import type { GeneratedTokens, ThemeSchema } from "./types.ts";
 import { hexToRgbTriplet } from "./utils.ts";
 
 /**
@@ -85,9 +85,7 @@ export function generateRebootBridge(
 	// Link hover — use primary-hover token
 	if (tokens[`${p}color-primary-hover`]) {
 		bridge[`bs-link-hover-color`] = ref("primary-hover");
-		const triplet = hexToRgbTriplet(
-			tokens[`${p}color-primary-hover`],
-		);
+		const triplet = hexToRgbTriplet(tokens[`${p}color-primary-hover`]);
 		if (triplet) bridge[`bs-link-hover-color-rgb`] = triplet;
 	}
 
@@ -168,11 +166,7 @@ export function generateThemedCss(
 			fallback: tokenFallback,
 		});
 		const darkBridge = generateRebootBridge(darkTokens, prefix);
-		css += "\n" +
-			toCssString(
-				{ ...darkTokens, ...darkBridge },
-				":root.dark",
-			);
+		css += "\n" + toCssString({ ...darkTokens, ...darkBridge }, ":root.dark");
 		css += "\n:root.dark a { color: var(--bs-link-color); }";
 		css += "\n:root.dark a:hover { color: var(--bs-link-hover-color); }";
 		modes.push({ selector: ":root.dark", tokens: darkTokens });

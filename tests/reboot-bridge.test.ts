@@ -58,7 +58,10 @@ test("generateRebootBridge - maps background to bs-body-bg", () => {
 test("generateRebootBridge - maps background-foreground to bs-body-color", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
-	assert.deepStrictEqual(bridge["bs-body-color"], "var(--my-color-background-foreground)");
+	assert.deepStrictEqual(
+		bridge["bs-body-color"],
+		"var(--my-color-background-foreground)",
+	);
 	assert.deepStrictEqual(bridge["bs-body-color-rgb"], "33, 37, 41");
 });
 
@@ -86,14 +89,20 @@ test("generateRebootBridge - maps muted to secondary", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
 	assert.deepStrictEqual(bridge["bs-secondary-bg"], "var(--my-color-muted)");
-	assert.deepStrictEqual(bridge["bs-secondary-color"], "var(--my-color-muted-foreground)");
+	assert.deepStrictEqual(
+		bridge["bs-secondary-color"],
+		"var(--my-color-muted-foreground)",
+	);
 });
 
 test("generateRebootBridge - link-hover uses primary-hover token", () => {
 	const tokens = generateCssTokens(schema, PREFIX);
 	const bridge = generateRebootBridge(tokens, PREFIX);
 	// link-hover should reference the token var, not the raw color-mix value
-	assert.deepStrictEqual(bridge["bs-link-hover-color"], "var(--my-color-primary-hover)");
+	assert.deepStrictEqual(
+		bridge["bs-link-hover-color"],
+		"var(--my-color-primary-hover)",
+	);
 });
 
 // --- generateThemedCss ---

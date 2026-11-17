@@ -1,6 +1,6 @@
-import type { ThemeSchema } from "../types.ts";
-import { colors } from "../colors.ts";
 import { rgba } from "../color.ts";
+import { colors } from "../colors.ts";
+import type { ThemeSchema } from "../types.ts";
 
 // Velvet — burgundy and gold, rose-monochrome luxe. Light mode is blush
 // velvet (rose surfaces with a deep wine primary), dark mode is the same
