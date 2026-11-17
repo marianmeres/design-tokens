@@ -81,7 +81,7 @@ const light = {
 			single: {
 				foreground: cream[900],
 				border: {
-					DEFAULT: cream[300],
+					DEFAULT: rgba(cream[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -139,7 +139,7 @@ const dark = {
 			single: {
 				foreground: roast[50],
 				border: {
-					DEFAULT: roast[700],
+					DEFAULT: rgba(roast[50], 0.15),
 				},
 				input: {
 					DEFAULT: roast[900],

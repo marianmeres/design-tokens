@@ -48,7 +48,7 @@ const light = {
 			single: {
 				foreground: colors.zinc[900],
 				border: {
-					DEFAULT: colors.zinc[300],
+					DEFAULT: rgba(colors.zinc[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -106,7 +106,7 @@ const dark = {
 			single: {
 				foreground: colors.neutral[50],
 				border: {
-					DEFAULT: colors.zinc[700],
+					DEFAULT: rgba(colors.neutral[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.zinc[950],

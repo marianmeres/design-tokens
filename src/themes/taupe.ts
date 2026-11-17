@@ -30,7 +30,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.taupe[900],
-					border: { DEFAULT: colors.taupe[300] },
+					border: { DEFAULT: rgba(colors.taupe[900], 0.15) },
 					input: { DEFAULT: colors.taupe[50], hover: colors.taupe[100] },
 					ring: rgba(colors.taupe[800], 0.2),
 				},
@@ -64,7 +64,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.taupe[50],
-					border: { DEFAULT: colors.taupe[700] },
+					border: { DEFAULT: rgba(colors.taupe[50], 0.15) },
 					input: { DEFAULT: colors.taupe[900], hover: colors.taupe[800] },
 					ring: rgba(colors.taupe[200], 0.25),
 				},

@@ -81,7 +81,7 @@ const light = {
 			single: {
 				foreground: paper[900],
 				border: {
-					DEFAULT: paper[300],
+					DEFAULT: rgba(paper[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -139,7 +139,7 @@ const dark = {
 			single: {
 				foreground: graphite[50],
 				border: {
-					DEFAULT: graphite[700],
+					DEFAULT: rgba(graphite[50], 0.15),
 				},
 				input: {
 					DEFAULT: graphite[900],

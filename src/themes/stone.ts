@@ -30,7 +30,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.stone[900], // stone-900
-					border: { DEFAULT: colors.stone[300] }, // stone-300
+					border: { DEFAULT: rgba(colors.stone[900], 0.15) },
 					input: { DEFAULT: colors.stone[50], hover: colors.stone[100] }, // stone-50, stone-100
 					ring: rgba(colors.stone[800], 0.2), // stone-800
 				},
@@ -64,7 +64,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.stone[50], // stone-50
-					border: { DEFAULT: colors.stone[700] }, // stone-700
+					border: { DEFAULT: rgba(colors.stone[50], 0.15) },
 					input: { DEFAULT: colors.stone[900], hover: colors.stone[800] }, // stone-900, stone-800
 					ring: rgba(colors.stone[200], 0.25), // stone-200
 				},

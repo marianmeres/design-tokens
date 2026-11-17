@@ -81,7 +81,7 @@
 	--stuic-color-foreground-hover:               #14281e;
 	--stuic-color-foreground-active:              #14281e;
 
-	--stuic-color-border:                         #bedacb;
+	--stuic-color-border:                         rgba(20, 40, 30, 0.15);
 	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
 	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
 
@@ -177,7 +177,7 @@
 	--stuic-color-foreground-hover:               #fbf3f7;
 	--stuic-color-foreground-active:              #fbf3f7;
 
-	--stuic-color-border:                         #482b3d;
+	--stuic-color-border:                         rgba(251, 243, 247, 0.15);
 	--stuic-color-border-hover:                   color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 10%);
 	--stuic-color-border-active:                  color-mix(in oklab, var(--stuic-color-border), var(--stuic-color-foreground) 20%);
 
@@ -231,8 +231,8 @@
 		--stuic-color-muted-hover:                    #cddbd3;
 		--stuic-color-muted-active:                   #b6c5bc;
 
-		--stuic-color-border-hover:                   #abc6b8;
-		--stuic-color-border-active:                  #98b3a5;
+		--stuic-color-border-hover:                   rgba(20, 40, 30, 0.235);
+		--stuic-color-border-active:                  rgba(20, 40, 30, 0.32);
 
 		--stuic-color-input-active:                   #cbcfcd;
 	}
@@ -276,8 +276,8 @@
 		--stuic-color-muted-hover:                    #48323f;
 		--stuic-color-muted-active:                   #5a4551;
 
-		--stuic-color-border-hover:                   #583c4d;
-		--stuic-color-border-active:                  #694f5e;
+		--stuic-color-border-hover:                   rgba(251, 243, 247, 0.235);
+		--stuic-color-border-active:                  rgba(251, 243, 247, 0.32);
 
 		--stuic-color-input-active:                   #4b3b46;
 	}

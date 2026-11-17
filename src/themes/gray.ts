@@ -27,7 +27,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.gray[900], // gray-900
-					border: { DEFAULT: colors.gray[300] }, // gray-300
+					border: { DEFAULT: rgba(colors.gray[900], 0.15) },
 					input: { DEFAULT: colors.gray[50], hover: colors.gray[100] }, // gray-50, gray-100
 					ring: rgba(colors.gray[800], 0.2), // gray-800
 				},
@@ -58,7 +58,7 @@ const theme: ThemeSchema = {
 				},
 				single: {
 					foreground: colors.gray[50], // gray-50
-					border: { DEFAULT: colors.gray[700] }, // gray-700
+					border: { DEFAULT: rgba(colors.gray[50], 0.15) },
 					input: { DEFAULT: colors.gray[900], hover: colors.gray[800] }, // gray-900, gray-800
 					ring: rgba(colors.gray[200], 0.25), // gray-200
 				},

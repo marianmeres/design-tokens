@@ -48,7 +48,7 @@ const light = {
 			single: {
 				foreground: colors.slate[900],
 				border: {
-					DEFAULT: colors.slate[300],
+					DEFAULT: rgba(colors.slate[900], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -106,7 +106,7 @@ const dark = {
 			single: {
 				foreground: colors.slate[50],
 				border: {
-					DEFAULT: colors.slate[700],
+					DEFAULT: rgba(colors.slate[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.slate[900],

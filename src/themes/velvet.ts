@@ -52,7 +52,7 @@ const light = {
 			single: {
 				foreground: colors.rose[950],
 				border: {
-					DEFAULT: colors.rose[300],
+					DEFAULT: rgba(colors.rose[950], 0.15),
 				},
 				input: {
 					DEFAULT: colors.white,
@@ -110,7 +110,7 @@ const dark = {
 			single: {
 				foreground: colors.rose[50],
 				border: {
-					DEFAULT: colors.rose[800],
+					DEFAULT: rgba(colors.rose[50], 0.15),
 				},
 				input: {
 					DEFAULT: colors.rose[950],
